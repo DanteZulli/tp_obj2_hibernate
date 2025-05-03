@@ -4,22 +4,25 @@ import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClienteDTO extends UsuarioDTO {
+public class ClienteDTO {
+    private int id;
+    private int nroCliente;
+    private String nombre;
+    private String email;
     private String plan;
     private boolean particular;
-    private DireccionDTO direccion;
 
-    public ClienteDTO(int id, String nombre, String email, Cliente cliente) {
-        super(id, nombre, email);
+    public ClienteDTO(Cliente cliente) {
+        this.id = cliente.getId();
+        this.nroCliente = cliente.getNroCliente();
+        this.nombre = cliente.getNombre();
+        this.email = cliente.getEmail();
         this.plan = cliente.getPlan();
         this.particular = cliente.isParticular();
-        this.direccion = new DireccionDTO(cliente.getDireccion());
     }
 }

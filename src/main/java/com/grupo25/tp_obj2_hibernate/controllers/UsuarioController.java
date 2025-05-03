@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 import com.grupo25.tp_obj2_hibernate.model.entities.Direccion;
 import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
@@ -26,57 +27,34 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     /**
-     * Crea un nuevo usuario.
-     * 
-     * @param nombre El nombre del usuario
-     * @param email  El email del usuario
-     * @return El usuario creado
-     * 
-     * @author Dante Zulli
-     */
-    @PutMapping("/{usuarioId}/datos-personales")
-    public ResponseEntity<Usuario> actualizarDatosPersonales(
-            @PathVariable int usuarioId,
-            @RequestParam String nombre,
-            @RequestParam String email) {
-        try {
-            Usuario usuario = usuarioService.actualizarDatosPersonales(usuarioId, nombre, email);
-            return ResponseEntity.ok(usuario);
-        } catch (RuntimeException e) {
-            log.error("Error al actualizar los datos personales del usuario con ID: {}", usuarioId, e);
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
      * Crea un nuevo cliente.
      * 
-     * @param nombre      El nombre del cliente
-     * @param email       El email del cliente
-     * @param plan        El plan del cliente
-     * @param particular  Indica si el cliente es particular o no
+     * @param nombre     El nombre del cliente
+     * @param email      El email del cliente
+     * @param plan       El plan del cliente
+     * @param particular Indica si el cliente es particular o no
      * @return El cliente creado
      * 
      * @author Dante Zulli
      */
     @PostMapping("/clientes")
-    public ResponseEntity<Cliente> crearCliente(
+    public ResponseEntity<ClienteDTO> crearCliente(
             @RequestParam String nombre,
             @RequestParam String email,
             @RequestParam String plan,
             @RequestParam boolean particular) {
-        Cliente cliente = usuarioService.crearCliente(nombre, email, plan, particular);
+        ClienteDTO cliente = usuarioService.crearCliente(nombre, email, plan, particular);
         return ResponseEntity.ok(cliente);
     }
 
     /**
      * Actualiza un cliente existente.
      * 
-     * @param clienteId   El ID del cliente a actualizar
-     * @param nombre      El nuevo nombre del cliente
-     * @param email       El nuevo email del cliente
-     * @param plan        El nuevo plan del cliente
-     * @param particular  Indica si el cliente es particular o no
+     * @param clienteId  El ID del cliente a actualizar
+     * @param nombre     El nuevo nombre del cliente
+     * @param email      El nuevo email del cliente
+     * @param plan       El nuevo plan del cliente
+     * @param particular Indica si el cliente es particular o no
      * @return El cliente actualizado
      * 
      * @throws RuntimeException si no se encuentra el cliente con el ID dado
@@ -84,14 +62,14 @@ public class UsuarioController {
      * @author Dante Zulli
      */
     @PutMapping("/clientes/{clienteId}")
-    public ResponseEntity<Cliente> actualizarCliente(
+    public ResponseEntity<ClienteDTO> actualizarCliente(
             @PathVariable int clienteId,
             @RequestParam String nombre,
             @RequestParam String email,
             @RequestParam String plan,
             @RequestParam boolean particular) {
         try {
-            Cliente cliente = usuarioService.actualizarCliente(clienteId, nombre, email, plan, particular);
+            ClienteDTO cliente = usuarioService.actualizarCliente(clienteId, nombre, email, plan, particular);
             return ResponseEntity.ok(cliente);
         } catch (RuntimeException e) {
             log.error("Error al actualizar el cliente con ID: {}", clienteId, e);
@@ -102,22 +80,21 @@ public class UsuarioController {
     /**
      * Asocia una dirección a un cliente.
      * 
-     * @param clienteId  El ID del cliente
-     * @param direccion  La dirección a asociar
-     * @param esFiscal   Indica si la dirección es fiscal o no
+     * @param clienteId   El ID del cliente
+     * @param direccionId El ID de la dirección a asociar
      * @return El cliente con la dirección asociada
      * 
-     * @throws RuntimeException si no se encuentra el cliente con el ID dado
+     * @throws RuntimeException si no se encuentra el cliente con el ID dado o si
+     *                          no se encuentra la dirección con el ID dado
      * 
      * @author Dante Zulli
      */
     @PostMapping("/clientes/{clienteId}/direccion")
-    public ResponseEntity<Cliente> asociarDireccion(
+    public ResponseEntity<ClienteDTO> asociarDireccion(
             @PathVariable int clienteId,
-            @RequestBody Direccion direccion,
-            @RequestParam boolean esFiscal) {
+            @RequestParam int direccionId) {
         try {
-            Cliente cliente = usuarioService.asociarDireccion(clienteId, direccion, esFiscal);
+            ClienteDTO cliente = usuarioService.asociarDireccion(clienteId, direccionId);
             return ResponseEntity.ok(cliente);
         } catch (RuntimeException e) {
             log.error("Error al asociar la dirección al cliente con ID: {}", clienteId, e);

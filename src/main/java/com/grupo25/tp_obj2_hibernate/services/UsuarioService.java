@@ -3,12 +3,11 @@ package com.grupo25.tp_obj2_hibernate.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
+import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
 import com.grupo25.tp_obj2_hibernate.model.entities.Direccion;
 import com.grupo25.tp_obj2_hibernate.model.entities.Rol;
-import com.grupo25.tp_obj2_hibernate.model.repositories.UsuarioRepository;
 import com.grupo25.tp_obj2_hibernate.model.repositories.ClienteRepository;
 import com.grupo25.tp_obj2_hibernate.model.repositories.TecnicoRepository;
 import com.grupo25.tp_obj2_hibernate.model.repositories.DireccionRepository;
@@ -24,9 +23,6 @@ import com.grupo25.tp_obj2_hibernate.model.repositories.RolRepository;
 public class UsuarioService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private ClienteRepository clienteRepository;
 
     @Autowired
@@ -39,26 +35,6 @@ public class UsuarioService {
     private RolRepository rolRepository;
 
     /**
-     * Actualiza los datos personales de un usuario dado su ID.
-     * 
-     * @param nombre El nombre del usuario.
-     * @param email  El email del usuario.
-     * @return El usuario creado.
-     * 
-     * @author Dante Zulli
-     */
-    public Usuario actualizarDatosPersonales(int usuarioId, String nombre, String email) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
-
-        usuario.setNombre(nombre);
-        usuario.setEmail(email);
-        usuarioRepository.update(usuario);
-
-        return usuario;
-    }
-
-    /**
      * Crea un nuevo cliente en la base de datos.
      * 
      * @param nombre     El nombre del cliente.
@@ -69,13 +45,13 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public Cliente crearCliente(String nombre, String email, String plan, boolean particular) {
+    public ClienteDTO crearCliente(String nombre, String email, String plan, boolean particular) {
         Cliente cliente = new Cliente();
         cliente.setNombre(nombre);
         cliente.setEmail(email);
         cliente.setPlan(plan);
         cliente.setParticular(particular);
-        return clienteRepository.save(cliente);
+        return new ClienteDTO(clienteRepository.save(cliente));
     }
 
     /**
@@ -92,7 +68,7 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public Cliente actualizarCliente(int clienteId, String nombre, String email, String plan, boolean particular) {
+    public ClienteDTO actualizarCliente(int clienteId, String nombre, String email, String plan, boolean particular) {
         Cliente cliente = (Cliente) clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
 
@@ -102,32 +78,34 @@ public class UsuarioService {
         cliente.setParticular(particular);
 
         clienteRepository.update(cliente);
-        return cliente;
+
+        return new ClienteDTO(cliente);
     }
 
     /**
      * Asocia una dirección a un cliente dado su ID.
      * 
-     * @param clienteId El ID del cliente.
-     * @param direccion La dirección a asociar.
-     * @param esFiscal  Indica si la dirección es fiscal o no.
+     * @param clienteId   El ID del cliente.
+     * @param direccionId El ID de la dirección.
      * @return El cliente actualizado con la dirección asociada.
      * 
-     * @throws RuntimeException Si no se encuentra el cliente con el ID dado.
+     * @throws RuntimeException Si no se encuentra el cliente con el ID dado o si
+     *                          no se encuentra la dirección con el ID dado.
      * 
      * @author Dante Zulli
      */
-    public Cliente asociarDireccion(int clienteId, Direccion direccion, boolean esFiscal) {
+    public ClienteDTO asociarDireccion(int clienteId, int direccionId) {
         Cliente cliente = (Cliente) clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
 
-        direccion.setFiscal(esFiscal);
-        direccionRepository.save(direccion);
+        Direccion direccion = (Direccion) direccionRepository.findById(direccionId)
+                .orElseThrow(() -> new RuntimeException("Dirección no encontrada con ID: " + direccionId));
 
         cliente.setDireccion(direccion);
+
         clienteRepository.update(cliente);
 
-        return cliente;
+        return new ClienteDTO(cliente);
     }
 
     /**
