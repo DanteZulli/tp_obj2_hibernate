@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-
-<hibernate-mapping package="com.grupo25.tp_obj2_hibernate.model.entities">
-    <class name="Direccion" table="direcciones">
-        <id name="id" type="int">
-            <generator class="identity"/>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.grupo25.tp_obj2_hibernate.model.entities.Direccion" table="direccion">
+        <id name="id" column="id">
+            <generator class="native"/>
         </id>
-        <property name="calle" column="calle" type="string" not-null="true"/>
-        <property name="nro" column="nro" type="string" not-null="true"/>
-        <property name="localidad" column="localidad" type="string" not-null="true"/>
-        <property name="provincia" column="provincia" type="string" not-null="true"/>
-        <property name="fiscal" column="fiscal" type="boolean" not-null="true"/>
+        <property name="calle" column="calle" type="string"/>
+        <property name="nro" column="nro" type="string"/>
+        <property name="localidad" column="localidad" type="string"/>
+        <property name="provincia" column="provincia" type="string"/>
+        <property name="fiscal" column="fiscal" type="boolean"/>
     </class>
 </hibernate-mapping>

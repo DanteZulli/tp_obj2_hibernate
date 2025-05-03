@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-
-<hibernate-mapping package="com.grupo25.tp_obj2_hibernate.model.entities">
-    <class name="Usuario" table="usuarios">
-        <id name="id" type="int">
-            <generator class="identity"/>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.grupo25.tp_obj2_hibernate.model.entities.Usuario" table="usuario">
+        <id name="id" column="id">
+            <generator class="native"/>
         </id>
+        <property name="nombre" column="nombre" type="string"/>
+        <property name="email" column="email" type="string"/>
+        <property name="esAdmin" column="es_admin" type="boolean"/>
+        
         <discriminator column="tipo_usuario" type="string"/>
-        <property name="nombre" column="nombre" type="string" not-null="true"/>
-        <property name="email" column="email" type="string" not-null="true" unique="true"/>
-        <property name="esAdmin" column="es_admin" type="boolean" not-null="true"/>
+        
+        <subclass name="com.grupo25.tp_obj2_hibernate.model.entities.Cliente" discriminator-value="CLIENTE">
+            <property name="nroCliente" column="nro_cliente" type="int"/>
+            <property name="plan" column="plan" type="string"/>
+            <property name="particular" column="particular" type="boolean"/>
+            <many-to-one name="direccion" class="com.grupo25.tp_obj2_hibernate.model.entities.Direccion" column="direccion_id"/>
+        </subclass>
+        
+        <subclass name="com.grupo25.tp_obj2_hibernate.model.entities.Tecnico" discriminator-value="TECNICO">
+            <property name="nroContacto" column="nro_contacto" type="string"/>
+            <property name="empresa" column="empresa" type="string"/>
+            <many-to-one name="rol" class="com.grupo25.tp_obj2_hibernate.model.entities.Rol" column="rol_id"/>
+        </subclass>
     </class>
 </hibernate-mapping>

@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-
-<hibernate-mapping package="com.grupo25.tp_obj2_hibernate.model.entities">
-    <class name="Etiqueta" table="etiquetas">
-        <id name="id" type="int">
-            <generator class="identity"/>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.grupo25.tp_obj2_hibernate.model.entities.Etiqueta" table="etiqueta">
+        <id name="id" column="id">
+            <generator class="native"/>
         </id>
-        <property name="nombre" column="nombre" type="string" not-null="true" unique="true"/>
-        <bag name="tickets" table="ticket_etiquetas" inverse="true">
+        <property name="nombre" column="nombre" type="string"/>
+        
+        <bag name="tickets" table="ticket_etiqueta" inverse="true">
             <key column="etiqueta_id"/>
-            <many-to-many class="Ticket" column="ticket_id"/>
+            <many-to-many class="com.grupo25.tp_obj2_hibernate.model.entities.Ticket" column="ticket_id"/>
         </bag>
     </class>
 </hibernate-mapping>
