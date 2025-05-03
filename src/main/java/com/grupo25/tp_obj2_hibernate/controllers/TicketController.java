@@ -33,9 +33,6 @@ public class TicketController {
      * @throws RuntimeException si no se encuentra el ticket con el ID dado
      * 
      * @author Dante Zulli
-     * 
-     * CURL:
-     * curl -X GET http://localhost:8080/api/tickets/1/estado
      */
     @GetMapping("/{id}/estado")
     public ResponseEntity<String> getEstadoTicket(@PathVariable("id") int id) {
