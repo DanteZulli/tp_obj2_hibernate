@@ -4,11 +4,10 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="com.grupo25.tp_obj2_hibernate.model.entities">
-    <subclass name="Cliente" extends="Usuario" discriminator-value="CLIENTE" table="clientes">
-        <key column="usuario_id"/>
+    <subclass name="Cliente" extends="Usuario" discriminator-value="CLIENTE">
         <property name="nroCliente" column="nro_cliente" type="int" unique="true"/>
         <property name="plan" column="plan" type="string"/>
         <property name="particular" column="particular" type="boolean"/>
-        <one-to-one name="direccion" class="Direccion" cascade="all" foreign-key="direccion_id"/>
+        <many-to-one name="direccion" class="Direccion" column="direccion_id" unique="true" cascade="all"/>
     </subclass>
 </hibernate-mapping>

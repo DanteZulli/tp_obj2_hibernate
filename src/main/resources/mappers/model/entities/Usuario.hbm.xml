@@ -8,6 +8,7 @@
         <id name="id" type="int">
             <generator class="identity"/>
         </id>
+        <discriminator column="tipo_usuario" type="string"/>
         <property name="nombre" column="nombre" type="string" not-null="true"/>
         <property name="email" column="email" type="string" not-null="true" unique="true"/>
         <property name="esAdmin" column="es_admin" type="boolean" not-null="true"/>
