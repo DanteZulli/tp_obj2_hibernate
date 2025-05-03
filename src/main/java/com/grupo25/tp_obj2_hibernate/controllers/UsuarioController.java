@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
 import com.grupo25.tp_obj2_hibernate.model.dto.TecnicoDTO;
-import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
-import com.grupo25.tp_obj2_hibernate.model.entities.Direccion;
-import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
-import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 import com.grupo25.tp_obj2_hibernate.services.UsuarioService;
 
 import lombok.extern.slf4j.Slf4j;
