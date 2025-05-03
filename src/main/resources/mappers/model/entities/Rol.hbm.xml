@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.grupo25.tp_obj2_hibernate.model.entities">
+    <class name="Rol" table="roles">
+        <id name="id" type="int">
+            <generator class="identity"/>
+        </id>
+        <property name="nombre" column="nombre" type="string" not-null="true" unique="true"/>
+        <set name="tecnicos" inverse="true" cascade="all">
+            <key column="rol_id"/>
+            <one-to-many class="Tecnico"/>
+        </set>
+    </class>
+</hibernate-mapping>

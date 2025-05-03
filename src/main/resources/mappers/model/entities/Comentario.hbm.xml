@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.grupo25.tp_obj2_hibernate.model.entities">
+    <class name="Comentario" table="comentarios">
+        <id name="id" type="int">
+            <generator class="identity"/>
+        </id>
+        <property name="mensaje" column="mensaje" type="text" not-null="true"/>
+        <property name="fecha" column="fecha" type="timestamp" not-null="true"/>
+        <many-to-one name="ticket" column="ticket_id" class="Ticket" not-null="true"/>
+        <many-to-one name="usuario" column="usuario_id" class="Usuario" not-null="true"/>
+    </class>
+</hibernate-mapping>

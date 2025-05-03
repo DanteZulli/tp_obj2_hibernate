@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.grupo25.tp_obj2_hibernate.model.entities">
+    <subclass name="Tecnico" extends="Usuario" discriminator-value="TECNICO" table="tecnicos">
+        <key column="usuario_id"/>
+        <property name="nroContacto" column="nro_contacto" type="string"/>
+        <property name="empresa" column="empresa" type="string"/>
+        <many-to-one name="rol" column="rol_id" class="Rol" not-null="true"/>
+    </subclass>
+</hibernate-mapping>

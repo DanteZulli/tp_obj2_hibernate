@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.grupo25.tp_obj2_hibernate.model.entities">
+    <class name="Usuario" table="usuarios">
+        <id name="id" type="int">
+            <generator class="identity"/>
+        </id>
+        <property name="nombre" column="nombre" type="string" not-null="true"/>
+        <property name="email" column="email" type="string" not-null="true" unique="true"/>
+        <property name="esAdmin" column="es_admin" type="boolean" not-null="true"/>
+    </class>
+</hibernate-mapping>
