@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
+import com.grupo25.tp_obj2_hibernate.model.dto.TecnicoDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 import com.grupo25.tp_obj2_hibernate.model.entities.Direccion;
 import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
@@ -115,14 +116,14 @@ public class UsuarioController {
      * @author Dante Zulli
      */
     @PostMapping("/tecnicos")
-    public ResponseEntity<Tecnico> crearTecnico(
+    public ResponseEntity<TecnicoDTO> crearTecnico(
             @RequestParam String nombre,
             @RequestParam String email,
             @RequestParam String nroContacto,
             @RequestParam String empresa,
             @RequestParam int rolId) {
         try {
-            Tecnico tecnico = usuarioService.crearTecnico(nombre, email, nroContacto, empresa, rolId);
+            TecnicoDTO tecnico = usuarioService.crearTecnico(nombre, email, nroContacto, empresa, rolId);
             return ResponseEntity.ok(tecnico);
         } catch (RuntimeException e) {
             log.error("Error al crear el técnico", e);
@@ -146,7 +147,7 @@ public class UsuarioController {
      * @author Dante Zulli
      */
     @PutMapping("/tecnicos/{tecnicoId}")
-    public ResponseEntity<Tecnico> actualizarTecnico(
+    public ResponseEntity<TecnicoDTO> actualizarTecnico(
             @PathVariable int tecnicoId,
             @RequestParam String nombre,
             @RequestParam String email,
@@ -154,7 +155,7 @@ public class UsuarioController {
             @RequestParam String empresa,
             @RequestParam int rolId) {
         try {
-            Tecnico tecnico = usuarioService.actualizarTecnico(tecnicoId, nombre, email, nroContacto, empresa, rolId);
+            TecnicoDTO tecnico = usuarioService.actualizarTecnico(tecnicoId, nombre, email, nroContacto, empresa, rolId);
             return ResponseEntity.ok(tecnico);
         } catch (RuntimeException e) {
             log.error("Error al actualizar el técnico con ID: {}", tecnicoId, e);

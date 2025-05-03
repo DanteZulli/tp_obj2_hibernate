@@ -38,9 +38,9 @@ curl --location 'http://localhost:8080/api/usuarios/tecnicos' \
 --data-urlencode 'rolId=1'
 ```
 
-### Actualizar técnico existente (ID: 1)
+### Actualizar técnico existente (ID: 4)
 ```bash
-curl --location --request PUT 'http://localhost:8080/api/usuarios/tecnicos/1' \
+curl --location --request PUT 'http://localhost:8080/api/usuarios/tecnicos/4' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'nombre=Pedro Técnico Actualizado' \
 --data-urlencode 'email=pedro.nuevo@empresa.com' \

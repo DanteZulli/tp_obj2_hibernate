@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
+import com.grupo25.tp_obj2_hibernate.model.dto.TecnicoDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
 import com.grupo25.tp_obj2_hibernate.model.entities.Direccion;
@@ -120,7 +121,7 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public Tecnico crearTecnico(String nombre, String email, String nroContacto, String empresa, int rolId) {
+    public TecnicoDTO crearTecnico(String nombre, String email, String nroContacto, String empresa, int rolId) {
         Tecnico tecnico = new Tecnico();
         tecnico.setNombre(nombre);
         tecnico.setEmail(email);
@@ -131,7 +132,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado con ID: " + rolId));
         tecnico.setRol(rol);
 
-        return tecnicoRepository.save(tecnico);
+        return new TecnicoDTO(tecnicoRepository.save(tecnico));
     }
 
     /**
@@ -150,7 +151,7 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public Tecnico actualizarTecnico(int tecnicoId, String nombre, String email, String nroContacto, String empresa,
+    public TecnicoDTO actualizarTecnico(int tecnicoId, String nombre, String email, String nroContacto, String empresa,
             int rolId) {
         Tecnico tecnico = (Tecnico) tecnicoRepository.findById(tecnicoId)
                 .orElseThrow(() -> new RuntimeException("Técnico no encontrado con ID: " + tecnicoId));
@@ -167,6 +168,6 @@ public class UsuarioService {
         }
 
         tecnicoRepository.update(tecnico);
-        return tecnico;
+        return new TecnicoDTO(tecnico);
     }
 }
