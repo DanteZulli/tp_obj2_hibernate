@@ -1,8 +1,9 @@
-package com.grupo25.tp_obj2_hibernate.model.services;
+package com.grupo25.tp_obj2_hibernate.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.grupo25.tp_obj2_hibernate.model.dto.RolDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Rol;
 import com.grupo25.tp_obj2_hibernate.model.repositories.RolRepository;
 
@@ -25,8 +26,8 @@ public class RolService {
      * 
      * @author Dante Zulli
      */
-    public Rol crearRol(Rol rol) {
-        return rolRepository.save(rol);
+    public RolDTO crearRol(Rol rol) {
+        return new RolDTO(rolRepository.save(rol));
     }
 
     /**
@@ -40,14 +41,14 @@ public class RolService {
      * 
      * @author Dante Zulli
      */
-    public Rol modificarRol(int rolId, String nombre) {
+    public RolDTO modificarRol(int rolId, String nombre) {
         Rol rol = rolRepository.findById(rolId)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado con ID: " + rolId));
 
         rol.setNombre(nombre);
         rolRepository.update(rol);
 
-        return rol;
+        return new RolDTO(rol);
     }
 
     /**
@@ -59,8 +60,8 @@ public class RolService {
      * 
      * @author Dante Zulli
      */
-    public Rol obtenerRol(int rolId) {
-        return rolRepository.findById(rolId)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado con ID: " + rolId));
+    public RolDTO obtenerRol(int rolId) {
+        return new RolDTO(rolRepository.findById(rolId)
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado con ID: " + rolId)));
     }
 }

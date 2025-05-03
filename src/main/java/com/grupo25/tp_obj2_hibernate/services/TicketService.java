@@ -1,4 +1,4 @@
-package com.grupo25.tp_obj2_hibernate.model.services;
+package com.grupo25.tp_obj2_hibernate.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

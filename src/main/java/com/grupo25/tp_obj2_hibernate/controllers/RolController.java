@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.grupo25.tp_obj2_hibernate.model.dto.RolDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Rol;
-import com.grupo25.tp_obj2_hibernate.model.services.RolService;
+import com.grupo25.tp_obj2_hibernate.services.RolService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +32,8 @@ public class RolController {
      * @author Dante Zulli
      */
     @PostMapping
-    public ResponseEntity<Rol> crearRol(@RequestBody Rol rol) {
-        Rol rolCreado = rolService.crearRol(rol);
+    public ResponseEntity<RolDTO> crearRol(@RequestBody Rol rol) {
+        RolDTO rolCreado = rolService.crearRol(rol);
         return ResponseEntity.ok(rolCreado);
     }
 
@@ -48,9 +49,9 @@ public class RolController {
      * @author Dante Zulli
      */
     @PutMapping("/{rolId}")
-    public ResponseEntity<Rol> modificarRol(@PathVariable int rolId, @RequestParam String nombre) {
+    public ResponseEntity<RolDTO> modificarRol(@PathVariable int rolId, @RequestParam String nombre) {
         try {
-            Rol rolModificado = rolService.modificarRol(rolId, nombre);
+            RolDTO rolModificado = rolService.modificarRol(rolId, nombre);
             return ResponseEntity.ok(rolModificado);
         } catch (RuntimeException e) {
             log.error("Error al modificar el rol con ID: {}", rolId, e);
@@ -69,9 +70,9 @@ public class RolController {
      * @author Dante Zulli
      */
     @GetMapping("/{rolId}")
-    public ResponseEntity<Rol> obtenerRol(@PathVariable int rolId) {
+    public ResponseEntity<RolDTO> obtenerRol(@PathVariable int rolId) {
         try {
-            Rol rol = rolService.obtenerRol(rolId);
+            RolDTO rol = rolService.obtenerRol(rolId);
             return ResponseEntity.ok(rol);
         } catch (RuntimeException e) {
             log.error("Error al obtener el rol con ID: {}", rolId, e);

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.grupo25.tp_obj2_hibernate.model.services.TicketService;
+import com.grupo25.tp_obj2_hibernate.services.TicketService;
 
 import lombok.extern.slf4j.Slf4j;
 
