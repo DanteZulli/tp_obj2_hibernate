@@ -3,7 +3,7 @@ package com.grupo25.tp_obj2_hibernate.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.repositories.TicketRepository;
+import com.grupo25.tp_obj2_hibernate.repositories.TicketRepository;
 
 /**
  * Clase de servicio para manejar la lógica de negocio relacionada con los

@@ -7,12 +7,12 @@ import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
 import com.grupo25.tp_obj2_hibernate.model.dto.TecnicoDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
+import com.grupo25.tp_obj2_hibernate.repositories.ClienteRepository;
+import com.grupo25.tp_obj2_hibernate.repositories.DireccionRepository;
+import com.grupo25.tp_obj2_hibernate.repositories.RolRepository;
+import com.grupo25.tp_obj2_hibernate.repositories.TecnicoRepository;
 import com.grupo25.tp_obj2_hibernate.model.entities.Direccion;
 import com.grupo25.tp_obj2_hibernate.model.entities.Rol;
-import com.grupo25.tp_obj2_hibernate.model.repositories.ClienteRepository;
-import com.grupo25.tp_obj2_hibernate.model.repositories.TecnicoRepository;
-import com.grupo25.tp_obj2_hibernate.model.repositories.DireccionRepository;
-import com.grupo25.tp_obj2_hibernate.model.repositories.RolRepository;
 
 /**
  * Clase de servicio para manejar la lógica de negocio relacionada con los

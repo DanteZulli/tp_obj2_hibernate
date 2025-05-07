@@ -1,4 +1,4 @@
-package com.grupo25.tp_obj2_hibernate.model.repositories;
+package com.grupo25.tp_obj2_hibernate.repositories;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
