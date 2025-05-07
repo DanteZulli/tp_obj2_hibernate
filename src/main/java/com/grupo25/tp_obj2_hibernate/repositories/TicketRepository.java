@@ -2,6 +2,7 @@ package com.grupo25.tp_obj2_hibernate.repositories;
 
 import java.util.List;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
@@ -26,9 +27,17 @@ public class TicketRepository extends HibernateRepository<Ticket> {
      */
     public List<Ticket> findByCreador(Usuario creador) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("from Ticket where creador = :creador", Ticket.class)
-                .setParameter("creador", creador)
-                .list();
+        Transaction tx = session.beginTransaction();
+        try {
+            List<Ticket> tickets = session.createQuery("from Ticket where creador = :creador", Ticket.class)
+                    .setParameter("creador", creador)
+                    .list();
+            tx.commit();
+            return tickets;
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     /**
@@ -39,9 +48,17 @@ public class TicketRepository extends HibernateRepository<Ticket> {
      */
     public List<Ticket> findByAsignado(Usuario asignado) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("from Ticket where asignado = :asignado", Ticket.class)
-                .setParameter("asignado", asignado)
-                .list();
+        Transaction tx = session.beginTransaction();
+        try {
+            List<Ticket> tickets = session.createQuery("from Ticket where asignado = :asignado", Ticket.class)
+                    .setParameter("asignado", asignado)
+                    .list();
+            tx.commit();
+            return tickets;
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     /**
@@ -52,8 +69,16 @@ public class TicketRepository extends HibernateRepository<Ticket> {
      */
     public List<Ticket> findByEstado(String estado) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("from Ticket where estado = :estado", Ticket.class)
-                .setParameter("estado", estado)
-                .list();
+        Transaction tx = session.beginTransaction();
+        try {
+            List<Ticket> tickets = session.createQuery("from Ticket where estado = :estado", Ticket.class)
+                    .setParameter("estado", estado)
+                    .list();
+            tx.commit();
+            return tickets;
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
     }
 }

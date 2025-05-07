@@ -6,3 +6,9 @@ curl --location 'http://localhost:8080/api/tickets/1/estado' \
 --header 'Accept: text/plain'
 ```
 
+## Obtiene todos los tickets creados por un usuario dado su ID (ID: 1)
+```bash	
+curl --location 'http://localhost:8080/api/tickets/creador/1' \
+--header 'Accept: text/plain'
+```
+
