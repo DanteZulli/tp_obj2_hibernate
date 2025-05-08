@@ -136,4 +136,24 @@ public class TicketController {
         }
     }
 
+    /**
+     * Cambiar la prioridad de un ticket.
+     * 
+     * @param id El ID del ticket
+     * @param prioridad La prioridad del ticket
+     * @return ResponseEntity con el ticket actualizado, o un error si no existe
+     * 
+     * @author Ariel Serato
+     */
+    @PutMapping("/{id}/prioridad")
+    public ResponseEntity<TicketDTO> cambiarPrioridadTicket(@PathVariable("id") int id, @RequestParam String prioridad) {
+        try {
+            TicketDTO ticket = ticketService.cambiarPrioridadTicket(id, prioridad);
+            return ResponseEntity.ok(ticket);
+        } catch (RuntimeException e) {
+            log.error("Error al cambiar la prioridad del ticket con ID: {} a {}", id, prioridad, e);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

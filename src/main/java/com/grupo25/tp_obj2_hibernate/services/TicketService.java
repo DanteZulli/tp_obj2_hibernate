@@ -113,4 +113,21 @@ public class TicketService {
         ticketRepository.update(ticket);
         return new TicketDTO(ticket);
     }
+
+    /**
+     * Cambia la prioridad de un ticket.
+     * 
+     * @param id El ID del ticket.
+     * @param prioridad La prioridad del ticket.
+     * @return El ticket actualizado.
+     * 
+     * @author Ariel Serato
+     */
+    public TicketDTO cambiarPrioridadTicket(int id, String prioridad) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+        ticket.setPrioridad(prioridad);
+        ticketRepository.update(ticket);
+        return new TicketDTO(ticket);
+    }
 }
