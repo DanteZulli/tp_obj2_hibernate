@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
 import com.grupo25.tp_obj2_hibernate.model.dto.TicketDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
@@ -100,7 +99,7 @@ public class TicketService {
         Usuario tecnico = usuarioRepository.findById(idTecnico)
                 .orElseThrow(() -> new RuntimeException("Tecnico no encontrado con ID: " + idTecnico));
         ticket.setAsignado(tecnico);
-        ticketRepository.save(ticket);
+        ticketRepository.update(ticket);
         return new TicketDTO(ticket);
     }
 }

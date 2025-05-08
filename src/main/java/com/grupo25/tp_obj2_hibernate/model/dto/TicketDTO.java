@@ -1,11 +1,10 @@
 package com.grupo25.tp_obj2_hibernate.model.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
-import com.grupo25.tp_obj2_hibernate.model.entities.Comentario;
-import com.grupo25.tp_obj2_hibernate.model.entities.Etiqueta;
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 
 import lombok.AllArgsConstructor;
@@ -23,9 +22,11 @@ public class TicketDTO {
     private String prioridad;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaResolucion;
-    private Categoria categoria;
-    private List<Etiqueta> etiquetas;
-    private List<Comentario> comentarios;
+    private UsuarioDTO creador;
+    private UsuarioDTO asignado;
+    private CategoriaDTO categoria;
+    private List<EtiquetaDTO> etiquetas;
+    private List<ComentarioDTO> comentarios;
 
     public TicketDTO(Ticket ticket) {
         this.id = ticket.getId();
@@ -35,9 +36,11 @@ public class TicketDTO {
         this.prioridad = ticket.getPrioridad();
         this.fechaCreacion = ticket.getFechaCreacion();
         this.fechaResolucion = ticket.getFechaResolucion();
-        this.categoria = ticket.getCategoria();
-        this.etiquetas = ticket.getEtiquetas();
-        this.comentarios = ticket.getComentarios();
+        this.creador = new UsuarioDTO(ticket.getCreador());
+        this.asignado = new UsuarioDTO(ticket.getAsignado());
+        this.categoria = new CategoriaDTO(ticket.getCategoria());
+        this.etiquetas = new ArrayList<>(ticket.getEtiquetas().stream().map(EtiquetaDTO::new).collect(Collectors.toList()));
+        this.comentarios = new ArrayList<>(ticket.getComentarios().stream().map(ComentarioDTO::new).collect(Collectors.toList()));
     }
 
 }
