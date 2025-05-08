@@ -1,10 +1,11 @@
 package com.grupo25.tp_obj2_hibernate.model.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
-import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
-import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
+import com.grupo25.tp_obj2_hibernate.model.entities.Comentario;
+import com.grupo25.tp_obj2_hibernate.model.entities.Etiqueta;
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 
 import lombok.AllArgsConstructor;
@@ -22,8 +23,9 @@ public class TicketDTO {
     private String prioridad;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaResolucion;
-    // TODO: Agregar Categoria, Etiquetas y Comentarios al mappeo
-    // como está hecho en TecnicoDTO
+    private Categoria categoria;
+    private List<Etiqueta> etiquetas;
+    private List<Comentario> comentarios;
 
     public TicketDTO(Ticket ticket) {
         this.id = ticket.getId();
@@ -33,6 +35,9 @@ public class TicketDTO {
         this.prioridad = ticket.getPrioridad();
         this.fechaCreacion = ticket.getFechaCreacion();
         this.fechaResolucion = ticket.getFechaResolucion();
+        this.categoria = ticket.getCategoria();
+        this.etiquetas = ticket.getEtiquetas();
+        this.comentarios = ticket.getComentarios();
     }
 
 }

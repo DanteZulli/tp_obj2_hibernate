@@ -61,4 +61,23 @@ public class TicketService {
         }
         return ticketsPorUsuarioCreador;
     }
+
+    /**
+     * Asigna un ticket a un tecnico dado su ID.
+     * 
+     * @param id El ID del ticket.
+     * @param idTecnico El ID del tecnico.
+     * @return El ticket asignado.
+     * 
+     * @author Ariel Serato
+     */
+    public TicketDTO asignarTicketATecnico(int id, int idTecnico) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+        Usuario tecnico = usuarioRepository.findById(idTecnico)
+                .orElseThrow(() -> new RuntimeException("Tecnico no encontrado con ID: " + idTecnico));
+        ticket.setAsignado(tecnico);
+        ticketRepository.save(ticket);
+        return new TicketDTO(ticket);
+    }
 }

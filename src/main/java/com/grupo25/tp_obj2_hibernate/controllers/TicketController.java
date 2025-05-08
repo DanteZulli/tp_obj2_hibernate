@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,4 +70,23 @@ public class TicketController {
         }
     }
 
+    /**
+     * Asignar un ticket a un tecnico.
+     * 
+     * @param id El ID del ticket
+     * @param idTecnico El ID del tecnico
+     * @return ResponseEntity con el ticket asignado, o un error si no existe
+     * 
+     * @author Ariel Serato
+     */
+    @PutMapping("/{id}/asignar/{idTecnico}")
+    public ResponseEntity<TicketDTO> asignarTicketATecnico(@PathVariable("id") int id, @PathVariable("idTecnico") int idTecnico) {
+        try {
+            TicketDTO ticket = ticketService.asignarTicketATecnico(id, idTecnico);
+            return ResponseEntity.ok(ticket);
+        } catch (RuntimeException e) {
+            log.error("Error al asignar el ticket con ID: {} al tecnico con ID: {}", id, idTecnico, e);
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
