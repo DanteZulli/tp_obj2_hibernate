@@ -42,8 +42,13 @@ public class EtiquetaController {
 
     @PutMapping("/actualizar")
     public ResponseEntity<EtiquetaDTO> actualizarEtiqueta(@RequestBody EtiquetaDTO etiquetaDTO) {
-        EtiquetaDTO etiqueta = etiquetaService.actualizarEtiqueta(etiquetaDTO);
-        return ResponseEntity.ok(etiqueta);
+        try {
+            EtiquetaDTO etiqueta = etiquetaService.actualizarEtiqueta(etiquetaDTO);
+            return ResponseEntity.ok(etiqueta);
+        } catch (RuntimeException e) {
+            log.error("Error al actualizar la etiqueta: {}", etiquetaDTO, e);
+            return ResponseEntity.notFound().build();
+        }
     }
     
     
