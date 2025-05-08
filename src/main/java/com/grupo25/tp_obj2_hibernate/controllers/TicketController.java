@@ -1,13 +1,16 @@
 package com.grupo25.tp_obj2_hibernate.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.TicketDTO;
@@ -27,6 +30,29 @@ public class TicketController {
 
     @Autowired
     private TicketService ticketService;
+    
+    /**
+     * Crea un nuevo ticket.
+     * 
+     * @param titulo     El titulo del ticket
+     * @param descripcion      La descripcion del ticket
+     * @param estado       El estado del ticket
+     * @param prioridad 	Indica si el ticket es urgente o no
+     * @param fechaCreacion	Indica la fecha de creacion del ticket
+     * @param
+     * @return El ticket creado
+     * 
+     * @author Ignacio Cruz
+     */
+    @PostMapping("/crear")
+    public ResponseEntity<TicketDTO> crearTicket(
+            @RequestParam String titulo,
+            @RequestParam String descripcion,
+            @RequestParam String estado,
+            @RequestParam String prioridad) {
+        TicketDTO ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad, LocalDateTime.now());
+        return ResponseEntity.ok(ticket);
+    }
 
     /**
      * Obtiene el estado de un ticket por su ID.
