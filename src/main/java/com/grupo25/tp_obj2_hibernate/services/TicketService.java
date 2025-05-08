@@ -1,11 +1,13 @@
 package com.grupo25.tp_obj2_hibernate.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
 import com.grupo25.tp_obj2_hibernate.model.dto.TicketDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
@@ -25,6 +27,27 @@ public class TicketService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    /**
+     * Crea un ticket utilizando variables por argumento.
+     *
+     * @param  titulo, descripcion, estado, prioridad, fechaCreacion,fechaResolucion
+     * @return TicketDTO
+     * 
+     * 
+     * 
+     * @author Ignacio Cruz
+     */
+    public TicketDTO crearTicket(String titulo,String descripcion,String estado,String prioridad,
+    							LocalDateTime fechaCreacion) {
+        Ticket ticket = new Ticket();
+        ticket.setTitulo(titulo);
+        ticket.setDescripcion(descripcion);
+        ticket.setEstado(estado);
+        ticket.setPrioridad(prioridad);
+        ticket.setFechaCreacion(fechaCreacion);
+        return new TicketDTO(ticketRepository.save(ticket));
+    }
 
     /**
      * Obtiene el estado de un ticket dado su ID.
