@@ -32,6 +32,26 @@ public class TicketController {
     private TicketService ticketService;
     
     /**
+     * Obtiene todos los tickets.
+     * 
+     * @return ResponseEntity con el listado de tickets, o un error si no existe
+     * 
+     * @author Ariel Serato
+     */
+
+    @GetMapping("/")
+    public ResponseEntity<List<TicketDTO>> getTickets() {
+        try {
+            List<TicketDTO> tickets = ticketService.getTickets();
+            return ResponseEntity.ok(tickets);
+        } catch (RuntimeException e) {
+            log.error("Error al obtener los tickets", e);
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    
+    /**
      * Crea un nuevo ticket.
      * 
      * @param titulo     El titulo del ticket

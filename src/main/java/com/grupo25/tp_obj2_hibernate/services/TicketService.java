@@ -3,6 +3,7 @@ package com.grupo25.tp_obj2_hibernate.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,16 @@ public class TicketService {
     @Autowired
     private UsuarioRepository usuarioRepository;
     
+    /** 
+     * Obtiene todos los tickets.
+     * 
+     * @return List<TicketDTO>
+     * 
+     * @author Ariel Serato
+     */
+    public List<TicketDTO> getTickets() {
+        return ticketRepository.findAll().stream().map(TicketDTO::new).collect(Collectors.toList());
+    }
     /**
      * Crea un ticket utilizando variables por argumento.
      *
