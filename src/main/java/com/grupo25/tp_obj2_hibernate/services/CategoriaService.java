@@ -40,8 +40,7 @@ public class CategoriaService {
      * @author Ariel Serato
      */
     public List<CategoriaDTO> getCategorias() {
-        List<Categoria> categorias = categoriaRepository.findAll();
-        return categorias.stream().map(CategoriaDTO::new).collect(Collectors.toList());
+        return categoriaRepository.findAll().stream().map(CategoriaDTO::new).collect(Collectors.toList());
     }
 
     /**
@@ -53,7 +52,8 @@ public class CategoriaService {
      * @author Ariel Serato
      */
     public CategoriaDTO actualizarCategoria(CategoriaDTO categoriaDTO) {
-        Categoria categoria = categoriaRepository.findById(categoriaDTO.getId()).orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
+        Categoria categoria = categoriaRepository.findById(categoriaDTO.getId())
+                .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
         categoria.setNombre(categoriaDTO.getNombre());
         categoria.setDescripcion(categoriaDTO.getDescripcion());
         categoriaRepository.update(categoria);

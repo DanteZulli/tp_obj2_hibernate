@@ -88,11 +88,10 @@ public class TicketService {
     public List<TicketDTO> getTodosLosTicketsPorUsuarioCreador(int usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
-        List<TicketDTO> ticketsPorUsuarioCreador = new ArrayList<>();
-        for (Ticket ticket : ticketRepository.findByCreador(usuario)) {
-            ticketsPorUsuarioCreador.add(new TicketDTO(ticket));
-        }
-        return ticketsPorUsuarioCreador;
+        
+        return ticketRepository.findByCreador(usuario).stream()
+                .map(ticket -> new TicketDTO(ticket))
+                .collect(Collectors.toList());
     }
 
     /**
