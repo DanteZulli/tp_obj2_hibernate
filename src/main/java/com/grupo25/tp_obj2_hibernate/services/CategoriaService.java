@@ -56,7 +56,7 @@ public class CategoriaService {
                 .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
         categoria.setNombre(categoriaDTO.getNombre());
         categoria.setDescripcion(categoriaDTO.getDescripcion());
-        categoriaRepository.update(categoria);
+        categoriaRepository.save(categoria);
         return new CategoriaDTO(categoria);
     }
 }

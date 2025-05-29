@@ -61,7 +61,7 @@ public class ComentarioService {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + ticketId));
         List<ComentarioDTO> comentarioPorTicket = new ArrayList<>();
-        for (Comentario comentario : comentarioRepository.findByTicket(ticket)) {
+        for (Comentario comentario : comentarioRepository.findByTicketOrderByFecha(ticket)) {
             comentarioPorTicket.add(new ComentarioDTO(comentario));
         }
         return comentarioPorTicket;

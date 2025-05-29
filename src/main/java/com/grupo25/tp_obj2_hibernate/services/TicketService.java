@@ -109,7 +109,7 @@ public class TicketService {
         Usuario tecnico = usuarioRepository.findById(idTecnico)
                 .orElseThrow(() -> new RuntimeException("Tecnico no encontrado con ID: " + idTecnico));
         ticket.setAsignado(tecnico);
-        ticketRepository.update(ticket);
+        ticketRepository.save(ticket);
         return new TicketDTO(ticket);
     }
 
@@ -126,7 +126,7 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
         ticket.setPrioridad(prioridad);
-        ticketRepository.update(ticket);
+        ticketRepository.save(ticket);
         return new TicketDTO(ticket);
     }
 }

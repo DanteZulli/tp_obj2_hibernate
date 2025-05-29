@@ -23,17 +23,21 @@ import com.grupo25.tp_obj2_hibernate.model.entities.Rol;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
+    private final TecnicoRepository tecnicoRepository;
+    private final DireccionRepository direccionRepository;
+    private final RolRepository rolRepository;
 
-    @Autowired
-    private TecnicoRepository tecnicoRepository;
-
-    @Autowired
-    private DireccionRepository direccionRepository;
-
-    @Autowired
-    private RolRepository rolRepository;
+    public UsuarioService(
+            ClienteRepository clienteRepository,
+            TecnicoRepository tecnicoRepository,
+            DireccionRepository direccionRepository,
+            RolRepository rolRepository) {
+        this.clienteRepository = clienteRepository;
+        this.tecnicoRepository = tecnicoRepository;
+        this.direccionRepository = direccionRepository;
+        this.rolRepository = rolRepository;
+    }
 
     /**
      * Crea un nuevo cliente en la base de datos.
@@ -70,7 +74,7 @@ public class UsuarioService {
      * @author Dante Zulli
      */
     public ClienteDTO actualizarCliente(int clienteId, String nombre, String email, String plan, boolean particular) {
-        Cliente cliente = (Cliente) clienteRepository.findById(clienteId)
+        Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
 
         cliente.setNombre(nombre);
@@ -78,7 +82,7 @@ public class UsuarioService {
         cliente.setPlan(plan);
         cliente.setParticular(particular);
 
-        clienteRepository.update(cliente);
+        clienteRepository.save(cliente);
 
         return new ClienteDTO(cliente);
     }
@@ -96,15 +100,15 @@ public class UsuarioService {
      * @author Dante Zulli
      */
     public ClienteDTO asociarDireccion(int clienteId, int direccionId) {
-        Cliente cliente = (Cliente) clienteRepository.findById(clienteId)
+        Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
 
-        Direccion direccion = (Direccion) direccionRepository.findById(direccionId)
+        Direccion direccion = direccionRepository.findById(direccionId)
                 .orElseThrow(() -> new RuntimeException("Dirección no encontrada con ID: " + direccionId));
 
         cliente.setDireccion(direccion);
 
-        clienteRepository.update(cliente);
+        clienteRepository.save(cliente);
 
         return new ClienteDTO(cliente);
     }
@@ -153,7 +157,7 @@ public class UsuarioService {
      */
     public TecnicoDTO actualizarTecnico(int tecnicoId, String nombre, String email, String nroContacto, String empresa,
             int rolId) {
-        Tecnico tecnico = (Tecnico) tecnicoRepository.findById(tecnicoId)
+        Tecnico tecnico = tecnicoRepository.findById(tecnicoId)
                 .orElseThrow(() -> new RuntimeException("Técnico no encontrado con ID: " + tecnicoId));
 
         tecnico.setNombre(nombre);
@@ -167,7 +171,7 @@ public class UsuarioService {
             tecnico.setRol(rol);
         }
 
-        tecnicoRepository.update(tecnico);
+        tecnicoRepository.save(tecnico);
         return new TecnicoDTO(tecnico);
     }
 }
