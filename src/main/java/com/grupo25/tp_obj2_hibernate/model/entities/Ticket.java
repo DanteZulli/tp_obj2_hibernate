@@ -49,4 +49,7 @@ public class Ticket {
     
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private List<Comentario> comentarios;
+    
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    private List<Revision> revisiones;
 }
