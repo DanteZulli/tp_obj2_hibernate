@@ -13,14 +13,14 @@ public class DireccionDTO {
     private int id;
     private String calle;
     private String numero;
-    private String localidad;
-    private String provincia;
+    private LocalidadDTO localidad;
+    private boolean fiscal;
 
     public DireccionDTO(Direccion direccion) {
         this.id = direccion.getId();
         this.calle = direccion.getCalle();
         this.numero = direccion.getNro();
-        this.localidad = direccion.getLocalidad();
-        this.provincia = direccion.getProvincia();
+        this.localidad = new LocalidadDTO(direccion.getLocalidad());
+        this.fiscal = direccion.isFiscal();
     }
 }

@@ -1,25 +1,22 @@
 package com.grupo25.tp_obj2_hibernate.model.entities;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "direcciones")
+@Table(name = "provincias")
 @Getter
 @Setter
-public class Direccion {
+public class Provincia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
     @Column(nullable = false)
-    private String calle;
-    private String nro;
+    private String nombre;
     
-    @ManyToOne
-    @JoinColumn(name = "localidad_id", nullable = false)
-    private Localidad localidad;
-    
-    private boolean fiscal;
+    @OneToMany(mappedBy = "provincia")
+    private List<Localidad> localidades;
 }

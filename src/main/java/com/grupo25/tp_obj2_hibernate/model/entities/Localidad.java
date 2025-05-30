@@ -5,21 +5,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "direcciones")
+@Table(name = "localidades")
 @Getter
 @Setter
-public class Direccion {
+public class Localidad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
     @Column(nullable = false)
-    private String calle;
-    private String nro;
+    private String nombre;
     
     @ManyToOne
-    @JoinColumn(name = "localidad_id", nullable = false)
-    private Localidad localidad;
-    
-    private boolean fiscal;
+    @JoinColumn(name = "provincia_id", nullable = false)
+    private Provincia provincia;
 }

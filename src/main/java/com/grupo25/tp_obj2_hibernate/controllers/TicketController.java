@@ -28,9 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/tickets")
 public class TicketController {
 
-    @Autowired
     private TicketService ticketService;
     
+    public TicketController(@Autowired TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
+
     /**
      * Obtiene todos los tickets.
      * 
