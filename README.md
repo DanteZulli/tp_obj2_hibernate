@@ -9,12 +9,12 @@
 
 El proyecto está configurado para utilizar MySQL con los siguientes valores por defecto:
 
-- URL: `jdbc:mysql://localhost:3306/tp_hibernate_db`
+- URL: `jspring.datasource.url=jdbc:mysql://localhost:3306/tp_obj2_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Argentina/Buenos_Aires`
 - Usuario: `root`
 - Contraseña: No definida (dejar en blanco)
 - Driver: `com.mysql.cj.jdbc.Driver`
 - Dialecto: `org.hibernate.dialect.MySQLDialect`
-- La base de datos `tp_hibernate_db` se creará automáticamente si no existe
+- La base de datos `tp_obj2_db` se creará automáticamente si no existe
 - El esquema de la base de datos se generará automáticamente al iniciar la aplicación
 
 ## Configuración del Proyecto
@@ -29,7 +29,6 @@ cd tp_obj2_hibernate
 
 3. Si necesita modificar las credenciales de la base de datos, puede hacerlo en:
    - `src/main/resources/application.properties`
-   - `src/main/resources/hibernate.cfg.xml`
 
 ## Ejecutar el Proyecto
 
@@ -45,10 +44,12 @@ Puede ejecutar el proyecto usando el Maven wrapper incluido:
 mvnw.cmd spring-boot:run
 ```
 
+o con el IDE de preferencia.
+
 ## Tecnologías Utilizadas
 
 - Java 21
-- Spring Boot 3.4.5
-- Hibernate 6.4.1.Final
+- Spring Boot 3.5.0
+- Spring Data JPA
 - MySQL Connector
 - Lombok
