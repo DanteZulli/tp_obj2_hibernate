@@ -1,9 +1,7 @@
 package com.grupo25.tp_obj2_hibernate.services;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.CategoriaDTO;
@@ -13,8 +11,11 @@ import com.grupo25.tp_obj2_hibernate.repositories.CategoriaRepository;
 @Service
 public class CategoriaService {
 
-    @Autowired
     private CategoriaRepository categoriaRepository;
+
+    public CategoriaService(CategoriaRepository categoriaRepository) {
+        this.categoriaRepository = categoriaRepository;
+    }
 
     /**
      * Crear categoria
@@ -40,7 +41,7 @@ public class CategoriaService {
      * @author Ariel Serato
      */
     public List<CategoriaDTO> getCategorias() {
-        return categoriaRepository.findAll().stream().map(CategoriaDTO::new).collect(Collectors.toList());
+        return categoriaRepository.findAll().stream().map(CategoriaDTO::new).toList();
     }
 
     /**

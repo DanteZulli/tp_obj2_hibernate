@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.ComentarioDTO;
@@ -22,10 +21,14 @@ import com.grupo25.tp_obj2_hibernate.repositories.TicketRepository;
 @Service
 public class ComentarioService {
 
-    @Autowired
     private TicketRepository ticketRepository;
-    @Autowired
     private ComentarioRepository comentarioRepository;
+
+    public ComentarioService(TicketRepository ticketRepository,
+            ComentarioRepository comentarioRepository) {
+        this.ticketRepository = ticketRepository;
+        this.comentarioRepository = comentarioRepository;
+    }
 
     /**
      * Crea un comentario utilizando variables por argumento.

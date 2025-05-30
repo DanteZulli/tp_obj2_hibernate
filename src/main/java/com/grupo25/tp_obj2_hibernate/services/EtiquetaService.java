@@ -1,6 +1,5 @@
 package com.grupo25.tp_obj2_hibernate.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.EtiquetaDTO;
@@ -10,8 +9,11 @@ import com.grupo25.tp_obj2_hibernate.repositories.EtiquetaRepository;
 @Service
 public class EtiquetaService {
 
-    @Autowired
     private EtiquetaRepository etiquetaRepository;
+
+    public EtiquetaService(EtiquetaRepository etiquetaRepository) {
+        this.etiquetaRepository = etiquetaRepository;
+    }
     
     /**
      * Crear etiqueta
