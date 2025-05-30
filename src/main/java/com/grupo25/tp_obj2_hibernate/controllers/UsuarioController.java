@@ -20,8 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    @Autowired
     private UsuarioService usuarioService;
+
+    public UsuarioController(@Autowired UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     /**
      * Crea un nuevo cliente.
@@ -106,7 +109,7 @@ public class UsuarioController {
      * @param email       El email del técnico
      * @param nroContacto El número de contacto del técnico
      * @param empresa     La empresa del técnico
-     * @param rolId       El ID del rol del técnico
+     * @param areaId      El ID del área del técnico
      * @return El técnico creado
      * 
      * @author Dante Zulli
@@ -117,9 +120,9 @@ public class UsuarioController {
             @RequestParam String email,
             @RequestParam String nroContacto,
             @RequestParam String empresa,
-            @RequestParam int rolId) {
+            @RequestParam int areaId) {
         try {
-            TecnicoDTO tecnico = usuarioService.crearTecnico(nombre, email, nroContacto, empresa, rolId);
+            TecnicoDTO tecnico = usuarioService.crearTecnico(nombre, email, nroContacto, empresa, areaId);
             return ResponseEntity.ok(tecnico);
         } catch (RuntimeException e) {
             log.error("Error al crear el técnico", e);
@@ -135,7 +138,7 @@ public class UsuarioController {
      * @param email       El nuevo email del técnico
      * @param nroContacto El nuevo número de contacto del técnico
      * @param empresa     La nueva empresa del técnico
-     * @param rolId       El nuevo ID del rol del técnico
+     * @param areaId      El nuevo ID del área del técnico
      * @return El técnico actualizado
      * 
      * @throws RuntimeException si no se encuentra el técnico con el ID dado
@@ -149,9 +152,9 @@ public class UsuarioController {
             @RequestParam String email,
             @RequestParam String nroContacto,
             @RequestParam String empresa,
-            @RequestParam int rolId) {
+            @RequestParam int areaId) {
         try {
-            TecnicoDTO tecnico = usuarioService.actualizarTecnico(tecnicoId, nombre, email, nroContacto, empresa, rolId);
+            TecnicoDTO tecnico = usuarioService.actualizarTecnico(tecnicoId, nombre, email, nroContacto, empresa, areaId);
             return ResponseEntity.ok(tecnico);
         } catch (RuntimeException e) {
             log.error("Error al actualizar el técnico con ID: {}", tecnicoId, e);

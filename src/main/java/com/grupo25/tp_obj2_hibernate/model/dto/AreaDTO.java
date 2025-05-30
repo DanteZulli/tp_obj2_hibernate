@@ -1,6 +1,6 @@
 package com.grupo25.tp_obj2_hibernate.model.dto;
 
-import com.grupo25.tp_obj2_hibernate.model.entities.Rol;
+import com.grupo25.tp_obj2_hibernate.model.entities.Area;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RolDTO {
+public class AreaDTO {
     private int id;
     private String nombre;
 
-    public RolDTO(Rol rol) {
-        this.id = rol.getId();
-        this.nombre = rol.getNombre();
+    public AreaDTO(Area area) {
+        this.id = area.getId();
+        this.nombre = area.getNombre();
     }
 }

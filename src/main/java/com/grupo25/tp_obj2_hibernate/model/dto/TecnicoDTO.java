@@ -15,7 +15,7 @@ public class TecnicoDTO {
     private String email;
     private String nroContacto;
     private String empresa;
-    private RolDTO rol;
+    private AreaDTO area;
 
     public TecnicoDTO(Tecnico tecnico) {
         this.id = tecnico.getId();
@@ -23,6 +23,6 @@ public class TecnicoDTO {
         this.email = tecnico.getEmail();
         this.nroContacto = tecnico.getNroContacto();
         this.empresa = tecnico.getEmpresa();
-        this.rol = new RolDTO(tecnico.getRol());
+        this.area = new AreaDTO(tecnico.getArea());
     }
 }

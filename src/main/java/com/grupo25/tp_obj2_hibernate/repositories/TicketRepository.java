@@ -9,8 +9,7 @@ import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 
 /**
- * Repositorio para la entidad Ticket. Extiende de JpaRepository para
- * utilizar las operaciones CRUD básicas.
+ * Repositorio para la entidad Ticket.
  * 
  * @author Grupo 25
  */

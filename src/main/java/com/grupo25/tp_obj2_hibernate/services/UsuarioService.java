@@ -1,18 +1,17 @@
 package com.grupo25.tp_obj2_hibernate.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
 import com.grupo25.tp_obj2_hibernate.model.dto.TecnicoDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
+import com.grupo25.tp_obj2_hibernate.repositories.AreaRepository;
 import com.grupo25.tp_obj2_hibernate.repositories.ClienteRepository;
 import com.grupo25.tp_obj2_hibernate.repositories.DireccionRepository;
-import com.grupo25.tp_obj2_hibernate.repositories.RolRepository;
 import com.grupo25.tp_obj2_hibernate.repositories.TecnicoRepository;
 import com.grupo25.tp_obj2_hibernate.model.entities.Direccion;
-import com.grupo25.tp_obj2_hibernate.model.entities.Rol;
+import com.grupo25.tp_obj2_hibernate.model.entities.Area;
 
 /**
  * Clase de servicio para manejar la lógica de negocio relacionada con los
@@ -26,17 +25,17 @@ public class UsuarioService {
     private final ClienteRepository clienteRepository;
     private final TecnicoRepository tecnicoRepository;
     private final DireccionRepository direccionRepository;
-    private final RolRepository rolRepository;
+    private final AreaRepository areaRepository;
 
     public UsuarioService(
             ClienteRepository clienteRepository,
             TecnicoRepository tecnicoRepository,
             DireccionRepository direccionRepository,
-            RolRepository rolRepository) {
+            AreaRepository areaRepository) {
         this.clienteRepository = clienteRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.direccionRepository = direccionRepository;
-        this.rolRepository = rolRepository;
+        this.areaRepository = areaRepository;
     }
 
     /**
@@ -120,21 +119,21 @@ public class UsuarioService {
      * @param email       El email del técnico.
      * @param nroContacto El número de contacto del técnico.
      * @param empresa     La empresa del técnico.
-     * @param rolId       El ID del rol del técnico.
+     * @param areaId      El ID del área del técnico.
      * @return El técnico creado.
      * 
      * @author Dante Zulli
      */
-    public TecnicoDTO crearTecnico(String nombre, String email, String nroContacto, String empresa, int rolId) {
+    public TecnicoDTO crearTecnico(String nombre, String email, String nroContacto, String empresa, int areaId) {
         Tecnico tecnico = new Tecnico();
         tecnico.setNombre(nombre);
         tecnico.setEmail(email);
         tecnico.setNroContacto(nroContacto);
         tecnico.setEmpresa(empresa);
 
-        Rol rol = rolRepository.findById(rolId)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado con ID: " + rolId));
-        tecnico.setRol(rol);
+        Area area = areaRepository.findById(areaId)
+                .orElseThrow(() -> new RuntimeException("Área no encontrada con ID: " + areaId));
+        tecnico.setArea(area);
 
         return new TecnicoDTO(tecnicoRepository.save(tecnico));
     }
@@ -147,16 +146,16 @@ public class UsuarioService {
      * @param email       El nuevo email del técnico.
      * @param nroContacto El nuevo número de contacto del técnico.
      * @param empresa     La nueva empresa del técnico.
-     * @param rolId       El nuevo ID del rol del técnico.
+     * @param areaId      El nuevo ID del área del técnico.
      * @return El técnico actualizado.
      * 
      * @throws RuntimeException Si no se encuentra el técnico con el ID dado o si
-     *                          no se encuentra el rol con el ID dado.
+     *                          no se encuentra el área con el ID dado.
      * 
      * @author Dante Zulli
      */
     public TecnicoDTO actualizarTecnico(int tecnicoId, String nombre, String email, String nroContacto, String empresa,
-            int rolId) {
+            int areaId) {
         Tecnico tecnico = tecnicoRepository.findById(tecnicoId)
                 .orElseThrow(() -> new RuntimeException("Técnico no encontrado con ID: " + tecnicoId));
 
@@ -165,10 +164,10 @@ public class UsuarioService {
         tecnico.setNroContacto(nroContacto);
         tecnico.setEmpresa(empresa);
 
-        if (rolId > 0) {
-            Rol rol = rolRepository.findById(rolId)
-                    .orElseThrow(() -> new RuntimeException("Rol no encontrado con ID: " + rolId));
-            tecnico.setRol(rol);
+        if (areaId > 0) {
+            Area area = areaRepository.findById(areaId)
+                    .orElseThrow(() -> new RuntimeException("Área no encontrada con ID: " + areaId));
+            tecnico.setArea(area);
         }
 
         tecnicoRepository.save(tecnico);

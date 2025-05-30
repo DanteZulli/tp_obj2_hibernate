@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "areas")
 @Getter
 @Setter
-public class Rol {
+public class Area {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -17,6 +17,6 @@ public class Rol {
     @Column(nullable = false)
     private String nombre;
     
-    @OneToMany(mappedBy = "rol")
+    @OneToMany(mappedBy = "area")
     private List<Tecnico> tecnicos;
 }

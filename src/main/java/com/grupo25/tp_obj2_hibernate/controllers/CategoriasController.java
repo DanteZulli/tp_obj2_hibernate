@@ -1,4 +1,5 @@
 package com.grupo25.tp_obj2_hibernate.controllers;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/categorias")
 public class CategoriasController {
-    @Autowired
+
     private CategoriaService categoriaService;
+
+    public CategoriasController(CategoriaService categoriaService) {
+        this.categoriaService = categoriaService;
+    }
 
     /**
      * Crear categoría

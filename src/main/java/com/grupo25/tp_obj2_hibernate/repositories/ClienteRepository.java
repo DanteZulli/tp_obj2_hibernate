@@ -5,8 +5,7 @@ import org.springframework.stereotype.Repository;
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 
 /**
- * Repositorio para la entidad Cliente. Extiende de HibernateRepository para
- * utilizar las operaciones CRUD básicas.
+ * Repositorio para la entidad Cliente.
  * 
  * @author Grupo 25
  */

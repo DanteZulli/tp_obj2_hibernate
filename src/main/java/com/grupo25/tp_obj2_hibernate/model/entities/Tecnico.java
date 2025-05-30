@@ -15,6 +15,6 @@ public class Tecnico extends Usuario {
     private String empresa;
     
     @ManyToOne
-    @JoinColumn(name = "rol_id")
-    private Rol rol;
+    @JoinColumn(name = "area_id")
+    private Area area;
 }
