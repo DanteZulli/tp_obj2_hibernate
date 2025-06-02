@@ -1,55 +1,59 @@
-# Sistema de Gestión de Tickets - Segunda Entrega - Grupo 25 - OBJ2
+# 🛠️ Sistema de Gestión de Tickets - Grupo 25 (OBJ2) - Proyecto Spring Nivel 1
 
-## Requisitos Previos
-
+# 📋 Requisitos Previos
 - Java JDK 21
-- MySQL 8.0 o superior
+- MySQL 8.0+
+- Maven (opcional, solo si no usás el wrapper incluido)
 
-## Configuración de la Base de Datos
+## ⚙️ Configuración de la Base de Datos
 
-El proyecto está configurado para utilizar MySQL con los siguientes valores por defecto:
+El proyecto está configurado para conectarse a MySQL con los siguientes valores por defecto:
 
-- URL: `jspring.datasource.url=jdbc:mysql://localhost:3306/tp_obj2_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Argentina/Buenos_Aires`
-- Usuario: `root`
-- Contraseña: No definida (dejar en blanco)
-- Driver: `com.mysql.cj.jdbc.Driver`
-- Dialecto: `org.hibernate.dialect.MySQLDialect`
-- La base de datos `tp_obj2_db` se creará automáticamente si no existe
-- El esquema de la base de datos se generará automáticamente al iniciar la aplicación
 
-## Configuración del Proyecto
 
-1. Clonar el repositorio:
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3307/tp_obj2_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Argentina/Buenos_Aires
+spring.datasource.username=root
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+# ... entre otras properties más
+```
+
+- La base de datos `tp_obj2_db` se crea automáticamente si no existe (Gracias a JPA/Hibernate)
+
+> 📌 **Nota:** Podés modificar estos valores en `src/main/resources/application.properties` (o pisarlos con un perfil y otro .properties) según tu entorno. \
+> Asegurate de que coincidan con la configuración de tu servidor de bases de datos.
+
+## 🚀 Ejecución del Proyecto
+
+1. Cloná el repositorio:
 ```bash
 git clone [url-del-repositorio]
 cd tp_obj2_hibernate
 ```
 
-2. Verificar que MySQL esté corriendo en el puerto 3306
+1. Asegurate de que MySQL esté corriendo (por defecto en el puerto 3306).
 
-3. Si necesita modificar las credenciales de la base de datos, puede hacerlo en:
-   - `src/main/resources/application.properties`
+2. Ejecutá la aplicación usando el Maven wrapper:
 
-## Ejecutar el Proyecto
-
-Puede ejecutar el proyecto usando el Maven wrapper incluido:
-
-### En Linux/macOS:
+**En Linux/macOS**
 ```bash
 ./mvnw spring-boot:run
 ```
 
-### En Windows:
+**En Windows:**
 ```bash
 mvnw.cmd spring-boot:run
 ```
 
-o con el IDE de preferencia.
+También podés correrla desde tu IDE (IntelliJ, Eclipse, etc.) ejecutando la clase main.
 
-## Tecnologías Utilizadas
-
+# 🧰 Tecnologías Utilizadas
 - Java 21
 - Spring Boot 3.5.0
-- Spring Data JPA
-- MySQL Connector
+- MySQL & MySQL Connector
+- Spring Data JPA, Hibernate, Validation
 - Lombok
+
+> 🗂️ Para consultar todas las dependencias y versiones utilizadas, podés revisar el archivo pom.xml ubicado en la raíz del proyecto.
