@@ -3,7 +3,6 @@ package com.grupo25.tp_obj2_hibernate.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.AreaDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Area;
 import com.grupo25.tp_obj2_hibernate.services.AreaService;
 
@@ -34,8 +33,8 @@ public class AreaController {
      * @author Dante Zulli
      */
     @PostMapping
-    public ResponseEntity<AreaDTO> crearArea(@RequestBody Area area) {
-        AreaDTO areaCreada = areaService.crearArea(area);
+    public ResponseEntity<Area> crearArea(@RequestBody Area area) {
+        Area areaCreada = areaService.crearArea(area);
         return ResponseEntity.ok(areaCreada);
     }
 
@@ -51,9 +50,9 @@ public class AreaController {
      * @author Dante Zulli
      */
     @PutMapping("/{areaId}")
-    public ResponseEntity<AreaDTO> modificarArea(@PathVariable int areaId, @RequestParam String nombre) {
+    public ResponseEntity<Area> modificarArea(@PathVariable int areaId, @RequestParam String nombre) {
         try {
-            AreaDTO areaModificada = areaService.modificarArea(areaId, nombre);
+            Area areaModificada = areaService.modificarArea(areaId, nombre);
             return ResponseEntity.ok(areaModificada);
         } catch (RuntimeException e) {
             log.error("Error al modificar el área con ID: {}", areaId, e);
@@ -72,9 +71,9 @@ public class AreaController {
      * @author Dante Zulli
      */
     @GetMapping("/{areaId}")
-    public ResponseEntity<AreaDTO> obtenerArea(@PathVariable int areaId) {
+    public ResponseEntity<Area> obtenerArea(@PathVariable int areaId) {
         try {
-            AreaDTO area = areaService.obtenerArea(areaId);
+            Area area = areaService.obtenerArea(areaId);
             return ResponseEntity.ok(area);
         } catch (RuntimeException e) {
             log.error("Error al obtener el área con ID: {}", areaId, e);

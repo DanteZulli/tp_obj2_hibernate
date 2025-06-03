@@ -2,12 +2,12 @@ package com.grupo25.tp_obj2_hibernate.services;
 
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.AreaDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Area;
 import com.grupo25.tp_obj2_hibernate.repositories.AreaRepository;
 
 /**
- * Clase de servicio para manejar la lógica de negocio relacionada con las áreas.
+ * Clase de servicio para manejar la lógica de negocio relacionada con las
+ * áreas.
  * 
  * @author Grupo 25
  */
@@ -16,7 +16,7 @@ public class AreaService {
 
     private AreaRepository areaRepository;
 
-    public AreaService (AreaRepository areaRepository) {
+    public AreaService(AreaRepository areaRepository) {
         this.areaRepository = areaRepository;
     }
 
@@ -28,14 +28,14 @@ public class AreaService {
      * 
      * @author Dante Zulli
      */
-    public AreaDTO crearArea(Area area) {
-        return new AreaDTO(areaRepository.save(area));
+    public Area crearArea(Area area) {
+        return areaRepository.save(area);
     }
 
     /**
      * Modifica un área existente en la base de datos.
      * 
-     * @param areaId  El ID del área a modificar.
+     * @param areaId El ID del área a modificar.
      * @param nombre El nuevo nombre del área.
      * @return El área modificada.
      * 
@@ -43,14 +43,12 @@ public class AreaService {
      * 
      * @author Dante Zulli
      */
-    public AreaDTO modificarArea(int areaId, String nombre) {
+    public Area modificarArea(int areaId, String nombre) {
         Area area = areaRepository.findById(areaId)
                 .orElseThrow(() -> new RuntimeException("Área no encontrada con ID: " + areaId));
 
         area.setNombre(nombre);
-        areaRepository.save(area);
-
-        return new AreaDTO(area);
+        return areaRepository.save(area);
     }
 
     /**
@@ -62,8 +60,8 @@ public class AreaService {
      * 
      * @author Dante Zulli
      */
-    public AreaDTO obtenerArea(int areaId) {
-        return new AreaDTO(areaRepository.findById(areaId)
-                .orElseThrow(() -> new RuntimeException("Área no encontrada con ID: " + areaId)));
+    public Area obtenerArea(int areaId) {
+        return areaRepository.findById(areaId)
+                .orElseThrow(() -> new RuntimeException("Área no encontrada con ID: " + areaId));
     }
 }

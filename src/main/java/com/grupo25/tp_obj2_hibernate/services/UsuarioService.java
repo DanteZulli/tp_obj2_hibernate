@@ -2,8 +2,6 @@ package com.grupo25.tp_obj2_hibernate.services;
 
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
-import com.grupo25.tp_obj2_hibernate.model.dto.TecnicoDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
 import com.grupo25.tp_obj2_hibernate.repositories.AreaRepository;
@@ -49,13 +47,13 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public ClienteDTO crearCliente(String nombre, String email, String plan, boolean particular) {
+    public Cliente crearCliente(String nombre, String email, String plan, boolean particular) {
         Cliente cliente = new Cliente();
         cliente.setNombre(nombre);
         cliente.setEmail(email);
         cliente.setPlan(plan);
         cliente.setParticular(particular);
-        return new ClienteDTO(clienteRepository.save(cliente));
+        return clienteRepository.save(cliente);
     }
 
     /**
@@ -72,7 +70,7 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public ClienteDTO actualizarCliente(int clienteId, String nombre, String email, String plan, boolean particular) {
+    public Cliente actualizarCliente(int clienteId, String nombre, String email, String plan, boolean particular) {
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
 
@@ -81,9 +79,8 @@ public class UsuarioService {
         cliente.setPlan(plan);
         cliente.setParticular(particular);
 
-        clienteRepository.save(cliente);
+        return clienteRepository.save(cliente);
 
-        return new ClienteDTO(cliente);
     }
 
     /**
@@ -98,7 +95,7 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public ClienteDTO asociarDireccion(int clienteId, int direccionId) {
+    public Cliente asociarDireccion(int clienteId, int direccionId) {
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
 
@@ -107,9 +104,8 @@ public class UsuarioService {
 
         cliente.setDireccion(direccion);
 
-        clienteRepository.save(cliente);
+        return clienteRepository.save(cliente);
 
-        return new ClienteDTO(cliente);
     }
 
     /**
@@ -124,7 +120,7 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public TecnicoDTO crearTecnico(String nombre, String email, String nroContacto, String empresa, int areaId) {
+    public Tecnico crearTecnico(String nombre, String email, String nroContacto, String empresa, int areaId) {
         Tecnico tecnico = new Tecnico();
         tecnico.setNombre(nombre);
         tecnico.setEmail(email);
@@ -135,7 +131,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Área no encontrada con ID: " + areaId));
         tecnico.setArea(area);
 
-        return new TecnicoDTO(tecnicoRepository.save(tecnico));
+        return tecnicoRepository.save(tecnico);
     }
 
     /**
@@ -154,7 +150,7 @@ public class UsuarioService {
      * 
      * @author Dante Zulli
      */
-    public TecnicoDTO actualizarTecnico(int tecnicoId, String nombre, String email, String nroContacto, String empresa,
+    public Tecnico actualizarTecnico(int tecnicoId, String nombre, String email, String nroContacto, String empresa,
             int areaId) {
         Tecnico tecnico = tecnicoRepository.findById(tecnicoId)
                 .orElseThrow(() -> new RuntimeException("Técnico no encontrado con ID: " + tecnicoId));
@@ -170,7 +166,6 @@ public class UsuarioService {
             tecnico.setArea(area);
         }
 
-        tecnicoRepository.save(tecnico);
-        return new TecnicoDTO(tecnico);
+        return tecnicoRepository.save(tecnico);
     }
 }

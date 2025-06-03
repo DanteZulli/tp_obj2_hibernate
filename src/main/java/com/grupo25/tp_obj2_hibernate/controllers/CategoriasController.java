@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.CategoriaDTO;
+import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
 import com.grupo25.tp_obj2_hibernate.services.CategoriaService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,18 +31,18 @@ public class CategoriasController {
     /**
      * Crear categoría
      * 
-     * @param categoriaDTO
+     * @param Categoria
      * @return ResponseEntity con la categoría creada, o un error si no existe
      * 
      * @author Ariel Serato
      */
     @PostMapping("/crear")
-    public ResponseEntity<CategoriaDTO> crearCategoria(@RequestBody CategoriaDTO categoriaDTO) {
+    public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
         try {
-            CategoriaDTO categoria = categoriaService.crearCategoria(categoriaDTO);
-            return ResponseEntity.ok(categoria);
+            Categoria cat = categoriaService.crearCategoria(categoria);
+            return ResponseEntity.ok(cat);
         } catch (RuntimeException e) {
-            log.error("Error al crear la categoría: {}", categoriaDTO, e);
+            log.error("Error al crear la categoría: {}", categoria, e);
             return ResponseEntity.notFound().build();
         }
     }
@@ -50,18 +50,18 @@ public class CategoriasController {
     /**
      * Actualizar categoría
      * 
-     * @param categoriaDTO
+     * @param Categoria
      * @return ResponseEntity con la categoría actualizada, o un error si no existe
      * 
      * @author Ariel Serato
      */
     @PutMapping("/actualizar")
-    public ResponseEntity<CategoriaDTO> actualizarCategoria(@RequestBody CategoriaDTO categoriaDTO) {
+    public ResponseEntity<Categoria> actualizarCategoria(@RequestBody Categoria categoria) {
         try {
-            CategoriaDTO categoria = categoriaService.actualizarCategoria(categoriaDTO);
-            return ResponseEntity.ok(categoria);
+            Categoria cat = categoriaService.actualizarCategoria(categoria);
+            return ResponseEntity.ok(cat);
         } catch (RuntimeException e) {
-            log.error("Error al actualizar la categoría: {}", categoriaDTO, e);
+            log.error("Error al actualizar la categoría: {}", categoria, e);
             return ResponseEntity.notFound().build();
         }
     }

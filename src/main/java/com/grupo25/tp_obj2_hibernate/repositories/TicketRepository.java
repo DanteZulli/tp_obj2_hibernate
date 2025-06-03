@@ -38,4 +38,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
      * @return una lista de tickets con el estado especificado
      */
     List<Ticket> findByEstado(String estado);
+
+    /**
+     * Devuelve el estado del ticket por su ID.
+     * 
+     * @param id el ID del ticket
+     * @return el estado del ticket
+     */
+    String findEstadoById(int id);
 }

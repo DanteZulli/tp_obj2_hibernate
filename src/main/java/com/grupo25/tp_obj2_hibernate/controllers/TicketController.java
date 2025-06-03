@@ -1,6 +1,5 @@
 package com.grupo25.tp_obj2_hibernate.controllers;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.TicketDTO;
+import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.services.TicketService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +42,9 @@ public class TicketController {
      */
 
     @GetMapping("/")
-    public ResponseEntity<List<TicketDTO>> getTickets() {
+    public ResponseEntity<List<Ticket>> getTickets() {
         try {
-            List<TicketDTO> tickets = ticketService.getTickets();
+            List<Ticket> tickets = ticketService.getTickets();
             return ResponseEntity.ok(tickets);
         } catch (RuntimeException e) {
             log.error("Error al obtener los tickets", e);
@@ -68,12 +67,12 @@ public class TicketController {
      * @author Ignacio Cruz
      */
     @PostMapping("/crear")
-    public ResponseEntity<TicketDTO> crearTicket(
+    public ResponseEntity<Ticket> crearTicket(
             @RequestParam String titulo,
             @RequestParam String descripcion,
             @RequestParam String estado,
             @RequestParam String prioridad) {
-        TicketDTO ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad, LocalDateTime.now());
+        Ticket ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad);
         return ResponseEntity.ok(ticket);
     }
 
@@ -109,9 +108,9 @@ public class TicketController {
      * @author Ignacio Cruz
      */
     @GetMapping("/creador/{id}")
-    public ResponseEntity<List<TicketDTO>> getTicketsPorUsuarioCreador(@PathVariable("id") int id) {
+    public ResponseEntity<List<Ticket>> getTicketsPorUsuarioCreador(@PathVariable("id") int id) {
         try {
-            List<TicketDTO> tickets = ticketService.getTodosLosTicketsPorUsuarioCreador(id);            
+            List<Ticket> tickets = ticketService.getTodosLosTicketsPorUsuarioCreador(id);            
             return ResponseEntity.ok(tickets);
         } catch (RuntimeException e) {
             log.error("Error al obtener los tickets creados por el usuario con el ID: {}", id, e);
@@ -129,9 +128,9 @@ public class TicketController {
      * @author Ariel Serato
      */
     @PutMapping("/{id}/asignar/{idTecnico}")
-    public ResponseEntity<TicketDTO> asignarTicketATecnico(@PathVariable("id") int id, @PathVariable("idTecnico") int idTecnico) {
+    public ResponseEntity<Ticket> asignarTicketATecnico(@PathVariable("id") int id, @PathVariable("idTecnico") int idTecnico) {
         try {
-            TicketDTO ticket = ticketService.asignarTicketATecnico(id, idTecnico);
+            Ticket ticket = ticketService.asignarTicketATecnico(id, idTecnico);
             return ResponseEntity.ok(ticket);
         } catch (RuntimeException e) {
             log.error("Error al asignar el ticket con ID: {} al tecnico con ID: {}", id, idTecnico, e);
@@ -149,9 +148,9 @@ public class TicketController {
      * @author Ariel Serato
      */
     @PutMapping("/{id}/prioridad")
-    public ResponseEntity<TicketDTO> cambiarPrioridadTicket(@PathVariable("id") int id, @RequestParam String prioridad) {
+    public ResponseEntity<Ticket> cambiarPrioridadTicket(@PathVariable("id") int id, @RequestParam String prioridad) {
         try {
-            TicketDTO ticket = ticketService.cambiarPrioridadTicket(id, prioridad);
+            Ticket ticket = ticketService.cambiarPrioridadTicket(id, prioridad);
             return ResponseEntity.ok(ticket);
         } catch (RuntimeException e) {
             log.error("Error al cambiar la prioridad del ticket con ID: {} a {}", id, prioridad, e);

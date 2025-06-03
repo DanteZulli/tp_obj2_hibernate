@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.TicketDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 import com.grupo25.tp_obj2_hibernate.repositories.TicketRepository;
@@ -36,8 +35,8 @@ public class TicketService {
      * 
      * @author Ariel Serato
      */
-    public List<TicketDTO> getTickets() {
-        return ticketRepository.findAll().stream().map(TicketDTO::new).toList();
+    public List<Ticket> getTickets() {
+        return ticketRepository.findAll();
     }
 
     /**
@@ -50,15 +49,14 @@ public class TicketService {
      * 
      * @author Ignacio Cruz
      */
-    public TicketDTO crearTicket(String titulo, String descripcion, String estado, String prioridad,
-            LocalDateTime fechaCreacion) {
+    public Ticket crearTicket(String titulo, String descripcion, String estado, String prioridad) {
         Ticket ticket = new Ticket();
         ticket.setTitulo(titulo);
         ticket.setDescripcion(descripcion);
         ticket.setEstado(estado);
         ticket.setPrioridad(prioridad);
-        ticket.setFechaCreacion(fechaCreacion);
-        return new TicketDTO(ticketRepository.save(ticket));
+        ticket.setFechaCreacion(LocalDateTime.now());
+        return ticketRepository.save(ticket);
     }
 
     /**
@@ -72,9 +70,7 @@ public class TicketService {
      * @author Dante Zulli
      */
     public String getEstadoTicket(int ticketId) {
-        return ticketRepository.findById(ticketId)
-                .map(Ticket::getEstado)
-                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + ticketId));
+        return ticketRepository.findEstadoById(ticketId);
     }
 
     /**
@@ -87,12 +83,11 @@ public class TicketService {
      * 
      * @author Ignacio Cruz
      */
-    public List<TicketDTO> getTodosLosTicketsPorUsuarioCreador(int usuarioId) {
+    public List<Ticket> getTodosLosTicketsPorUsuarioCreador(int usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
 
-        return ticketRepository.findByCreador(usuario).stream()
-                .map(TicketDTO::new).toList();
+        return ticketRepository.findByCreador(usuario);
     }
 
     /**
@@ -104,14 +99,13 @@ public class TicketService {
      * 
      * @author Ariel Serato
      */
-    public TicketDTO asignarTicketATecnico(int id, int idTecnico) {
+    public Ticket asignarTicketATecnico(int id, int idTecnico) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
         Usuario tecnico = usuarioRepository.findById(idTecnico)
                 .orElseThrow(() -> new RuntimeException("Tecnico no encontrado con ID: " + idTecnico));
         ticket.setAsignado(tecnico);
-        ticketRepository.save(ticket);
-        return new TicketDTO(ticket);
+        return ticketRepository.save(ticket);
     }
 
     /**
@@ -123,11 +117,10 @@ public class TicketService {
      * 
      * @author Ariel Serato
      */
-    public TicketDTO cambiarPrioridadTicket(int id, String prioridad) {
+    public Ticket cambiarPrioridadTicket(int id, String prioridad) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
         ticket.setPrioridad(prioridad);
-        ticketRepository.save(ticket);
-        return new TicketDTO(ticket);
+        return ticketRepository.save(ticket);
     }
 }

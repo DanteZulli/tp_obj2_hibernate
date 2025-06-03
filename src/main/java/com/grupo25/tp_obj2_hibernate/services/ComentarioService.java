@@ -1,12 +1,10 @@
 package com.grupo25.tp_obj2_hibernate.services;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.ComentarioDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Comentario;
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.repositories.ComentarioRepository;
@@ -33,20 +31,20 @@ public class ComentarioService {
     /**
      * Crea un comentario utilizando variables por argumento.
      *
-     * @param idTicket , mensaje
+     * @param idTicket
+     * @param mensaje
      * @return ComentarioDTO
-     * 
-     * 
      * 
      * @author Ignacio Cruz
      */
-    public ComentarioDTO crearComentario(String mensaje, int idTicket) {
+    public Comentario crearComentario(String mensaje, int idTicket) {
         Comentario comentario = new Comentario();
-        Ticket ticket = ticketRepository.findById(idTicket).orElseThrow();
+        Ticket ticket = ticketRepository.findById(idTicket)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + idTicket));
         comentario.setTicket(ticket);
         comentario.setMensaje(mensaje);
         comentario.setFecha(LocalDateTime.now());
-        return new ComentarioDTO(comentarioRepository.save(comentario));
+        return comentarioRepository.save(comentario);
     }
 
     /**
@@ -60,14 +58,10 @@ public class ComentarioService {
      * @author Ignacio Cruz
      */
 
-    public List<ComentarioDTO> getTodosLosComentariosPorTicket(int ticketId) {
+    public List<Comentario> getTodosLosComentariosPorTicket(int ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + ticketId));
-        List<ComentarioDTO> comentarioPorTicket = new ArrayList<>();
-        for (Comentario comentario : comentarioRepository.findByTicketOrderByFecha(ticket)) {
-            comentarioPorTicket.add(new ComentarioDTO(comentario));
-        }
-        return comentarioPorTicket;
+        return comentarioRepository.findByTicketOrderByFecha(ticket);
     }
 
 }

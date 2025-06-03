@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.CategoriaDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
 import com.grupo25.tp_obj2_hibernate.repositories.CategoriaRepository;
 
@@ -20,44 +19,39 @@ public class CategoriaService {
     /**
      * Crear categoria
      * 
-     * @param categoriaDTO
-     * @return CategoriaDTO
+     * @param categoria
+     * @return Categoria
      * 
      * @author Ariel Serato
      */
-    public CategoriaDTO crearCategoria(CategoriaDTO categoriaDTO) {
-        Categoria categoria = new Categoria();
-        categoria.setNombre(categoriaDTO.getNombre());
-        categoria.setDescripcion(categoriaDTO.getDescripcion());
-        categoriaRepository.save(categoria);
-        return new CategoriaDTO(categoria);
+    public Categoria crearCategoria(Categoria categoria) {
+        return categoriaRepository.save(categoria);
     }
 
     /**
      * Obtener todas las categorias
      * 
-     * @return List<CategoriaDTO>
+     * @return List<Categoria>
      * 
      * @author Ariel Serato
      */
-    public List<CategoriaDTO> getCategorias() {
-        return categoriaRepository.findAll().stream().map(CategoriaDTO::new).toList();
+    public List<Categoria> getCategorias() {
+        return categoriaRepository.findAll();
     }
 
     /**
      * Actualizar categoria
      * 
-     * @param categoriaDTO
-     * @return CategoriaDTO
+     * @param categoria
+     * @return Categoria
      * 
      * @author Ariel Serato
      */
-    public CategoriaDTO actualizarCategoria(CategoriaDTO categoriaDTO) {
-        Categoria categoria = categoriaRepository.findById(categoriaDTO.getId())
+    public Categoria actualizarCategoria(Categoria categoria) {
+        Categoria cat = categoriaRepository.findById(categoria.getId())
                 .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
-        categoria.setNombre(categoriaDTO.getNombre());
-        categoria.setDescripcion(categoriaDTO.getDescripcion());
-        categoriaRepository.save(categoria);
-        return new CategoriaDTO(categoria);
+        cat.setNombre(categoria.getNombre());
+        cat.setDescripcion(categoria.getDescripcion());
+        return categoriaRepository.save(cat);
     }
 }

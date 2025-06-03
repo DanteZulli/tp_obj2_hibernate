@@ -2,7 +2,6 @@ package com.grupo25.tp_obj2_hibernate.services;
 
 import org.springframework.stereotype.Service;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.EtiquetaDTO;
 import com.grupo25.tp_obj2_hibernate.model.entities.Etiqueta;
 import com.grupo25.tp_obj2_hibernate.repositories.EtiquetaRepository;
 
@@ -14,7 +13,7 @@ public class EtiquetaService {
     public EtiquetaService(EtiquetaRepository etiquetaRepository) {
         this.etiquetaRepository = etiquetaRepository;
     }
-    
+
     /**
      * Crear etiqueta
      * 
@@ -23,13 +22,10 @@ public class EtiquetaService {
      * 
      * @author Ariel Serato
      */
-    public EtiquetaDTO crearEtiqueta(EtiquetaDTO etiquetaDTO) {
-        Etiqueta etiqueta = new Etiqueta();
-        etiqueta.setNombre(etiquetaDTO.getNombre());
-        etiquetaRepository.save(etiqueta);
-        return new EtiquetaDTO(etiqueta);
+    public Etiqueta crearEtiqueta(Etiqueta etiqueta) {
+        return etiquetaRepository.save(etiqueta);
     }
-    
+
     /**
      * Actualizar etiqueta
      * 
@@ -38,10 +34,10 @@ public class EtiquetaService {
      * 
      * @author Ariel Serato
      */
-    public EtiquetaDTO actualizarEtiqueta(EtiquetaDTO etiquetaDTO) {
-        Etiqueta etiqueta = etiquetaRepository.findById(etiquetaDTO.getId()).orElseThrow(() -> new RuntimeException("Etiqueta no encontrada"));
+    public Etiqueta actualizarEtiqueta(Etiqueta etiqueta) {
+        Etiqueta etiquetaDTO = etiquetaRepository.findById(etiqueta.getId())
+                .orElseThrow(() -> new RuntimeException("Etiqueta no encontrada"));
         etiqueta.setNombre(etiquetaDTO.getNombre());
-        etiquetaRepository.save(etiqueta);
-        return new EtiquetaDTO(etiqueta);
+        return etiquetaRepository.save(etiqueta);
     }
 }

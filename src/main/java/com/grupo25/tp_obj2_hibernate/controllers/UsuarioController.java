@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.grupo25.tp_obj2_hibernate.model.dto.ClienteDTO;
-import com.grupo25.tp_obj2_hibernate.model.dto.TecnicoDTO;
+import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
+import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
 import com.grupo25.tp_obj2_hibernate.services.UsuarioService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +38,12 @@ public class UsuarioController {
      * @author Dante Zulli
      */
     @PostMapping("/clientes")
-    public ResponseEntity<ClienteDTO> crearCliente(
+    public ResponseEntity<Cliente> crearCliente(
             @RequestParam String nombre,
             @RequestParam String email,
             @RequestParam String plan,
             @RequestParam boolean particular) {
-        ClienteDTO cliente = usuarioService.crearCliente(nombre, email, plan, particular);
+        Cliente cliente = usuarioService.crearCliente(nombre, email, plan, particular);
         return ResponseEntity.ok(cliente);
     }
 
@@ -62,14 +62,14 @@ public class UsuarioController {
      * @author Dante Zulli
      */
     @PutMapping("/clientes/{clienteId}")
-    public ResponseEntity<ClienteDTO> actualizarCliente(
+    public ResponseEntity<Cliente> actualizarCliente(
             @PathVariable int clienteId,
             @RequestParam String nombre,
             @RequestParam String email,
             @RequestParam String plan,
             @RequestParam boolean particular) {
         try {
-            ClienteDTO cliente = usuarioService.actualizarCliente(clienteId, nombre, email, plan, particular);
+            Cliente cliente = usuarioService.actualizarCliente(clienteId, nombre, email, plan, particular);
             return ResponseEntity.ok(cliente);
         } catch (RuntimeException e) {
             log.error("Error al actualizar el cliente con ID: {}", clienteId, e);
@@ -90,11 +90,11 @@ public class UsuarioController {
      * @author Dante Zulli
      */
     @PostMapping("/clientes/{clienteId}/direccion")
-    public ResponseEntity<ClienteDTO> asociarDireccion(
+    public ResponseEntity<Cliente> asociarDireccion(
             @PathVariable int clienteId,
             @RequestParam int direccionId) {
         try {
-            ClienteDTO cliente = usuarioService.asociarDireccion(clienteId, direccionId);
+            Cliente cliente = usuarioService.asociarDireccion(clienteId, direccionId);
             return ResponseEntity.ok(cliente);
         } catch (RuntimeException e) {
             log.error("Error al asociar la dirección al cliente con ID: {}", clienteId, e);
@@ -115,14 +115,14 @@ public class UsuarioController {
      * @author Dante Zulli
      */
     @PostMapping("/tecnicos")
-    public ResponseEntity<TecnicoDTO> crearTecnico(
+    public ResponseEntity<Tecnico> crearTecnico(
             @RequestParam String nombre,
             @RequestParam String email,
             @RequestParam String nroContacto,
             @RequestParam String empresa,
             @RequestParam int areaId) {
         try {
-            TecnicoDTO tecnico = usuarioService.crearTecnico(nombre, email, nroContacto, empresa, areaId);
+            Tecnico tecnico = usuarioService.crearTecnico(nombre, email, nroContacto, empresa, areaId);
             return ResponseEntity.ok(tecnico);
         } catch (RuntimeException e) {
             log.error("Error al crear el técnico", e);
@@ -146,7 +146,7 @@ public class UsuarioController {
      * @author Dante Zulli
      */
     @PutMapping("/tecnicos/{tecnicoId}")
-    public ResponseEntity<TecnicoDTO> actualizarTecnico(
+    public ResponseEntity<Tecnico> actualizarTecnico(
             @PathVariable int tecnicoId,
             @RequestParam String nombre,
             @RequestParam String email,
@@ -154,7 +154,7 @@ public class UsuarioController {
             @RequestParam String empresa,
             @RequestParam int areaId) {
         try {
-            TecnicoDTO tecnico = usuarioService.actualizarTecnico(tecnicoId, nombre, email, nroContacto, empresa, areaId);
+            Tecnico tecnico = usuarioService.actualizarTecnico(tecnicoId, nombre, email, nroContacto, empresa, areaId);
             return ResponseEntity.ok(tecnico);
         } catch (RuntimeException e) {
             log.error("Error al actualizar el técnico con ID: {}", tecnicoId, e);
