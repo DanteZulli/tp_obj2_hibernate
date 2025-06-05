@@ -27,6 +27,11 @@ public class Direccion {
     @NotBlank(message = "El número no puede estar vacío")
     private String nro;
     
+    @NotBlank(message = "El código postal no puede estar vacío")
+    @Size(min = 4, max = 10, message = "El código postal debe tener entre 4 y 10 caracteres")
+    @Column(name = "codigo_postal", nullable = false)
+    private String codigoPostal;
+    
     @NotNull(message = "La localidad es requerida")
     @ManyToOne
     @JoinColumn(name = "localidad_id", nullable = false)

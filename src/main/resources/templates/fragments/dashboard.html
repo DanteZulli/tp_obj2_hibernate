@@ -1,0 +1,40 @@
+<div th:fragment="dashboard">
+    <h1 class="mt-4" th:text="${tipoUsuario + ' Dashboard'}">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Tickets</li>
+    </ol>
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    Abiertos
+                    <span class="badge bg-light text-primary ms-2" th:text="${ticketsAbiertos}">0</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    En Progreso
+                    <span class="badge bg-light text-warning ms-2" th:text="${ticketsEnProgreso}">0</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    Resueltos
+                    <span class="badge bg-light text-success ms-2" th:text="${ticketsResueltos}">0</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">
+                    Urgentes
+                    <span class="badge bg-light text-danger ms-2" th:text="${ticketsUrgentes}">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

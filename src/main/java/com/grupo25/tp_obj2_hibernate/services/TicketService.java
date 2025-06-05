@@ -45,8 +45,6 @@ public class TicketService {
      * @param titulo, descripcion, estado, prioridad, fechaCreacion,fechaResolucion
      * @return TicketDTO
      * 
-     * 
-     * 
      * @author Ignacio Cruz
      */
     public Ticket crearTicket(String titulo, String descripcion, String estado, String prioridad) {

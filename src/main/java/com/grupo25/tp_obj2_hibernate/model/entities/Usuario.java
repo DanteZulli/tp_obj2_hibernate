@@ -26,6 +26,16 @@ public abstract class Usuario {
     @Column(nullable = false)
     private String nombre;
     
+    @NotBlank(message = "El nombre de usuario no puede estar vacío")
+    @Size(min = 4, max = 50, message = "El nombre de usuario debe tener entre 4 y 50 caracteres")
+    @Column(nullable = false, unique = true)
+    private String nombreUsuario;
+    
+    @NotBlank(message = "La contraseña no puede estar vacía")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
+    @Column(nullable = false)
+    private String contrasenia;
+    
     @NotBlank(message = "El email no puede estar vacío")
     @Email(message = "El email debe tener un formato válido")
     @Column(nullable = false, unique = true)
