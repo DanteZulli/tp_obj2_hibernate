@@ -9,8 +9,6 @@
 
 El proyecto está configurado para conectarse a MySQL con los siguientes valores por defecto:
 
-
-
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3307/tp_obj2_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Argentina/Buenos_Aires
 spring.datasource.username=root
@@ -24,6 +22,20 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 
 > 📌 **Nota:** Podés modificar estos valores en `src/main/resources/application.properties` (o pisarlos con un perfil y otro .properties) según tu entorno. \
 > Asegurate de que coincidan con la configuración de tu servidor de bases de datos.
+
+## 📊 Inicialización de Datos
+
+El proyecto incluye un script de inicialización (`data.sql`) que carga datos de ejemplo en la base de datos. Para activarlo:
+
+1. Descomentá las siguientes líneas en `src/main/resources/application.properties`:
+```properties
+spring.sql.init.mode=always
+spring.jpa.defer-datasource-initialization=true
+```
+
+2. Comentá estas líneas nuevamente después de la primera ejecución para evitar que se reinicialice la base de datos en cada inicio.
+
+> 📌 **Nota:** También podés ejecutar el script `data.sql` directamente en tu gestor de base de datos si preferís.
 
 ## 🚀 Ejecución del Proyecto
 
@@ -53,7 +65,7 @@ También podés correrla desde tu IDE (IntelliJ, Eclipse, etc.) ejecutando la cl
 - Java 21
 - Spring Boot 3.5.0
 - MySQL & MySQL Connector
-- Spring Data JPA, Hibernate, Validation
+- Spring Data JPA, Hibernate, Validation, Security
 - Lombok
 
 > 🗂️ Para consultar todas las dependencias y versiones utilizadas, podés revisar el archivo pom.xml ubicado en la raíz del proyecto.
