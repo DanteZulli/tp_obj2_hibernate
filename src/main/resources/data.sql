@@ -37,8 +37,8 @@ INSERT INTO etiquetas (nombre) VALUES
 
 -- Usuarios (Técnicos)
 INSERT INTO usuarios (nombre, nombre_usuario, contrasenia, email, es_admin) VALUES 
-('Juan Pérez', 'jperez', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', 'juan@example.com', true),
-('María García', 'mgarcia', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', 'maria@example.com', false);
+('Juan Pérez', 'jperez', '$2y$10$.KjybsrGy2vFvfeofh.cG.qsByH3lNsobFzf3/sM402XfLSzXgkUW', 'juan@example.com', true),
+('María García', 'mgarcia', '$2y$10$.KjybsrGy2vFvfeofh.cG.qsByH3lNsobFzf3/sM402XfLSzXgkUW', 'maria@example.com', false);
 
 -- Técnicos
 INSERT INTO tecnicos (usuario_id, nro_contacto, empresa, area_id) VALUES 
@@ -47,8 +47,8 @@ INSERT INTO tecnicos (usuario_id, nro_contacto, empresa, area_id) VALUES
 
 -- Usuarios (Clientes)
 INSERT INTO usuarios (nombre, nombre_usuario, contrasenia, email, es_admin) VALUES 
-('Carlos López', 'clopez', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', 'carlos@example.com', false),
-('Ana Martínez', 'amartinez', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', 'ana@example.com', false);
+('Carlos López', 'clopez', '$2y$10$.KjybsrGy2vFvfeofh.cG.qsByH3lNsobFzf3/sM402XfLSzXgkUW', 'carlos@example.com', false),
+('Ana Martínez', 'amartinez', '$2y$10$.KjybsrGy2vFvfeofh.cG.qsByH3lNsobFzf3/sM402XfLSzXgkUW', 'ana@example.com', false);
 
 -- Clientes
 INSERT INTO clientes (usuario_id, nro_cliente, plan, particular, direccion_id) VALUES 
