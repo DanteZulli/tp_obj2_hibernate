@@ -1,7 +1,12 @@
 <div th:fragment="dashboard">
-    <h1 class="mt-4" th:text="${tipoUsuario + ' Dashboard'}">Dashboard</h1>
+    <h1 class="mt-4">
+        <span th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">Menú Administrador</span>
+        <span th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'') and !hasRole(''ROLE_ADMIN'')')}">Menú Técnico</span>
+        <span th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'')')}">Menú Cliente</span>
+    </h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Tickets</li>
+        <li class="breadcrumb-item active" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}">Todos los Tickets</li>
+        <li class="breadcrumb-item active" th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}">Mis Tickets</li>
     </ol>
     <div class="row">
         <div class="col-xl-3 col-md-6">

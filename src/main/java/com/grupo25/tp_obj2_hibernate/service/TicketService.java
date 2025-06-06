@@ -121,4 +121,27 @@ public class TicketService {
         ticket.setPrioridad(prioridad);
         return ticketRepository.save(ticket);
     }
+
+    /**
+     * Cuenta la cantidad de tickets por estado.
+     * 
+     * @param estado el estado de los tickets a contar
+     * @return la cantidad de tickets con el estado especificado
+     * @author Dante Zulli
+     */
+    public long contarTicketsPorEstado(String estado) {
+        return ticketRepository.countByEstado(estado);
+    }
+
+    /**
+     * Cuenta la cantidad de tickets por estado y creador.
+     * 
+     * @param estado el estado de los tickets a contar
+     * @param creadorId el ID del creador de los tickets
+     * @return la cantidad de tickets con el estado y creador especificados
+     * @author Dante Zulli
+     */
+    public long contarTicketsPorEstadoYCreador(String estado, int creadorId) {
+        return ticketRepository.countByEstadoAndCreadorId(estado, creadorId);
+    }
 }

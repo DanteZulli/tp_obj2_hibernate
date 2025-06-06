@@ -46,4 +46,23 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
      * @return el estado del ticket
      */
     String findEstadoById(int id);
+
+    /**
+     * Cuenta la cantidad de tickets por estado.
+     * 
+     * @param estado el estado de los tickets a contar
+     * @return la cantidad de tickets con el estado especificado
+     * @author Dante Zulli
+     */
+    long countByEstado(String estado);
+
+    /**
+     * Cuenta la cantidad de tickets por estado y creador.
+     * 
+     * @param estado el estado de los tickets a contar
+     * @param creadorId el ID del creador de los tickets
+     * @return la cantidad de tickets con el estado y creador especificados
+     * @author Dante Zulli
+     */
+    long countByEstadoAndCreadorId(String estado, int creadorId);
 }
