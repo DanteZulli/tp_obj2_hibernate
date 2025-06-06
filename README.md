@@ -37,6 +37,26 @@ spring.jpa.defer-datasource-initialization=true
 
 > 📌 **Nota:** También podés ejecutar el script `data.sql` directamente en tu gestor de base de datos si preferís.
 
+### 👥 Usuarios por Defecto
+
+El script de inicialización crea los siguientes usuarios:
+
+**Administradores:**
+- Usuario: `jperez`
+- Email: `juan@example.com`
+
+**Técnicos:**
+- Usuario: `mgarcia`
+- Email: `maria@example.com`
+
+**Clientes:**
+- Usuario: `clopez`
+- Email: `carlos@example.com`
+- Usuario: `amartinez`
+- Email: `ana@example.com`
+
+> 🔑 **Importante:** La contraseña para todos los usuarios es `1234`
+
 ## 🚀 Ejecución del Proyecto
 
 1. Cloná el repositorio:
