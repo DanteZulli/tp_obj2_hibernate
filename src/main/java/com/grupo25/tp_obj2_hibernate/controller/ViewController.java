@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
+import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
 
 @Controller
@@ -14,9 +16,11 @@ public class ViewController {
     private static final String INDEX_VIEW = "index";
 
     private final TicketService ticketService;
+    private final UsuarioRepository usuarioRepository;
 
-    public ViewController(TicketService ticketService) {
+    public ViewController(TicketService ticketService, UsuarioRepository usuarioRepository) {
         this.ticketService = ticketService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @GetMapping("/")
@@ -35,10 +39,13 @@ public class ViewController {
             mav.addObject("ticketsEnProgreso", ticketService.contarTicketsPorEstado("EN_PROGRESO"));
             mav.addObject("ticketsResueltos", ticketService.contarTicketsPorEstado("RESUELTO"));
         } else {
+            Usuario usuario = usuarioRepository.findByNombreUsuario(auth.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
             mav.addObject("tipoUsuario", "Cliente");
-            mav.addObject("ticketsAbiertos", ticketService.contarTicketsPorEstadoYCreador("ABIERTO", Integer.parseInt(auth.getName())));
-            mav.addObject("ticketsEnProgreso", ticketService.contarTicketsPorEstadoYCreador("EN_PROGRESO", Integer.parseInt(auth.getName())));
-            mav.addObject("ticketsResueltos", ticketService.contarTicketsPorEstadoYCreador("RESUELTO", Integer.parseInt(auth.getName())));
+            mav.addObject("ticketsAbiertos", ticketService.contarTicketsPorEstadoYCreador("ABIERTO", usuario.getId()));
+            mav.addObject("ticketsEnProgreso", ticketService.contarTicketsPorEstadoYCreador("EN_PROGRESO", usuario.getId()));
+            mav.addObject("ticketsResueltos", ticketService.contarTicketsPorEstadoYCreador("RESUELTO", usuario.getId()));
         }
 
         return mav;
