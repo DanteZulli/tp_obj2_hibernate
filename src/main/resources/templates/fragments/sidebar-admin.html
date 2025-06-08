@@ -1,0 +1,53 @@
+<div id="layoutSidenav_nav" th:fragment="sidebar">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading">Principal admin</div>
+                <a class="nav-link" th:href="@{/tickets}">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    Todos los Tickets
+                </a>
+                <a class="nav-link" th:href="@{/}">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    Dashboard
+                </a>
+                <a class="nav-link" th:href="@{/clientes}">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    Clientes
+                </a>
+
+                <a class="nav-link" th:href="@{/tickets/crear}">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    Crear Ticket
+                </a>
+                <a class="nav-link" th:href="@{/}">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    Categorías
+                </a>
+                <a class="nav-link" th:href="@{/}">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    Etiquetas
+                </a>
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Usuario: <span th:text="${#authentication.name}"></span></div>
+            <div class="small">Rol: <span th:text="${#authentication.authorities}"></span></div>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="small text-center  text-white"> <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
+            </form>
+        </div>
+    </nav>
+</div>

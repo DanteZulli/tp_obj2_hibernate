@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Crear Ticket - Ticketera Grupo 25</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="sb-nav-fixed">
+    <nav th:replace="~{fragments/navbar.html}"></nav>
+    <div id="layoutSidenav">
+      <div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
+      
+      <div id="layoutSidenav_content">
+        <main>
+          <div class="container-fluid px-4">
+            <h1 class="mt-4">Crear Nuevo Ticket</h1>
+            <ol class="breadcrumb mb-4">
+              <li class="breadcrumb-item"><a th:href="@{/}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/tickets}">Tickets</a></li>
+              <li class="breadcrumb-item active">Crear Ticket</li>
+            </ol>
+
+            <!-- Mensaje de error si existe -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+            </div>
+
+            <!-- Mensaje de éxito si existe -->
+            <div th:if="${success}" class="alert alert-success" role="alert">
+              <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            </div>
+
+            <!-- Formulario de creación -->
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="card">
+                  <div class="card-header">
+                    <i class="fas fa-plus me-1"></i>
+                    Información del Ticket
+                  </div>
+                  <div class="card-body">
+                    <form id="crearTicketForm">
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                          <div class="form-floating">
+                            <input class="form-control" id="titulo" name="titulo" type="text" placeholder="Título del ticket" required />
+                            <label for="titulo">Título del ticket *</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <div class="form-floating">
+                            <select class="form-select" id="prioridad" name="prioridad" required>
+                              <option value="">Seleccionar prioridad</option>
+                              <option value="BAJA">Baja</option>
+                              <option value="MEDIA">Media</option>
+                              <option value="ALTA">Alta</option>
+                            </select>
+                            <label for="prioridad">Prioridad *</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-floating">
+                            <select class="form-select" id="categoria" name="categoria">
+                              <option value="">Seleccionar categoría</option>
+                              <option th:each="categoria : ${categorias}" 
+                                      th:value="${categoria.id}" 
+                                      th:text="${categoria.nombre}">
+                              </option>
+                            </select>
+                            <label for="categoria">Categoría</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                          <div class="form-floating">
+                            <textarea class="form-control" id="descripcion" name="descripcion" 
+                                      style="height: 150px" placeholder="Descripción detallada del problema" required></textarea>
+                            <label for="descripcion">Descripción *</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                          <small class="text-muted">Los campos marcados con * son obligatorios</small>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-12">
+                          <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-save"></i> Crear Ticket
+                          </button>
+                          <a th:href="@{/tickets}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-times"></i> Cancelar
+                          </a>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Panel de información -->
+              <div class="col-lg-4">
+                <div class="card">
+                  <div class="card-header">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Información
+                  </div>
+                  <div class="card-body">
+                    <h6>Consejos para crear un buen ticket:</h6>
+                    <ul class="mb-3">
+                      <li><strong>Título claro:</strong> Resume el problema en pocas palabras</li>
+                      <li><strong>Descripción detallada:</strong> Incluye pasos para reproducir el problema</li>
+                      <li><strong>Prioridad adecuada:</strong> Evalúa la urgencia real del problema</li>
+                    </ul>
+
+                    <h6>Estados del ticket:</h6>
+                    <ul class="mb-0">
+                      <li><span class="badge bg-warning">ABIERTO</span> - Ticket recién creado</li>
+                      <li><span class="badge bg-info">EN_PROGRESO</span> - Siendo trabajado</li>
+                      <li><span class="badge bg-success">RESUELTO</span> - Problema solucionado</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <footer th:replace="~{fragments/footer.html}"></footer>
+      </div>
+    </div>
+
+    <script th:src="@{/js/sidebar.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script>
+      // Manejar envío del formulario
+      document.getElementById('crearTicketForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        // Convertir FormData a objeto para enviar como JSON o URLSearchParams
+        const params = new URLSearchParams();
+        params.append('titulo', formData.get('titulo'));
+        params.append('descripcion', formData.get('descripcion'));
+        params.append('prioridad', formData.get('prioridad'));
+        params.append('estado', 'ABIERTO'); // Estado inicial
+
+        fetch('/api/tickets/crear', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params
+        })
+        .then(response => {
+          if (response.ok) {
+            // Redirigir a la lista de tickets con mensaje de éxito
+            window.location.href = '/tickets?success=Ticket creado exitosamente';
+          } else {
+            throw new Error('Error al crear el ticket');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al crear el ticket. Por favor, intente nuevamente.');
+        });
+      });
+    </script>
+  </body>
+</html> 

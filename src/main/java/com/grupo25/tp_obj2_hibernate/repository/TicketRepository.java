@@ -65,4 +65,23 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
      * @author Dante Zulli
      */
     long countByEstadoAndCreadorId(String estado, int creadorId);
+
+    /**
+     * Cuenta la cantidad de tickets por prioridad.
+     * 
+     * @param prioridad la prioridad de los tickets a contar
+     * @return la cantidad de tickets con la prioridad especificada
+     * @author Dante Zulli
+     */
+    long countByPrioridad(String prioridad);
+
+    /**
+     * Cuenta la cantidad de tickets por prioridad y creador.
+     * 
+     * @param prioridad la prioridad de los tickets a contar
+     * @param creadorId el ID del creador de los tickets
+     * @return la cantidad de tickets con la prioridad y creador especificados
+     * @author Dante Zulli
+     */
+    long countByPrioridadAndCreadorId(String prioridad, int creadorId);
 }

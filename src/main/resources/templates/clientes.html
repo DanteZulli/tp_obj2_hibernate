@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Clientes - Ticketera Grupo 25</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="sb-nav-fixed">
+    <nav th:replace="~{fragments/navbar.html}"></nav>
+    <div id="layoutSidenav">
+      <div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
+      
+      <div id="layoutSidenav_content">
+        <main>
+          <div class="container-fluid px-4">
+            <h1 class="mt-4">Gestión de Clientes</h1>
+            <ol class="breadcrumb mb-4">
+              <li class="breadcrumb-item"><a th:href="@{/}">Dashboard</a></li>
+              <li class="breadcrumb-item active">Clientes</li>
+            </ol>
+
+            <!-- Mensaje de error si existe -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+            </div>
+
+            <!-- Mensaje de éxito si existe -->
+            <div th:if="${success}" class="alert alert-success" role="alert">
+              <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearClienteModal">
+                  <i class="fas fa-plus"></i> Crear Nuevo Cliente
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabla de clientes -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Listado de Clientes
+              </div>
+              <div class="card-body">
+                <table id="datatablesSimple" class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Email</th>
+                      <th>Plan</th>
+                      <th>Tipo</th>
+                      <th>Usuario</th>
+                      <th>Fecha Registro</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Por ahora tabla vacía, se llenará con datos del backend -->
+                    <tr>
+                      <td colspan="8" class="text-center text-muted">
+                        <i class="fas fa-info-circle"></i> No hay clientes registrados o la funcionalidad está siendo implementada
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+        <footer th:replace="~{fragments/footer.html}"></footer>
+      </div>
+    </div>
+
+    <!-- Modal para crear cliente -->
+    <div class="modal fade" id="crearClienteModal" tabindex="-1" aria-labelledby="crearClienteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="crearClienteModalLabel">
+              <i class="fas fa-user-plus"></i> Crear Nuevo Cliente
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="crearClienteForm">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input class="form-control" id="nombreCliente" name="nombre" type="text" placeholder="Nombre completo" required />
+                    <label for="nombreCliente">Nombre completo *</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input class="form-control" id="emailCliente" name="email" type="email" placeholder="Email" required />
+                    <label for="emailCliente">Email *</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <select class="form-select" id="planCliente" name="plan" required>
+                      <option value="">Seleccionar plan</option>
+                      <option value="BASICO">Básico</option>
+                      <option value="PREMIUM">Premium</option>
+                      <option value="ENTERPRISE">Enterprise</option>
+                    </select>
+                    <label for="planCliente">Plan *</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" id="esParticular" name="particular">
+                    <label class="form-check-label" for="esParticular">
+                      Cliente particular (no empresa)
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <small class="text-muted">Los campos marcados con * son obligatorios</small>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" onclick="crearCliente()">
+              <i class="fas fa-save"></i> Crear Cliente
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script th:src="@{/js/sidebar.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script>
+      // Inicializar DataTables
+      window.addEventListener('DOMContentLoaded', event => {
+        const datatablesSimple = document.getElementById('datatablesSimple');
+        if (datatablesSimple) {
+          new simpleDatatables.DataTable(datatablesSimple);
+        }
+      });
+
+      // Función para crear cliente
+      function crearCliente() {
+        const form = document.getElementById('crearClienteForm');
+        const formData = new FormData(form);
+        
+        const params = new URLSearchParams();
+        params.append('nombre', formData.get('nombre'));
+        params.append('email', formData.get('email'));
+        params.append('plan', formData.get('plan'));
+        params.append('particular', formData.get('particular') ? 'true' : 'false');
+
+        fetch('/api/usuarios/clientes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params
+        })
+        .then(response => {
+          if (response.ok) {
+            // Cerrar modal y recargar página
+            const modal = bootstrap.Modal.getInstance(document.getElementById('crearClienteModal'));
+            modal.hide();
+            window.location.href = '/clientes?success=Cliente creado exitosamente';
+          } else {
+            throw new Error('Error al crear el cliente');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al crear el cliente. Por favor, intente nuevamente.');
+        });
+      }
+
+      // Función para editar cliente
+      function editarCliente(clienteId) {
+        // TODO: Implementar modal de edición
+        alert('Editar cliente ' + clienteId);
+      }
+
+      // Función para eliminar cliente
+      function eliminarCliente(clienteId) {
+        if (confirm('¿Está seguro de eliminar este cliente?')) {
+          // TODO: Implementar eliminación
+          alert('Eliminar cliente ' + clienteId);
+        }
+      }
+
+      // Función para ver tickets del cliente
+      function verTicketsCliente(clienteId) {
+        window.location.href = '/tickets?cliente=' + clienteId;
+      }
+    </script>
+  </body>
+</html> 
