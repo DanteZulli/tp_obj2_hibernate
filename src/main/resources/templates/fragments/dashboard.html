@@ -8,7 +8,7 @@
         <li class="breadcrumb-item active" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}">Todos los Tickets</li>
         <li class="breadcrumb-item active" th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}">Mis Tickets</li>
     </ol>
-    <div class="row">
+    <div class="row" th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'')')}">
         <div class="col-xl-3 col-md-6">
             <div class="card bg-primary text-white mb-4">
                 <div class="card-body">
@@ -24,7 +24,8 @@
                     <span class="badge bg-light text-warning ms-2" th:text="${ticketsEnProgreso}">0</span>
                 </div>
             </div>
-        </div>
+        </div>           
+		       
         <div class="col-xl-3 col-md-6">
             <div class="card bg-success text-white mb-4">
                 <div class="card-body">
@@ -42,4 +43,40 @@
             </div>
         </div>
     </div>
+	
+	<div class="row" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+	    <div class="col-xl-3 col-md-6">
+	        <div class="card bg-primary text-white mb-4">
+	            <div class="card-body">
+	                Total tickets Abiertos
+	                <span class="badge bg-light text-primary ms-2" th:text="${totalTickets}">0</span>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="col-xl-3 col-md-6">
+	        <div class="card bg-warning text-white mb-4">
+	            <div class="card-body">
+	                Usuarios Activos
+	                <span class="badge bg-light text-warning ms-2" th:text="${ticketsEnProgreso}">0</span>
+	            </div>
+	        </div>
+	    </div>           
+		       
+	    <div class="col-xl-3 col-md-6">
+	        <div class="card bg-success text-white mb-4">
+	            <div class="card-body">
+	                Tecnicos
+	                <span class="badge bg-light text-success ms-2" th:text="${ticketsResueltos}">0</span>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="col-xl-3 col-md-6">
+	        <div class="card bg-danger text-white mb-4">
+	            <div class="card-body">
+	                Tickets Criticos
+	                <span class="badge bg-light text-danger ms-2" th:text="${ticketsUrgentes}">0</span>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 </div>
