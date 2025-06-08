@@ -3,17 +3,125 @@
 <body>
   <!-- Fragmento unificado del sidebar con lógica basada en roles -->
   <div th:fragment="sidebar-unified">
-    <!-- Sidebar para ADMIN (si tiene rol ADMIN) -->
-    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" 
-         th:replace="~{fragments/sidebar-admin.html}"></div>
+    
+    <!-- Sidebar para ADMIN -->
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Principal admin</div>
+                    <a class="nav-link" th:href="@{/tickets}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        Todos los Tickets
+                    </a>
+                    <a class="nav-link" th:href="@{/}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        Dashboard
+                    </a>
+                    <a class="nav-link" th:href="@{/clientes}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        Clientes
+                    </a>
+                    <a class="nav-link" th:href="@{/tickets/crear}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        Crear Ticket
+                    </a>
+                    <a class="nav-link" th:href="@{/}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        Categorías
+                    </a>
+                    <a class="nav-link" th:href="@{/}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        Etiquetas
+                    </a>
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Usuario: <span th:text="${#authentication.name}"></span></div>
+                <div class="small">Rol: <span th:text="${#authentication.authorities}"></span></div>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="small text-center  text-white"> <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
+                </form>
+            </div>
+        </nav>
+    </div>
     
     <!-- Sidebar para TECNICO (si tiene rol TECNICO pero NO admin) -->
-    <div th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'') and !hasRole(''ROLE_ADMIN'')')}" 
-         th:replace="~{fragments/sidebar-tecnico.html}"></div>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'') and !hasRole(''ROLE_ADMIN'')')}" id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Principal tecnico</div>
+                    <a class="nav-link" th:href="@{/}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        Dashboard
+                    </a>
+                    <a class="nav-link" th:href="@{/tickets/asignados}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        Mis Tickets Asignados
+                    </a>
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="small text-center text-red"> <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
+                </form>
+            </div>
+        </nav>
+    </div>
     
     <!-- Sidebar para CLIENTE (si tiene rol CLIENTE pero NO admin y NO técnico) -->
-    <div th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}" 
-         th:replace="~{fragments/sidebar-cliente.html}"></div>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}" id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Principal cliente</div>
+                    <a class="nav-link" th:href="@{/}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        Dashboard
+                    </a>
+                    <a class="nav-link" th:href="@{/tickets/asignados}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        Mis Tickets
+                    </a>
+                    <a class="nav-link" th:href="@{/tickets/crear}">
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        Crear Ticket
+                    </a>
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Usuario: <span th:text="${#authentication.name}"></span></div>
+                <div class="small">Rol: <span th:text="${#authentication.authorities}"></span></div>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="small text-center  text-white"> <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
+                </form>
+            </div>
+        </nav>
+    </div>
+    
   </div>
 </body>
 </html> 

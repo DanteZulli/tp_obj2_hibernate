@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+.dockerignore
+docker-compose.dev.yml
+docker-compose.yml
+Dockerfile
+Dockerfile.dev
+src/main/resources/application-dev.yml
+src/main/java/com/grupo25/tp_obj2_hibernate/config/DataInitializer.java
+src/main/resources/application-docker.properties
