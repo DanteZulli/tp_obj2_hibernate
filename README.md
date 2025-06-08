@@ -81,11 +81,43 @@ mvnw.cmd spring-boot:run
 
 También podés correrla desde tu IDE (IntelliJ, Eclipse, etc.) ejecutando la clase main.
 
+3. **Accedé a la aplicación:**
+   - La aplicación estará disponible en: `http://localhost:8080`
+   - Puerto por defecto: **8080**
+
+## 🎨 Frontend Template
+
+El proyecto incluye un template de Bootstrap administrativo ubicado en:
+```
+startbootstrap-sb-admin-gh-pages/
+```
+
+Este directorio contiene:
+- **Template SB Admin**: Plantilla de Bootstrap para interfaces administrativas
+- **Assets estáticos**: CSS, JavaScript, imágenes y componentes de UI
+- **Páginas de ejemplo**: Login, tablas, gráficos, etc.
+- **Componentes**: Formularios, navegación, dashboard y más
+
+> 📌 **Nota:** Este template se utiliza como base para el diseño de la interfaz de usuario de la aplicación de gestión de tickets.
+
 # 🧰 Tecnologías Utilizadas
+
+## Backend
 - Java 21
 - Spring Boot 3.5.0
 - MySQL & MySQL Connector
 - Spring Data JPA, Hibernate, Validation, Security
 - Lombok
+
+## Frontend
+- **SB Admin Template**: Template de Bootstrap para interfaces administrativas
+- **Bootstrap 5**: Framework CSS para diseño responsivo
+- **FontAwesome**: Iconos vectoriales
+- **Chart.js**: Librería para gráficos y visualizaciones
+- **DataTables**: Plugin de jQuery para tablas interactivas
+
+## Puertos de la Aplicación
+- **Backend (Spring Boot)**: Puerto `8080`
+- **Base de datos (MySQL)**: Puerto `3307` 
 
 > 🗂️ Para consultar todas las dependencias y versiones utilizadas, podés revisar el archivo pom.xml ubicado en la raíz del proyecto.
