@@ -4,12 +4,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
+import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
 import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
+import com.grupo25.tp_obj2_hibernate.service.ComentarioService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,11 +26,13 @@ public class WebViewController {
     private final TicketService ticketService;
     private final UsuarioRepository usuarioRepository;
     private final CategoriaService categoriaService;
+    private final ComentarioService comentarioService;
 
-    public WebViewController(TicketService ticketService, UsuarioRepository usuarioRepository, CategoriaService categoriaService) {
+    public WebViewController(TicketService ticketService, UsuarioRepository usuarioRepository, CategoriaService categoriaService, ComentarioService comentarioService) {
         this.ticketService = ticketService;
         this.usuarioRepository = usuarioRepository;
         this.categoriaService = categoriaService;
+        this.comentarioService = comentarioService;
     }
 
     @GetMapping("/tickets")
@@ -104,5 +112,91 @@ public class WebViewController {
         // Por ahora solo retornamos la vista
         
         return mav;
+    }
+
+    @GetMapping("/tickets/{id}")
+    public ModelAndView mostrarDetallesTicket(@PathVariable int id) {
+        log.info("📝 Logging: Mostrando detalles del ticket {}", id);
+        ModelAndView mav = new ModelAndView("ticket-detalles");
+        
+        try {
+            Ticket ticket = ticketService.getTicketPorId(id);
+            mav.addObject("ticket", ticket);
+            mav.addObject("comentarios", comentarioService.getTodosLosComentariosPorTicket(id));
+        } catch (Exception e) {
+            log.error("📝 Logging: Error al obtener los detalles del ticket", e);
+            mav.addObject("error", "Error al cargar los detalles del ticket");
+        }
+        
+        return mav;
+    }
+
+    @GetMapping("/tickets/editar/{id}")
+    public ModelAndView mostrarFormularioEditarTicket(@PathVariable int id) {
+        log.info("📝 Logging: Mostrando formulario para editar el ticket {}", id);
+        ModelAndView mav = new ModelAndView("editar-ticket");
+        
+        try {
+            Ticket ticket = ticketService.getTicketPorId(id);
+            mav.addObject("ticket", ticket);
+            mav.addObject("categorias", categoriaService.getCategorias());
+        } catch (Exception e) {
+            log.error("📝 Logging: Error al obtener los datos para editar el ticket", e);
+            mav.addObject("error", "Error al cargar los datos para editar el ticket");
+        }
+        
+        return mav;
+    }
+
+    @PostMapping("/tickets/editar/{id}")
+    public String procesarEdicionTicket(@PathVariable int id, 
+                                       @RequestParam String titulo, 
+                                       @RequestParam String descripcion,
+                                       @RequestParam String estado,
+                                       @RequestParam String prioridad,
+                                       @RequestParam int categoriaId,
+                                       RedirectAttributes redirectAttributes) {
+        log.info("📝 Logging: Procesando edición del ticket {}", id);
+        
+        try {
+            Ticket ticket = ticketService.getTicketPorId(id);
+            ticket.setTitulo(titulo);
+            ticket.setDescripcion(descripcion);
+            ticket.setEstado(estado);
+            ticket.setPrioridad(prioridad);
+            ticket.setCategoria(categoriaService.getCategoriaPorId(categoriaId));
+            
+            ticketService.actualizarTicket(ticket);
+            redirectAttributes.addFlashAttribute("success", "Ticket actualizado correctamente");
+            return "redirect:/tickets";
+        } catch (Exception e) {
+            log.error("📝 Logging: Error al procesar la edición del ticket", e);
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar el ticket");
+            return "redirect:/tickets/editar/" + id;
+        }
+    }
+
+    @PostMapping("/tickets/crear")
+    public String procesarCreacionTicket(@RequestParam String titulo, 
+                                        @RequestParam String descripcion, 
+                                        @RequestParam String prioridad,
+                                        @RequestParam int categoriaId, 
+                                        RedirectAttributes redirectAttributes) {
+        log.info("📝 Logging: Procesando creación del ticket");
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        
+        try {
+            Usuario usuario = usuarioRepository.findByNombreUsuario(auth.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            ticketService.crearTicketCompleto(titulo, descripcion, "ABIERTO", prioridad, usuario.getId(), categoriaId);
+            redirectAttributes.addFlashAttribute("success", "Ticket creado correctamente");
+            return "redirect:/tickets";
+        } catch (Exception e) {
+            log.error("📝 Logging: Error al procesar la creación del ticket", e);
+            redirectAttributes.addFlashAttribute("error", "Error al crear el ticket");
+            return "redirect:/tickets/crear";
+        }
     }
 } 

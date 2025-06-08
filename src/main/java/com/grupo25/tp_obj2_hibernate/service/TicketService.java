@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
+import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
 import com.grupo25.tp_obj2_hibernate.repository.TicketRepository;
 import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
 
@@ -21,11 +22,13 @@ public class TicketService {
 
     private TicketRepository ticketRepository;
     private UsuarioRepository usuarioRepository;
+    private CategoriaService categoriaService;
 
     public TicketService(TicketRepository ticketRepository,
-            UsuarioRepository usuarioRepository) {
+            UsuarioRepository usuarioRepository, CategoriaService categoriaService) {
         this.ticketRepository = ticketRepository;
         this.usuarioRepository = usuarioRepository;
+        this.categoriaService = categoriaService;
     }
 
     /**
@@ -183,5 +186,86 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
 
         return ticketRepository.findByAsignado(usuario);
+    }
+
+    /**
+     * Obtiene un ticket por su ID.
+     * 
+     * @param id El ID del ticket.
+     * @return El ticket encontrado.
+     * 
+     * @throws RuntimeException Si no se encuentra el ticket con el ID dado.
+     * 
+     * @author Grupo 25
+     */
+    public Ticket getTicketPorId(int id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+    }
+
+    /**
+     * Actualiza un ticket completo.
+     * 
+     * @param ticket El ticket con los datos actualizados.
+     * @return El ticket actualizado.
+     * 
+     * @author Grupo 25
+     */
+    public Ticket actualizarTicket(Ticket ticket) {
+        // Verificar que el ticket existe
+        ticketRepository.findById(ticket.getId())
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + ticket.getId()));
+        
+        return ticketRepository.save(ticket);
+    }
+
+    /**
+     * Crea un ticket con creador y categoría.
+     *
+     * @param titulo El título del ticket
+     * @param descripcion La descripción del ticket
+     * @param estado El estado del ticket
+     * @param prioridad La prioridad del ticket
+     * @param creadorId El ID del usuario creador
+     * @param categoriaId El ID de la categoría
+     * @return El ticket creado
+     * 
+     * @author Grupo 25
+     */
+    public Ticket crearTicketCompleto(String titulo, String descripcion, String estado, String prioridad, int creadorId, int categoriaId) {
+        Usuario creador = usuarioRepository.findById(creadorId)
+                .orElseThrow(() -> new RuntimeException("Usuario creador no encontrado con ID: " + creadorId));
+        
+        Categoria categoria = categoriaService.getCategoriaPorId(categoriaId);
+        
+        Ticket ticket = new Ticket();
+        ticket.setTitulo(titulo);
+        ticket.setDescripcion(descripcion);
+        ticket.setEstado(estado);
+        ticket.setPrioridad(prioridad);
+        ticket.setFechaCreacion(LocalDateTime.now());
+        ticket.setCreador(creador);
+        ticket.setCategoria(categoria);
+        
+        return ticketRepository.save(ticket);
+    }
+
+    /**
+     * Cambia el estado de un ticket.
+     * 
+     * @param id El ID del ticket.
+     * @param estado El nuevo estado del ticket.
+     * @return El ticket actualizado.
+     * 
+     * @author Grupo 25
+     */
+    public Ticket cambiarEstadoTicket(int id, String estado) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+        ticket.setEstado(estado);
+        if ("RESUELTO".equals(estado)) {
+            ticket.setFechaResolucion(LocalDateTime.now());
+        }
+        return ticketRepository.save(ticket);
     }
 }
