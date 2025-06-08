@@ -144,4 +144,44 @@ public class TicketService {
     public long contarTicketsPorEstadoYCreador(String estado, int creadorId) {
         return ticketRepository.countByEstadoAndCreadorId(estado, creadorId);
     }
+
+    /**
+     * Cuenta la cantidad de tickets por prioridad.
+     * 
+     * @param prioridad la prioridad de los tickets a contar
+     * @return la cantidad de tickets con la prioridad especificada
+     * @author Dante Zulli
+     */
+    public long contarTicketsPorPrioridad(String prioridad) {
+        return ticketRepository.countByPrioridad(prioridad);
+    }
+
+    /**
+     * Cuenta la cantidad de tickets por prioridad y creador.
+     * 
+     * @param prioridad la prioridad de los tickets a contar
+     * @param creadorId el ID del creador de los tickets
+     * @return la cantidad de tickets con la prioridad y creador especificados
+     * @author Dante Zulli
+     */
+    public long contarTicketsPorPrioridadYCreador(String prioridad, int creadorId) {
+        return ticketRepository.countByPrioridadAndCreadorId(prioridad, creadorId);
+    }
+
+    /**
+     * Obtiene todos los tickets asignados a un usuario específico.
+     *
+     * @param usuarioId El ID del usuario asignado.
+     * @return La lista de tickets asignados al usuario.
+     * 
+     * @throws RuntimeException Si no se encuentra el usuario con el ID dado.
+     * 
+     * @author Dante Zulli
+     */
+    public List<Ticket> getTodosLosTicketsPorUsuarioAsignado(int usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
+
+        return ticketRepository.findByAsignado(usuario);
+    }
 }
