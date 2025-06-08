@@ -3,21 +3,17 @@
 <body>
   <!-- Fragmento unificado del sidebar con lógica basada en roles -->
   <div th:fragment="sidebar-unified">
-    <!-- Extraer el primer rol de la lista de authorities -->
-    <div th:with="primaryRole=${#authentication.authorities.toArray()[0].authority}">
-      
-      <!-- Sidebar para ADMIN -->
-      <div th:if="${primaryRole == 'ROLE_ADMIN'}" 
-           th:replace="~{fragments/sidebar-admin.html}"></div>
-      
-      <!-- Sidebar para TECNICO -->
-      <div th:if="${primaryRole == 'ROLE_TECNICO'}" 
-           th:replace="~{fragments/sidebar-tecnico.html}"></div>
-      
-      <!-- Sidebar para CLIENTE -->
-      <div th:if="${primaryRole == 'ROLE_CLIENTE'}" 
-           th:replace="~{fragments/sidebar-cliente.html}"></div>
-    </div>
+    <!-- Sidebar para ADMIN (si tiene rol ADMIN) -->
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" 
+         th:replace="~{fragments/sidebar-admin.html}"></div>
+    
+    <!-- Sidebar para TECNICO (si tiene rol TECNICO pero NO admin) -->
+    <div th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'') and !hasRole(''ROLE_ADMIN'')')}" 
+         th:replace="~{fragments/sidebar-tecnico.html}"></div>
+    
+    <!-- Sidebar para CLIENTE (si tiene rol CLIENTE pero NO admin y NO técnico) -->
+    <div th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}" 
+         th:replace="~{fragments/sidebar-cliente.html}"></div>
   </div>
 </body>
 </html> 
