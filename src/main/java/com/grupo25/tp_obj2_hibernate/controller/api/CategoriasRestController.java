@@ -1,4 +1,4 @@
-package com.grupo25.tp_obj2_hibernate.controller;
+package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/categorias")
-public class CategoriasController {
+public class CategoriasRestController {
 
     private CategoriaService categoriaService;
 
-    public CategoriasController(CategoriaService categoriaService) {
+    public CategoriasRestController(CategoriaService categoriaService) {
         this.categoriaService = categoriaService;
     }
 

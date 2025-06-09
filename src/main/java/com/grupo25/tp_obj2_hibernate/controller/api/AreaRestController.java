@@ -1,4 +1,4 @@
-package com.grupo25.tp_obj2_hibernate.controller;
+package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/areas")
-public class AreaController {
+public class AreaRestController {
 
     private final AreaService areaService;
 
-    public AreaController (AreaService areaService) {
+    public AreaRestController (AreaService areaService) {
         this.areaService = areaService;
     }
 

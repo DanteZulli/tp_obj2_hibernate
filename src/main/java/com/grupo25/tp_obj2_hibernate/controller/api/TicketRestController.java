@@ -1,4 +1,4 @@
-package com.grupo25.tp_obj2_hibernate.controller;
+package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import java.util.List;
 
@@ -25,11 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/tickets")
-public class TicketController {
+public class TicketRestController {
 
     private TicketService ticketService;
     
-    public TicketController(@Autowired TicketService ticketService) {
+    public TicketRestController(@Autowired TicketService ticketService) {
         this.ticketService = ticketService;
     }
 
@@ -44,7 +44,7 @@ public class TicketController {
     @GetMapping("/")
     public ResponseEntity<List<Ticket>> getTickets() {
         try {
-            List<Ticket> tickets = ticketService.getTickets();
+            List<Ticket> tickets = ticketService.getAllTickets();
             return ResponseEntity.ok(tickets);
         } catch (RuntimeException e) {
             log.error("Error al obtener los tickets", e);

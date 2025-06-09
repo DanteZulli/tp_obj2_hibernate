@@ -38,7 +38,7 @@ public class TicketService {
      * 
      * @author Ariel Serato
      */
-    public List<Ticket> getTickets() {
+    public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
     }
 

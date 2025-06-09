@@ -1,4 +1,4 @@
-package com.grupo25.tp_obj2_hibernate.controller;
+package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/usuarios")
-public class UsuarioController {
+public class UsuarioRestController {
 
     private UsuarioService usuarioService;
 
-    public UsuarioController(@Autowired UsuarioService usuarioService) {
+    public UsuarioRestController(@Autowired UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 

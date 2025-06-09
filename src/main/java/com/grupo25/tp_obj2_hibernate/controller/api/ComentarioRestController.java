@@ -1,4 +1,4 @@
-package com.grupo25.tp_obj2_hibernate.controller;
+package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import java.util.List;
 
@@ -23,11 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/comentarios")
-public class ComentarioController {
+public class ComentarioRestController {
 
 	private ComentarioService comentarioService;
 
-	public ComentarioController(ComentarioService comentarioService) {
+	public ComentarioRestController(ComentarioService comentarioService) {
 		this.comentarioService = comentarioService;
 	}
 

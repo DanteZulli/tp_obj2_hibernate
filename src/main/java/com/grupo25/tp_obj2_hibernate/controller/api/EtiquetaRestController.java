@@ -1,6 +1,5 @@
-package com.grupo25.tp_obj2_hibernate.controller;
+package com.grupo25.tp_obj2_hibernate.controller.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/etiquetas")
-public class EtiquetaController {
+public class EtiquetaRestController {
 
     private EtiquetaService etiquetaService;
 
-    public EtiquetaController(@Autowired EtiquetaService etiquetaService) {
+    public EtiquetaRestController(EtiquetaService etiquetaService) {
         this.etiquetaService = etiquetaService;
     }
     
