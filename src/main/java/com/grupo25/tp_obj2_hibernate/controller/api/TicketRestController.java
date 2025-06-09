@@ -18,6 +18,7 @@ import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
+import com.grupo25.tp_obj2_hibernate.exception.TicketException;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,14 +40,12 @@ public class TicketRestController {
 
     private TicketService ticketService;
     private UsuarioRepository usuarioRepository;
-    private CategoriaService categoriaService;
     
     public TicketRestController(@Autowired TicketService ticketService, 
                               @Autowired UsuarioRepository usuarioRepository,
                               @Autowired CategoriaService categoriaService) {
         this.ticketService = ticketService;
         this.usuarioRepository = usuarioRepository;
-        this.categoriaService = categoriaService;
     }
 
     /**
@@ -62,9 +61,9 @@ public class TicketRestController {
         try {
             List<Ticket> tickets = ticketService.getAllTickets();
             return ResponseEntity.ok(tickets);
-        } catch (RuntimeException e) {
-            log.error("Error al obtener los tickets", e);
-            return ResponseEntity.notFound().build();
+        } catch (TicketException e) {
+            log.error("Error al obtener los tickets: {}", e.getMessage(), e);
+            throw e; // Dejamos que el GlobalExceptionHandler maneje la respuesta
         }
     }
     
@@ -93,12 +92,12 @@ public class TicketRestController {
             @AuthenticationPrincipal UserDetails userDetails) {
         try {
             Usuario usuario = usuarioRepository.findByNombreUsuario(userDetails.getUsername())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                    .orElseThrow(() -> new TicketException("Usuario no encontrado", "USER_NOT_FOUND"));
             Ticket ticket = ticketService.crearTicketCompleto(titulo, descripcion, estado, prioridad, usuario.getId(), categoriaId);
             return ResponseEntity.ok(ticket);
-        } catch (Exception e) {
-            log.error("Error al crear el ticket", e);
-            return ResponseEntity.badRequest().build();
+        } catch (TicketException e) {
+            log.error("Error al crear el ticket: {}", e.getMessage(), e);
+            throw e; // Dejamos que el GlobalExceptionHandler maneje la respuesta
         }
     }
 
@@ -117,9 +116,9 @@ public class TicketRestController {
         try {
             String estado = ticketService.getEstadoTicket(id);
             return ResponseEntity.ok(estado);
-        } catch (RuntimeException e) {
-            log.error("Error al obtener el estado del ticket con ID: {}", id, e);
-            return ResponseEntity.notFound().build();
+        } catch (TicketException e) {
+            log.error("Error al obtener el estado del ticket con ID: {}: {}", id, e.getMessage(), e);
+            throw e; // Dejamos que el GlobalExceptionHandler maneje la respuesta
         }
     }
 
@@ -138,9 +137,9 @@ public class TicketRestController {
         try {
             List<Ticket> tickets = ticketService.getTodosLosTicketsPorUsuarioCreador(id);            
             return ResponseEntity.ok(tickets);
-        } catch (RuntimeException e) {
-            log.error("Error al obtener los tickets creados por el usuario con el ID: {}", id, e);
-            return ResponseEntity.notFound().build();
+        } catch (TicketException e) {
+            log.error("Error al obtener los tickets creados por el usuario con ID: {}: {}", id, e.getMessage(), e);
+            throw e; // Dejamos que el GlobalExceptionHandler maneje la respuesta
         }
     }
 
@@ -158,9 +157,9 @@ public class TicketRestController {
         try {
             Ticket ticket = ticketService.asignarTicketATecnico(id, idTecnico);
             return ResponseEntity.ok(ticket);
-        } catch (RuntimeException e) {
-            log.error("Error al asignar el ticket con ID: {} al tecnico con ID: {}", id, idTecnico, e);
-            return ResponseEntity.notFound().build();
+        } catch (TicketException e) {
+            log.error("Error al asignar el ticket con ID: {} al tecnico con ID: {}: {}", id, idTecnico, e.getMessage(), e);
+            throw e; // Dejamos que el GlobalExceptionHandler maneje la respuesta
         }
     }
 
@@ -178,9 +177,9 @@ public class TicketRestController {
         try {
             Ticket ticket = ticketService.cambiarPrioridadTicket(id, prioridad);
             return ResponseEntity.ok(ticket);
-        } catch (RuntimeException e) {
-            log.error("Error al cambiar la prioridad del ticket con ID: {} a {}", id, prioridad, e);
-            return ResponseEntity.notFound().build();
+        } catch (TicketException e) {
+            log.error("Error al cambiar la prioridad del ticket con ID: {}: {}", id, e.getMessage(), e);
+            throw e; // Dejamos que el GlobalExceptionHandler maneje la respuesta
         }
     }
 
@@ -207,9 +206,11 @@ public class TicketRestController {
 
             Ticket ticket = ticketService.actualizarTicket(id, titulo, descripcion, estado, prioridad, categoriaId);
             return ResponseEntity.ok(ticket);
-        } catch (RuntimeException e) {
-            log.error("Error al actualizar el ticket con ID: {}", id, e);
-            return ResponseEntity.badRequest().build();
+        } catch (TicketException e) {
+            log.error("Error al actualizar el ticket con ID: {}: {}", id, e.getMessage(), e);
+            throw e; // Dejamos que el GlobalExceptionHandler maneje la respuesta
+        } catch (NumberFormatException e) {
+            throw new TicketException("El ID de categoría debe ser un número válido", "INVALID_CATEGORY_ID");
         }
     }
 

@@ -10,6 +10,7 @@ import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
 import com.grupo25.tp_obj2_hibernate.repository.TicketRepository;
 import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
+import com.grupo25.tp_obj2_hibernate.exception.TicketException;
 
 /**
  * Clase de servicio para manejar la lógica de negocio relacionada con los
@@ -86,7 +87,7 @@ public class TicketService {
      */
     public List<Ticket> getTodosLosTicketsPorUsuarioCreador(int usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
+                .orElseThrow(() -> new TicketException("Usuario no encontrado con ID: " + usuarioId, "USER_NOT_FOUND"));
 
         return ticketRepository.findByCreador(usuario);
     }
@@ -102,9 +103,9 @@ public class TicketService {
      */
     public Ticket asignarTicketATecnico(int id, int idTecnico) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
         Usuario tecnico = usuarioRepository.findById(idTecnico)
-                .orElseThrow(() -> new RuntimeException("Tecnico no encontrado con ID: " + idTecnico));
+                .orElseThrow(() -> new TicketException("Tecnico no encontrado con ID: " + idTecnico, "TECHNICIAN_NOT_FOUND"));
         ticket.setAsignado(tecnico);
         return ticketRepository.save(ticket);
     }
@@ -120,7 +121,7 @@ public class TicketService {
      */
     public Ticket cambiarPrioridadTicket(int id, String prioridad) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
         ticket.setPrioridad(prioridad);
         return ticketRepository.save(ticket);
     }
@@ -183,7 +184,7 @@ public class TicketService {
      */
     public List<Ticket> getTodosLosTicketsPorUsuarioAsignado(int usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
+                .orElseThrow(() -> new TicketException("Usuario no encontrado con ID: " + usuarioId, "USER_NOT_FOUND"));
 
         return ticketRepository.findByAsignado(usuario);
     }
@@ -200,7 +201,7 @@ public class TicketService {
      */
     public Ticket getTicketPorId(int id) {
         return ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
     }
 
     /**
@@ -214,7 +215,7 @@ public class TicketService {
     public Ticket actualizarTicket(Ticket ticket) {
         // Verificar que el ticket existe
         ticketRepository.findById(ticket.getId())
-                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + ticket.getId()));
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + ticket.getId(), "TICKET_NOT_FOUND"));
         
         return ticketRepository.save(ticket);
     }
@@ -234,7 +235,7 @@ public class TicketService {
      */
     public Ticket crearTicketCompleto(String titulo, String descripcion, String estado, String prioridad, int creadorId, int categoriaId) {
         Usuario creador = usuarioRepository.findById(creadorId)
-                .orElseThrow(() -> new RuntimeException("Usuario creador no encontrado con ID: " + creadorId));
+                .orElseThrow(() -> new TicketException("Usuario creador no encontrado con ID: " + creadorId, "USER_NOT_FOUND"));
         
         Categoria categoria = categoriaService.getCategoriaPorId(categoriaId);
         
@@ -261,7 +262,7 @@ public class TicketService {
      */
     public Ticket cambiarEstadoTicket(int id, String estado) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
         ticket.setEstado(estado);
         if ("RESUELTO".equals(estado)) {
             ticket.setFechaResolucion(LocalDateTime.now());
@@ -284,7 +285,7 @@ public class TicketService {
      */
     public Ticket actualizarTicket(int id, String titulo, String descripcion, String estado, String prioridad, Integer categoriaId) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
         
         ticket.setTitulo(titulo);
         ticket.setDescripcion(descripcion);
