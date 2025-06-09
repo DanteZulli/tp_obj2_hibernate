@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
+import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
+import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,9 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 public class TicketRestController {
 
     private TicketService ticketService;
+    private UsuarioRepository usuarioRepository;
     
-    public TicketRestController(@Autowired TicketService ticketService) {
+    public TicketRestController(@Autowired TicketService ticketService, @Autowired UsuarioRepository usuarioRepository) {
         this.ticketService = ticketService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     /**
@@ -61,7 +67,8 @@ public class TicketRestController {
      * @param estado       El estado del ticket
      * @param prioridad 	Indica si el ticket es urgente o no
      * @param fechaCreacion	Indica la fecha de creacion del ticket
-     * @param
+     * @param categoriaId	Indica el ID de la categoria del ticket
+     * @param userDetails	Detalles del usuario autenticado
      * @return El ticket creado
      * 
      * @author Ignacio Cruz
@@ -71,9 +78,18 @@ public class TicketRestController {
             @RequestParam String titulo,
             @RequestParam String descripcion,
             @RequestParam String estado,
-            @RequestParam String prioridad) {
-        Ticket ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad);
-        return ResponseEntity.ok(ticket);
+            @RequestParam String prioridad,
+            @RequestParam Integer categoriaId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            Usuario usuario = usuarioRepository.findByNombreUsuario(userDetails.getUsername())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            Ticket ticket = ticketService.crearTicketCompleto(titulo, descripcion, estado, prioridad, usuario.getId(), categoriaId);
+            return ResponseEntity.ok(ticket);
+        } catch (Exception e) {
+            log.error("Error al crear el ticket", e);
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**

@@ -13,13 +13,13 @@
 
                         <!-- Opciones para CLIENTE -->
                         <div th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'')')}">
-                            <a class="nav-link" th:href="@{/tickets/mis-tickets}">
+                            <a class="nav-link" th:href="@{/cliente/tickets}">
                                 <div class="sb-nav-link-icon">
                                     <i class="fas fa-ticket-alt"></i>
                                 </div>
                                 Mis Tickets
                             </a>
-                            <a class="nav-link" th:href="@{/tickets/crear}">
+                            <a class="nav-link" th:href="@{/cliente/tickets/crear}">
                                 <div class="sb-nav-link-icon">
                                     <i class="fas fa-plus"></i>
                                 </div>
@@ -29,7 +29,7 @@
 
                         <!-- Opciones para TECNICO -->
                         <div th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'')')}">
-                            <a class="nav-link" th:href="@{/tickets/asignados}">
+                            <a class="nav-link" th:href="@{/tecnico/tickets}">
                                 <div class="sb-nav-link-icon">
                                     <i class="fas fa-tasks"></i>
                                 </div>

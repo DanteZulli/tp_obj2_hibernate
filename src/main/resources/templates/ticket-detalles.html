@@ -22,7 +22,7 @@
             <h1 class="mt-4">Detalles del Ticket</h1>
             <ol class="breadcrumb mb-4">
               <li class="breadcrumb-item"><a th:href="@{/}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/tickets}">Tickets</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/cliente/tickets}">Tickets</a></li>
               <li class="breadcrumb-item active">Detalles</li>
             </ol>
 
@@ -40,8 +40,8 @@
                       <i class="fas fa-ticket-alt me-1"></i>
                       Ticket #<span th:text="${ticket.id}"></span>
                     </div>
-                    <div>
-                      <a th:href="@{'/tickets/editar/' + ${ticket.id}}" class="btn btn-sm btn-warning">
+                    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}">
+                      <a th:href="@{'/cliente/tickets/editar/' + ${ticket.id}}" class="btn btn-sm btn-warning">
                         <i class="fas fa-edit"></i> Editar
                       </a>
                     </div>
@@ -102,8 +102,7 @@
                 </div>
               </div>
               
-              <div class="col-lg-4">
-                <!-- Panel de acciones -->
+              <div class="col-lg-4" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}">
                 <div class="card mb-4">
                   <div class="card-header">
                     <i class="fas fa-cogs me-1"></i>
