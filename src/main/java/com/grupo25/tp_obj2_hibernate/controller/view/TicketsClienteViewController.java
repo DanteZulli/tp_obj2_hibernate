@@ -19,9 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Controller
 @RequestMapping("/cliente/tickets")
-public class TicketsViewController {
+public class TicketsClienteViewController {
 
-    private static final String CLIENTE_TICKETS_VIEW = "cliente-tickets";
+    private static final String TICKETS_VIEW = "tickets";
     private static final String CREAR_TICKET_VIEW = "crear-ticket";
     private static final String TICKET_DETALLES_VIEW = "ticket-detalles";
 
@@ -29,7 +29,7 @@ public class TicketsViewController {
     private final TicketService ticketService;
     private final UsuarioRepository usuarioRepository;
 
-    public TicketsViewController(CategoriaService categoriaService, TicketService ticketService, UsuarioRepository usuarioRepository) {
+    public TicketsClienteViewController(CategoriaService categoriaService, TicketService ticketService, UsuarioRepository usuarioRepository) {
         this.categoriaService = categoriaService;
         this.ticketService = ticketService;
         this.usuarioRepository = usuarioRepository;
@@ -38,7 +38,7 @@ public class TicketsViewController {
     @GetMapping
     public ModelAndView listarTickets(@AuthenticationPrincipal UserDetails userDetails,
                                     @RequestParam(required = false) String success) {
-        ModelAndView mav = new ModelAndView(CLIENTE_TICKETS_VIEW);
+        ModelAndView mav = new ModelAndView(TICKETS_VIEW);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = usuarioRepository.findByNombreUsuario(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));

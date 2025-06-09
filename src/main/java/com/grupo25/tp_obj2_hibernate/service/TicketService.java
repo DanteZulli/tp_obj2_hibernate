@@ -268,4 +268,38 @@ public class TicketService {
         }
         return ticketRepository.save(ticket);
     }
+
+    /**
+     * Actualiza un ticket con los campos específicos.
+     * 
+     * @param id El ID del ticket a actualizar
+     * @param titulo El nuevo título del ticket
+     * @param descripcion La nueva descripción del ticket
+     * @param estado El nuevo estado del ticket
+     * @param prioridad La nueva prioridad del ticket
+     * @param categoriaId El ID de la nueva categoría
+     * @return El ticket actualizado
+     * 
+     * @author Grupo 25
+     */
+    public Ticket actualizarTicket(int id, String titulo, String descripcion, String estado, String prioridad, Integer categoriaId) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + id));
+        
+        ticket.setTitulo(titulo);
+        ticket.setDescripcion(descripcion);
+        ticket.setEstado(estado);
+        ticket.setPrioridad(prioridad);
+        
+        if (categoriaId != null) {
+            Categoria categoria = categoriaService.getCategoriaPorId(categoriaId);
+            ticket.setCategoria(categoria);
+        }
+        
+        if ("RESUELTO".equals(estado) && ticket.getFechaResolucion() == null) {
+            ticket.setFechaResolucion(LocalDateTime.now());
+        }
+        
+        return ticketRepository.save(ticket);
+    }
 }

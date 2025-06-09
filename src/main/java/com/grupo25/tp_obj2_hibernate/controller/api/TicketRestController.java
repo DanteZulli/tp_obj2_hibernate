@@ -1,6 +1,7 @@
 package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +18,11 @@ import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,15 +33,20 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
+@PreAuthorize("hasAnyRole('ROLE_TECNICO', 'ROLE_ADMIN')")
 @RequestMapping("/api/tickets")
 public class TicketRestController {
 
     private TicketService ticketService;
     private UsuarioRepository usuarioRepository;
+    private CategoriaService categoriaService;
     
-    public TicketRestController(@Autowired TicketService ticketService, @Autowired UsuarioRepository usuarioRepository) {
+    public TicketRestController(@Autowired TicketService ticketService, 
+                              @Autowired UsuarioRepository usuarioRepository,
+                              @Autowired CategoriaService categoriaService) {
         this.ticketService = ticketService;
         this.usuarioRepository = usuarioRepository;
+        this.categoriaService = categoriaService;
     }
 
     /**
@@ -171,6 +181,35 @@ public class TicketRestController {
         } catch (RuntimeException e) {
             log.error("Error al cambiar la prioridad del ticket con ID: {} a {}", id, prioridad, e);
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Actualiza un ticket existente.
+     * 
+     * @param id El ID del ticket a actualizar
+     * @param requestBody Mapa con los campos a actualizar
+     * @return ResponseEntity con el ticket actualizado, o un error si no existe
+     * 
+     * @author Grupo 25
+     */
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_TECNICO', 'ROLE_ADMIN')")
+    public ResponseEntity<Ticket> actualizarTicket(
+            @PathVariable("id") int id,
+            @RequestBody Map<String, String> requestBody) {
+        try {
+            String titulo = requestBody.get("titulo");
+            String descripcion = requestBody.get("descripcion");
+            String estado = requestBody.get("estado");
+            String prioridad = requestBody.get("prioridad");
+            Integer categoriaId = Integer.parseInt(requestBody.get("categoriaId"));
+
+            Ticket ticket = ticketService.actualizarTicket(id, titulo, descripcion, estado, prioridad, categoriaId);
+            return ResponseEntity.ok(ticket);
+        } catch (RuntimeException e) {
+            log.error("Error al actualizar el ticket con ID: {}", id, e);
+            return ResponseEntity.badRequest().build();
         }
     }
 

@@ -37,7 +37,7 @@
             </div>
 
             <!-- Botón para crear nuevo ticket -->
-            <div class="row mb-3">
+            <div class="row mb-3" th:unless="${#authorization.expression('hasRole(''ROLE_TECNICO'')')}">
               <div class="col-12">
                 <a th:href="@{/cliente/tickets/crear}" class="btn btn-primary">
                   <i class="fas fa-plus"></i> Crear Nuevo Ticket
@@ -89,11 +89,13 @@
                       <td th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
                       <td>
                         <div class="btn-group" role="group">
-                          <a th:href="@{'/cliente/tickets/' + ${ticket.id}}" class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                          <a th:href="${#authorization.expression('hasRole(''ROLE_TECNICO'')') ? '/tecnico/tickets/' + ticket.id : '/cliente/tickets/' + ticket.id}" 
+                             class="btn btn-sm btn-outline-primary" 
+                             title="Ver detalles">
                             <i class="fas fa-eye"></i>
                           </a>
-                          <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}" 
-                             th:href="@{'/cliente/tickets/editar/' + ${ticket.id}}" 
+                          <a th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'')')}" 
+                             th:href="@{'/tecnico/tickets/editar/' + ${ticket.id}}" 
                              class="btn btn-sm btn-outline-warning" 
                              title="Editar">
                             <i class="fas fa-edit"></i>
