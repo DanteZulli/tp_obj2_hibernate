@@ -1,5 +1,8 @@
 package com.grupo25.tp_obj2_hibernate.service;
 
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
@@ -34,6 +37,18 @@ public class UsuarioService {
         this.tecnicoRepository = tecnicoRepository;
         this.direccionRepository = direccionRepository;
         this.areaRepository = areaRepository;
+    }
+    
+    
+    /**
+     * Trae lista de clientes de la base de datos.
+     * 
+     * @return lista de clientes.
+     * 
+     * @author Ignacio Cruz
+     */
+    public List<Cliente> findAllClientes(){
+      return clienteRepository.findAll();
     }
 
     /**

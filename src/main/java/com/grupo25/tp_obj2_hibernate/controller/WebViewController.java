@@ -1,14 +1,18 @@
 package com.grupo25.tp_obj2_hibernate.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.grupo25.tp_obj2_hibernate.model.entities.Cliente;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
+import com.grupo25.tp_obj2_hibernate.service.UsuarioService;
 import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +21,17 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class WebViewController {
 
+    private final UsuarioService usuarioService;
+
     private final TicketService ticketService;
     private final UsuarioRepository usuarioRepository;
     private final CategoriaService categoriaService;
 
-    public WebViewController(TicketService ticketService, UsuarioRepository usuarioRepository, CategoriaService categoriaService) {
+    public WebViewController(TicketService ticketService, UsuarioRepository usuarioRepository, CategoriaService categoriaService, UsuarioService usuarioService) {
         this.ticketService = ticketService;
         this.usuarioRepository = usuarioRepository;
         this.categoriaService = categoriaService;
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping("/tickets")
@@ -98,10 +105,33 @@ public class WebViewController {
     @GetMapping("/clientes")
     public ModelAndView mostrarClientes() {
         log.info("📝 Logging: Mostrando página de clientes");
+        List<Cliente> clientesLista = usuarioService.findAllClientes();
         ModelAndView mav = new ModelAndView("clientes");
+        mav.addObject("clientes", clientesLista);
+        return mav;
+    }
+
+    
+	/**
+	 * Redirige a informacion de usuario
+	 * 
+	 * @author Ignacio Cruz
+	 */
+    @GetMapping("/profile")
+    public ModelAndView mostrarProfile() {
+        log.info("📝 Logging: Mostrando página de informacion de usuario");
+        ModelAndView mav = new ModelAndView("profile");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         
-        // TODO: Implementar servicio para obtener clientes
-        // Por ahora solo retornamos la vista
+        try {
+        	Usuario usuario = usuarioRepository.findByNombreUsuario(auth.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+                mav.addObject("usuario", usuario);
+        } catch (Exception e) {
+            log.error("📝 Logging: Error al obtener usuario", e);
+            mav.addObject("error", "Error al cargar usuario");
+        }
         
         return mav;
     }

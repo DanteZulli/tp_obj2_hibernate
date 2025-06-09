@@ -55,15 +55,21 @@
                 <table id="datatablesSimple" class="table table-striped">
                   <thead>
                     <tr>
-                      <th>ID</th>
+                      <th>nroCliente</th>
                       <th>Nombre</th>
                       <th>Email</th>
                       <th>Plan</th>
-                      <th>Tipo</th>
                       <th>Usuario</th>
                       <th>Fecha Registro</th>
-                      <th>Acciones</th>
                     </tr>
+					<tr th:each="cliente : ${clientes}">
+						<td th:text="${cliente.nroCliente}">nroCliente</td>
+						<td th:text="${cliente.nombre}">Nombre</td>
+						<td th:text="${cliente.email}">Email</td>
+						<td th:text="${cliente.plan}">Plan</td>
+						<td th:text="${cliente.nombreUsuario}">Usuario</td>
+						<td th:text="${#dates.format(cliente.createAt, 'dd/MM/yyyy')}">Fecha Registro</td>
+					</tr>
                   </thead>
                   <tbody>
                     <!-- Por ahora tabla vacía, se llenará con datos del backend -->
