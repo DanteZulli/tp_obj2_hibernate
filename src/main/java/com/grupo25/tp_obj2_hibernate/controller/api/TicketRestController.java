@@ -164,6 +164,28 @@ public class TicketRestController {
     }
 
     /**
+     * Tomar un ticket asignándolo al técnico autenticado.
+     * 
+     * @param id El ID del ticket
+     * @param userDetails Detalles del usuario autenticado
+     * @return ResponseEntity con el ticket actualizado, o un error si no existe
+     * 
+     * @author Grupo 25
+     */
+    @PutMapping("/{id}/tomar")
+    public ResponseEntity<Ticket> tomarTicket(@PathVariable("id") int id, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            Usuario usuario = usuarioRepository.findByNombreUsuario(userDetails.getUsername())
+                    .orElseThrow(() -> new TicketException("Usuario no encontrado", "USER_NOT_FOUND"));
+            Ticket ticket = ticketService.asignarTicketATecnico(id, usuario.getId());
+            return ResponseEntity.ok(ticket);
+        } catch (TicketException e) {
+            log.error("Error al tomar el ticket con ID: {}: {}", id, e.getMessage(), e);
+            throw e; // Dejamos que el GlobalExceptionHandler maneje la respuesta
+        }
+    }
+
+    /**
      * Cambiar la prioridad de un ticket.
      * 
      * @param id El ID del ticket

@@ -27,9 +27,9 @@ public class TicketsTecnicoViewController {
     private final UsuarioRepository usuarioRepository;
     private final CategoriaService categoriaService;
 
-    public TicketsTecnicoViewController(TicketService ticketService, 
-                                      UsuarioRepository usuarioRepository,
-                                      CategoriaService categoriaService) {
+    public TicketsTecnicoViewController(TicketService ticketService,
+            UsuarioRepository usuarioRepository,
+            CategoriaService categoriaService) {
         this.ticketService = ticketService;
         this.usuarioRepository = usuarioRepository;
         this.categoriaService = categoriaService;
@@ -37,13 +37,9 @@ public class TicketsTecnicoViewController {
 
     @GetMapping
     public ModelAndView listarTickets(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestParam(required = false) String success) {
+            @RequestParam(required = false) String success) {
         ModelAndView mav = new ModelAndView(TICKETS_VIEW);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuario = usuarioRepository.findByNombreUsuario(auth.getName())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        mav.addObject("tickets", ticketService.getTodosLosTicketsPorUsuarioAsignado(usuario.getId()));
-        mav.addObject("esTecnico", true);
+        mav.addObject("tickets", ticketService.getAllTickets());
         if (success != null) {
             mav.addObject("success", success);
         }
@@ -54,7 +50,6 @@ public class TicketsTecnicoViewController {
     public ModelAndView verDetallesTicket(@PathVariable Integer id) {
         ModelAndView mav = new ModelAndView(TICKET_DETALLES_VIEW);
         mav.addObject("ticket", ticketService.getTicketPorId(id));
-        mav.addObject("esTecnico", true);
         return mav;
     }
 
@@ -65,4 +60,4 @@ public class TicketsTecnicoViewController {
         mav.addObject("categorias", categoriaService.getCategorias());
         return mav;
     }
-} 
+}
