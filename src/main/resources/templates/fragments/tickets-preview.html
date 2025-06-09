@@ -1,0 +1,77 @@
+<div th:fragment="tickets-preview">
+    <!-- Cards de Tickets -->
+    <div class="row" th:if="${tickets != null and !tickets.empty}">
+        <div class="col-lg-4 col-md-6 mb-4" th:each="ticket : ${tickets}">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-start">
+                    <h6 class="card-title mb-0" th:text="${ticket.titulo}">Título del Ticket</h6>
+                    <span class="badge" th:classappend="${ticket.estado == 'ABIERTO' ? 'bg-primary' : 
+                                         ticket.estado == 'EN_PROGRESO' ? 'bg-warning' : 
+                                         ticket.estado == 'RESUELTO' ? 'bg-success' : 'bg-secondary'}"
+                        th:text="${ticket.estado}">Estado</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text small" th:text="${#strings.abbreviate(ticket.descripcion, 100)}">Descripción del
+                        ticket...</p>
+                    <div class="row text-muted small">
+                        <div class="col-12 mb-2">
+                            <i class="fas fa-user"></i>
+                            <strong>Creador:</strong> <span th:text="${ticket.creador.nombre}">Usuario</span>
+                        </div>
+                        <div class="col-12 mb-2" th:if="${ticket.asignado != null}">
+                            <i class="fas fa-user-cog"></i>
+                            <strong>Asignado:</strong> <span th:text="${ticket.asignado.nombre}">Técnico</span>
+                        </div>
+                        <div class="col-12 mb-2" th:if="${ticket.categoria != null}">
+                            <i class="fas fa-tag"></i>
+                            <strong>Categoría:</strong> <span th:text="${ticket.categoria.nombre}">Categoría</span>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <strong>Prioridad:</strong>
+                            <span class="badge" th:classappend="${ticket.prioridad == 'ALTA' ? 'bg-danger' : 
+                                                 ticket.prioridad == 'MEDIA' ? 'bg-warning' : 'bg-info'}"
+                                th:text="${ticket.prioridad}">Prioridad</span>
+                        </div>
+                        <div class="col-12">
+                            <i class="fas fa-calendar"></i>
+                            <strong>Creado:</strong> <span
+                                th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">
+                                ID: #<span th:text="${ticket.id}">123</span>
+                            </small>
+                        </div>
+                        <div class="col-6 text-end">
+                            <a href="#" class="btn btn-sm btn-outline-primary"
+                                th:onclick="'alert(\'Ver detalles del ticket #' + ${ticket.id} + '\')'">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mensaje cuando no hay tickets -->
+    <div class="row" th:if="${tickets == null or tickets.empty}">
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i>
+                <span
+                    th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}">
+                    No tienes tickets creados aún.
+                </span>
+                <span th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}">
+                    No hay tickets en el sistema.
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

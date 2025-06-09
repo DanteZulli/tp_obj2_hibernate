@@ -14,7 +14,6 @@ import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
 
 @Controller
-@RequestMapping("/tickets")
 public class TicketsViewController {
 
     private static final String TICKETS_VIEW = "tickets";
@@ -34,12 +33,6 @@ public class TicketsViewController {
         this.categoriaService = categoriaService;
     }
 
-    @GetMapping
-    public ModelAndView getTickets() {
-        ModelAndView mav = new ModelAndView(TICKETS_VIEW);
-        mav.addObject("tickets", ticketService.getAllTickets());
-        return mav;
-    }
 
     @GetMapping("/crear")
     public ModelAndView getCrearTicket() {

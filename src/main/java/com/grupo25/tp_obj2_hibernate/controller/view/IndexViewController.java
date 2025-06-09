@@ -34,12 +34,16 @@ public class IndexViewController {
             mav.addObject("ticketsEnProgreso", ticketService.contarTicketsPorEstado("EN_PROGRESO"));
             mav.addObject("ticketsResueltos", ticketService.contarTicketsPorEstado("RESUELTO"));
             mav.addObject("ticketsUrgentes", ticketService.contarTicketsPorPrioridad("ALTA"));
+
+            mav.addObject("tickets", ticketService.getAllTickets());
         } else if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TECNICO"))) {
             mav.addObject("tipoUsuario", "Técnico");
             mav.addObject("ticketsAbiertos", ticketService.contarTicketsPorEstado("ABIERTO"));
             mav.addObject("ticketsEnProgreso", ticketService.contarTicketsPorEstado("EN_PROGRESO"));
             mav.addObject("ticketsResueltos", ticketService.contarTicketsPorEstado("RESUELTO"));
             mav.addObject("ticketsUrgentes", ticketService.contarTicketsPorPrioridad("ALTA"));
+
+            mav.addObject("tickets", ticketService.getAllTickets());
         } else {
             Usuario usuario = usuarioRepository.findByNombreUsuario(auth.getName())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -52,6 +56,7 @@ public class IndexViewController {
                     ticketService.contarTicketsPorEstadoYCreador("RESUELTO", usuario.getId()));
             mav.addObject("ticketsUrgentes", ticketService.contarTicketsPorPrioridadYCreador("ALTA", usuario.getId()));
 
+            mav.addObject("tickets", ticketService.getTodosLosTicketsPorUsuarioCreador(usuario.getId()));
         }
 
         return mav;

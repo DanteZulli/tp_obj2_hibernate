@@ -40,30 +40,12 @@
                         <!-- Menú de Administración (solo para ADMIN) -->
                         <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                             <div class="sb-sidenav-menu-heading">Administración</div>
-                            <a class="nav-link" th:href="@{/}">
-                                <div class="sb-nav-link-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                Gestión de Usuarios
-                            </a>
-                            <a class="nav-link" th:href="@{/}">
-                                <div class="sb-nav-link-icon">
-                                    <i class="fas fa-user-cog"></i>
-                                </div>
-                                Gestión de Técnicos
-                            </a>
-                            <a class="nav-link" th:href="@{/}">
-                                <div class="sb-nav-link-icon">
-                                    <i class="fas fa-user-tie"></i>
-                                </div>
-                                Gestión de Clientes
-                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">Usuario: <span th:text="${#authentication.name}"></span></div>
-                    <div class="small">Rol: <span th:text="${#authentication.authorities}"></span></div>
+                    <div class="small">Roles: <span th:text="${#authentication.authorities}"></span></div>
                 </div>
             </nav>
         </div>
