@@ -54,4 +54,17 @@ public class CategoriaService {
         cat.setDescripcion(categoria.getDescripcion());
         return categoriaRepository.save(cat);
     }
+
+    /**
+     * Obtener categoria por ID
+     * 
+     * @param id El ID de la categoría
+     * @return Categoria
+     * 
+     * @author Grupo 25
+     */
+    public Categoria getCategoriaPorId(int id) {
+        return categoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + id));
+    }
 }

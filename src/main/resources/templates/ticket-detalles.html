@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Detalles del Ticket - Ticketera Grupo 25</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="sb-nav-fixed">
+    <nav th:replace="~{fragments/navbar.html}"></nav>
+    <div id="layoutSidenav">
+      <div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
+      
+      <div id="layoutSidenav_content">
+        <main>
+          <div class="container-fluid px-4">
+            <h1 class="mt-4">Detalles del Ticket</h1>
+            <ol class="breadcrumb mb-4">
+              <li class="breadcrumb-item"><a th:href="@{/}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/tickets}">Tickets</a></li>
+              <li class="breadcrumb-item active">Detalles</li>
+            </ol>
+
+            <!-- Mensaje de error si existe -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+            </div>
+
+            <!-- Detalles del ticket -->
+            <div th:if="${ticket}" class="row">
+              <div class="col-lg-8">
+                <div class="card mb-4">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                      <i class="fas fa-ticket-alt me-1"></i>
+                      Ticket #<span th:text="${ticket.id}"></span>
+                    </div>
+                    <div>
+                      <a th:href="@{'/tickets/editar/' + ${ticket.id}}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Editar
+                      </a>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title" th:text="${ticket.titulo}"></h5>
+                    <p class="card-text" th:text="${ticket.descripcion}"></p>
+                    
+                    <div class="row mt-3">
+                      <div class="col-md-6">
+                        <strong>Estado:</strong>
+                        <span class="badge ms-2" 
+                              th:classappend="${ticket.estado == 'ABIERTO' ? 'bg-warning' : 
+                                              ticket.estado == 'EN_PROGRESO' ? 'bg-info' : 
+                                              ticket.estado == 'RESUELTO' ? 'bg-success' : 'bg-secondary'}"
+                              th:text="${ticket.estado}">
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <strong>Prioridad:</strong>
+                        <span class="badge ms-2" 
+                              th:classappend="${ticket.prioridad == 'ALTA' ? 'bg-danger' : 
+                                              ticket.prioridad == 'MEDIA' ? 'bg-warning' : 'bg-secondary'}"
+                              th:text="${ticket.prioridad}">
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <strong>Creador:</strong>
+                        <span th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin asignar'}"></span>
+                      </div>
+                      <div class="col-md-6">
+                        <strong>Asignado:</strong>
+                        <span th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></span>
+                      </div>
+                    </div>
+                    
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <strong>Categoría:</strong>
+                        <span th:text="${ticket.categoria != null ? ticket.categoria.nombre : 'Sin categoría'}"></span>
+                      </div>
+                      <div class="col-md-6">
+                        <strong>Fecha de Creación:</strong>
+                        <span th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span>
+                      </div>
+                    </div>
+                    
+                    <div th:if="${ticket.fechaResolucion}" class="row mt-2">
+                      <div class="col-md-6">
+                        <strong>Fecha de Resolución:</strong>
+                        <span th:text="${#temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm')}"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-lg-4">
+                <!-- Panel de acciones -->
+                <div class="card mb-4">
+                  <div class="card-header">
+                    <i class="fas fa-cogs me-1"></i>
+                    Acciones
+                  </div>
+                  <div class="card-body">
+                    <div class="d-grid gap-2">
+                      <button class="btn btn-outline-primary" type="button">
+                        <i class="fas fa-user-plus"></i> Asignar Técnico
+                      </button>
+                      <button class="btn btn-outline-info" type="button">
+                        <i class="fas fa-sync-alt"></i> Cambiar Estado
+                      </button>
+                      <button class="btn btn-outline-warning" type="button">
+                        <i class="fas fa-exclamation-triangle"></i> Cambiar Prioridad
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comentarios -->
+            <div th:if="${comentarios}" class="row mt-4">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <i class="fas fa-comments me-1"></i>
+                    Comentarios (<span th:text="${#lists.size(comentarios)}"></span>)
+                  </div>
+                  <div class="card-body">
+                    <div th:if="${#lists.isEmpty(comentarios)}" class="text-muted text-center py-3">
+                      No hay comentarios para este ticket.
+                    </div>
+                    
+                    <div th:each="comentario : ${comentarios}" class="border-bottom pb-3 mb-3">
+                      <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                          <strong th:text="${comentario.usuario != null ? comentario.usuario.nombre : 'Usuario Anónimo'}"></strong>
+                          <small class="text-muted ms-2" 
+                                 th:text="${#temporals.format(comentario.fecha, 'dd/MM/yyyy HH:mm')}"></small>
+                        </div>
+                      </div>
+                      <p class="mt-2 mb-0" th:text="${comentario.mensaje}"></p>
+                    </div>
+                    
+                    <!-- Formulario para agregar comentario -->
+                    <div class="mt-4">
+                      <h6>Agregar Comentario</h6>
+                      <form>
+                        <div class="mb-3">
+                          <textarea class="form-control" rows="3" placeholder="Escribe tu comentario aquí..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                          <i class="fas fa-paper-plane"></i> Enviar Comentario
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <footer th:replace="~{fragments/footer.html}"></footer>
+      </div>
+    </div>
+
+    <script th:src="@{/js/sidebar.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  </body>
+</html> 
