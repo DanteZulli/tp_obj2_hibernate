@@ -13,6 +13,8 @@ import com.grupo25.tp_obj2_hibernate.repository.DireccionRepository;
 import com.grupo25.tp_obj2_hibernate.repository.TecnicoRepository;
 import com.grupo25.tp_obj2_hibernate.model.entities.Direccion;
 import com.grupo25.tp_obj2_hibernate.model.entities.Area;
+import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
+import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
 
 /**
  * Clase de servicio para manejar la lógica de negocio relacionada con los
@@ -27,16 +29,19 @@ public class UsuarioService {
     private final TecnicoRepository tecnicoRepository;
     private final DireccionRepository direccionRepository;
     private final AreaRepository areaRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public UsuarioService(
             ClienteRepository clienteRepository,
             TecnicoRepository tecnicoRepository,
             DireccionRepository direccionRepository,
-            AreaRepository areaRepository) {
+            AreaRepository areaRepository,
+            UsuarioRepository usuarioRepository) {
         this.clienteRepository = clienteRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.direccionRepository = direccionRepository;
         this.areaRepository = areaRepository;
+        this.usuarioRepository = usuarioRepository;
     }
     
     
@@ -182,5 +187,10 @@ public class UsuarioService {
         }
 
         return tecnicoRepository.save(tecnico);
+    }
+
+    public Usuario obtenerUsuario(int usuarioId) {
+        return usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
     }
 }

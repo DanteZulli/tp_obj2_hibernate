@@ -1,67 +1,58 @@
 package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
 import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Controlador REST para manejar las operaciones relacionadas con categorías.
- * 
- * @author Grupo 25
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/categorias")
+@RequiredArgsConstructor
 public class CategoriasRestController {
 
-    private CategoriaService categoriaService;
+    private final CategoriaService categoriaService;
 
-    public CategoriasRestController(CategoriaService categoriaService) {
-        this.categoriaService = categoriaService;
-    }
-
-    /**
-     * Crear categoría
-     * 
-     * @param Categoria
-     * @return ResponseEntity con la categoría creada, o un error si no existe
-     * 
-     * @author Ariel Serato
-     */
     @PostMapping("/crear")
-    public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
+    public ResponseEntity<Categoria> crearCategoria(@RequestParam String nombre, @RequestParam(required = false) String descripcion) {
+        log.debug("Creando nueva categoría con nombre: {}", nombre);
         try {
-            Categoria cat = categoriaService.crearCategoria(categoria);
-            return ResponseEntity.ok(cat);
+            Categoria categoria = new Categoria();
+            categoria.setNombre(nombre);
+            categoria.setDescripcion(descripcion);
+            Categoria categoriaCreada = categoriaService.crearCategoria(categoria);
+            return ResponseEntity.ok(categoriaCreada);
         } catch (RuntimeException e) {
-            log.error("Error al crear la categoría: {}", categoria, e);
+            log.error("Error al crear la categoría con nombre: {}", nombre, e);
             return ResponseEntity.notFound().build();
         }
     }
 
-    /**
-     * Actualizar categoría
-     * 
-     * @param Categoria
-     * @return ResponseEntity con la categoría actualizada, o un error si no existe
-     * 
-     * @author Ariel Serato
-     */
-    @PutMapping("/actualizar")
-    public ResponseEntity<Categoria> actualizarCategoria(@RequestBody Categoria categoria) {
+    @PutMapping("/{categoriaId}")
+    public ResponseEntity<Categoria> modificarCategoria(@PathVariable int categoriaId, 
+                                                      @RequestParam String nombre,
+                                                      @RequestParam(required = false) String descripcion) {
+        log.debug("Modificando categoría con ID: {}", categoriaId);
         try {
-            Categoria cat = categoriaService.actualizarCategoria(categoria);
-            return ResponseEntity.ok(cat);
+            Categoria categoriaModificada = categoriaService.modificarCategoria(categoriaId, nombre, descripcion);
+            return ResponseEntity.ok(categoriaModificada);
         } catch (RuntimeException e) {
-            log.error("Error al actualizar la categoría: {}", categoria, e);
+            log.error("Error al modificar la categoría con ID: {}", categoriaId, e);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{categoriaId}")
+    public ResponseEntity<Categoria> obtenerCategoria(@PathVariable int categoriaId) {
+        try {
+            Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
+            return ResponseEntity.ok(categoria);
+        } catch (RuntimeException e) {
+            log.error("Error al obtener la categoría con ID: {}", categoriaId, e);
             return ResponseEntity.notFound().build();
         }
     }

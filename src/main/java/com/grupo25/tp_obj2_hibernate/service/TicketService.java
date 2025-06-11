@@ -303,4 +303,9 @@ public class TicketService {
         
         return ticketRepository.save(ticket);
     }
+
+    public Ticket obtenerTicket(int ticketId) {
+        return ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + ticketId));
+    }
 }

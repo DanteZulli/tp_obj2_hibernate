@@ -1,71 +1,102 @@
 package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Comentario;
+import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
+import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 import com.grupo25.tp_obj2_hibernate.service.ComentarioService;
+import com.grupo25.tp_obj2_hibernate.service.TicketService;
+import com.grupo25.tp_obj2_hibernate.service.UsuarioService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Controlador REST para manejar las operaciones relacionadas con comentarios.
- * 
- * @author Grupo 25
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/comentarios")
+@RequiredArgsConstructor
 public class ComentarioRestController {
 
-	private ComentarioService comentarioService;
+	private final ComentarioService comentarioService;
+	private final TicketService ticketService;
+	private final UsuarioService usuarioService;
 
-	public ComentarioRestController(ComentarioService comentarioService) {
-		this.comentarioService = comentarioService;
-	}
-
-	/**
-	 * Crea un nuevo comentario.
-	 * 
-	 * @param idTicket id del ticket al que se asigna un comentario
-	 * @param mensaje  El mensaje que se quiere ingresar al ticket
-	 * @return El comentario creado
-	 * 
-	 * @author Ignacio Cruz
-	 */
 	@PostMapping("/crear")
 	public ResponseEntity<Comentario> crearComentario(
 			@RequestParam String mensaje,
-			@RequestParam int idTicket) {
-		Comentario comentario = comentarioService.crearComentario(mensaje, idTicket);
-		return ResponseEntity.ok(comentario);
-	}
-
-	/**
-	 * Traigo los comentarios asociados a un ticket.
-	 * 
-	 * @param ticketId El id del ticket que necesitamos sus comentarios
-	 * @return Lista de comentarios relacionado al ticket
-	 * 
-	 * @author Ignacio Cruz
-	 */
-	@GetMapping("/traerComent/{idTicket}")
-	public ResponseEntity<List<Comentario>> traerComentarios(@PathVariable int idTicket) {
+			@RequestParam int idTicket,
+			@RequestParam int idUsuario) {
+		log.debug("Creando nuevo comentario para el ticket: {}", idTicket);
 		try {
-			List<Comentario> listaComentario = comentarioService.getTodosLosComentariosPorTicket(idTicket);
-			return ResponseEntity.ok(listaComentario);
+			Comentario comentario = new Comentario();
+			comentario.setMensaje(mensaje);
+			comentario.setFecha(LocalDateTime.now());
+			
+			Ticket ticket = ticketService.obtenerTicket(idTicket);
+			comentario.setTicket(ticket);
+			
+			Usuario usuario = usuarioService.obtenerUsuario(idUsuario);
+			comentario.setUsuario(usuario);
+			
+			Comentario comentarioCreado = comentarioService.crearComentario(comentario);
+			return ResponseEntity.ok(comentarioCreado);
 		} catch (RuntimeException e) {
-			log.error("Error al obtener los comentarios del ticket con el ID: {}", idTicket, e);
+			log.error("Error al crear el comentario para el ticket con ID: {}", idTicket, e);
 			return ResponseEntity.notFound().build();
 		}
-
 	}
 
+	@PutMapping("/{comentarioId}")
+	public ResponseEntity<Comentario> modificarComentario(
+			@PathVariable int comentarioId,
+			@RequestParam String mensaje,
+			@RequestParam int idTicket,
+			@RequestParam int idUsuario) {
+		log.debug("Modificando comentario con ID: {}", comentarioId);
+		try {
+			Ticket ticket = ticketService.obtenerTicket(idTicket);
+			Usuario usuario = usuarioService.obtenerUsuario(idUsuario);
+			
+			Comentario comentarioModificado = comentarioService.modificarComentario(
+				comentarioId, 
+				mensaje, 
+				LocalDateTime.now(),
+				ticket,
+				usuario
+			);
+			return ResponseEntity.ok(comentarioModificado);
+		} catch (RuntimeException e) {
+			log.error("Error al modificar el comentario con ID: {}", comentarioId, e);
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@GetMapping("/{comentarioId}")
+	public ResponseEntity<Comentario> obtenerComentario(@PathVariable int comentarioId) {
+		log.debug("Obteniendo comentario con ID: {}", comentarioId);
+		try {
+			Comentario comentario = comentarioService.obtenerComentario(comentarioId);
+			return ResponseEntity.ok(comentario);
+		} catch (RuntimeException e) {
+			log.error("Error al obtener el comentario con ID: {}", comentarioId, e);
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@GetMapping("/ticket/{idTicket}")
+	public ResponseEntity<List<Comentario>> traerComentarios(@PathVariable int idTicket) {
+		log.debug("Obteniendo todos los comentarios del ticket: {}", idTicket);
+		try {
+			List<Comentario> listaComentario = comentarioService.obtenerComentariosPorTicket(idTicket);
+			return ResponseEntity.ok(listaComentario);
+		} catch (RuntimeException e) {
+			log.error("Error al obtener los comentarios del ticket con ID: {}", idTicket, e);
+			return ResponseEntity.notFound().build();
+		}
+	}
 }

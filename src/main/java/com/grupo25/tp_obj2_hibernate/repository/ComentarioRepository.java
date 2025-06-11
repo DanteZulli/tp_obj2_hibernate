@@ -22,5 +22,5 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Integer>
      */
     List<Comentario> findByTicketOrderByFecha(Ticket ticket);
 
-    
+    List<Comentario> findByTicketId(int ticketId);
 }
