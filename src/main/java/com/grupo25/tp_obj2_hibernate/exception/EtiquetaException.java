@@ -1,19 +1,19 @@
 package com.grupo25.tp_obj2_hibernate.exception;
 
-public class TicketException extends RuntimeException {
+public class EtiquetaException extends RuntimeException {
     private final String codigo;
 
-    public TicketException(String mensaje, String codigo) {
+    public EtiquetaException(String mensaje, String codigo) {
         super(mensaje);
         this.codigo = codigo;
     }
 
-    public TicketException(String mensaje) {
+    public EtiquetaException(String mensaje) {
         super(mensaje);
-        this.codigo = "TICKET_ERROR";
+        this.codigo = "ETIQUETA_ERROR";
     }
 
     public String getCodigo() {
         return codigo;
     }
-}
+} 

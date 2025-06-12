@@ -3,18 +3,10 @@ package com.grupo25.tp_obj2_hibernate.controller.api;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
-import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
-import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
 import com.grupo25.tp_obj2_hibernate.exception.TicketException;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 public class TicketRestController {
 
     private final TicketService ticketService;
-    private final UsuarioRepository usuarioRepository;
     
     @PostMapping("/crear")
     public ResponseEntity<Ticket> crearTicket(
@@ -44,9 +35,7 @@ public class TicketRestController {
             @AuthenticationPrincipal UserDetails userDetails) {
         log.debug("Creando nuevo ticket con titulo: {}", titulo);
         try {
-            Usuario usuario = usuarioRepository.findByNombreUsuario(userDetails.getUsername())
-                    .orElseThrow(() -> new TicketException("Usuario no encontrado", "USER_NOT_FOUND"));            
-            Ticket ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad, usuario.getId(), categoriaId);
+            Ticket ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad, userDetails.getUsername(), categoriaId);
             return ResponseEntity.ok(ticket);
         } catch (TicketException e) {
             log.error("Error al crear el ticket: {}", e.getMessage(), e);
@@ -122,6 +111,7 @@ public class TicketRestController {
 
     @PutMapping("/{id}/asignar/{idTecnico}")
     public ResponseEntity<Ticket> asignarTicketATecnico(@PathVariable int id, @PathVariable int idTecnico) {
+        log.debug("Asignando ticket con ID: {} al técnico con ID: {}", id, idTecnico);
         try {
             Ticket ticket = ticketService.asignarTicketATecnico(id, idTecnico);
             return ResponseEntity.ok(ticket);
@@ -133,10 +123,9 @@ public class TicketRestController {
 
     @PutMapping("/{id}/tomar")
     public ResponseEntity<Ticket> tomarTicket(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
+        log.debug("Tomando ticket con ID: {} por el usuario: {}", id, userDetails.getUsername());
         try {
-            Usuario usuario = usuarioRepository.findByNombreUsuario(userDetails.getUsername())
-                    .orElseThrow(() -> new TicketException("Usuario no encontrado", "USER_NOT_FOUND"));
-            Ticket ticket = ticketService.asignarTicketATecnico(id, usuario.getId());
+            Ticket ticket = ticketService.tomarTicket(id, userDetails.getUsername());
             return ResponseEntity.ok(ticket);
         } catch (TicketException e) {
             log.error("Error al tomar el ticket con ID: {}: {}", id, e.getMessage(), e);
@@ -146,6 +135,7 @@ public class TicketRestController {
 
     @PutMapping("/{id}/prioridad")
     public ResponseEntity<Ticket> cambiarPrioridadTicket(@PathVariable int id, @RequestParam String prioridad) {
+        log.debug("Cambiando prioridad del ticket con ID: {} a: {}", id, prioridad);
         try {
             Ticket ticket = ticketService.cambiarPrioridadTicket(id, prioridad);
             return ResponseEntity.ok(ticket);

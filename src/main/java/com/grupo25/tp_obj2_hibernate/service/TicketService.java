@@ -22,9 +22,9 @@ public class TicketService {
     private final UsuarioRepository usuarioRepository;
     private final CategoriaService categoriaService;
 
-    public Ticket crearTicket(String titulo, String descripcion, String estado, String prioridad, Integer creadorId, Integer categoriaId) {
-        Usuario creador = usuarioRepository.findById(creadorId)
-                .orElseThrow(() -> new TicketException("Usuario creador no encontrado con ID: " + creadorId, "USER_NOT_FOUND"));
+    public Ticket crearTicket(String titulo, String descripcion, String estado, String prioridad, String nombreUsuario, Integer categoriaId) {
+        Usuario creador = usuarioRepository.findByNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new TicketException("Usuario creador no encontrado", "USER_NOT_FOUND"));
         Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
         
         Ticket ticket = new Ticket();
@@ -55,17 +55,17 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public Ticket obtenerTicket(int ticketId) {
-        return ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con ID: " + ticketId));
+    public Ticket obtenerTicket(int id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
     }
 
     public List<Ticket> obtenerTodosLosTickets() {
         return ticketRepository.findAll();
     }
 
-    public String obtenerEstadoTicket(int ticketId) {
-        return ticketRepository.findEstadoById(ticketId);
+    public String obtenerEstadoTicket(int id) {
+        return ticketRepository.findEstadoById(id);
     }
 
     public List<Ticket> obtenerTodosLosTicketsPorUsuarioCreador(int usuarioId) {
@@ -82,6 +82,12 @@ public class TicketService {
                 .orElseThrow(() -> new TicketException("Tecnico no encontrado con ID: " + idTecnico, "TECHNICIAN_NOT_FOUND"));
         ticket.setAsignado(tecnico);
         return ticketRepository.save(ticket);
+    }
+
+    public Ticket tomarTicket(int id, String nombreUsuario) {
+        Usuario tecnico = usuarioRepository.findByNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new TicketException("Usuario no encontrado", "USER_NOT_FOUND"));
+        return asignarTicketATecnico(id, tecnico.getId());
     }
 
     public Ticket cambiarPrioridadTicket(int id, String prioridad) {
@@ -123,5 +129,4 @@ public class TicketService {
         }
         return ticketRepository.save(ticket);
     }
-
 }

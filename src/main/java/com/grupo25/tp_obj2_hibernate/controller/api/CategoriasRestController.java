@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
 import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
+import com.grupo25.tp_obj2_hibernate.exception.CategoriaException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,42 +19,43 @@ public class CategoriasRestController {
     private final CategoriaService categoriaService;
 
     @PostMapping("/crear")
-    public ResponseEntity<Categoria> crearCategoria(@RequestParam String nombre, @RequestParam(required = false) String descripcion) {
+    public ResponseEntity<Categoria> crearCategoria(
+            @RequestParam String nombre, 
+            @RequestParam(required = false) String descripcion) {
         log.debug("Creando nueva categoría con nombre: {}", nombre);
         try {
-            Categoria categoria = new Categoria();
-            categoria.setNombre(nombre);
-            categoria.setDescripcion(descripcion);
-            Categoria categoriaCreada = categoriaService.crearCategoria(categoria);
+            Categoria categoriaCreada = categoriaService.crearCategoria(nombre, descripcion);
             return ResponseEntity.ok(categoriaCreada);
-        } catch (RuntimeException e) {
+        } catch (CategoriaException e) {
             log.error("Error al crear la categoría con nombre: {}", nombre, e);
-            return ResponseEntity.notFound().build();
+            throw e;
         }
     }
 
-    @PutMapping("/{categoriaId}")
-    public ResponseEntity<Categoria> modificarCategoria(@PathVariable int categoriaId, 
-                                                      @RequestParam String nombre,
-                                                      @RequestParam(required = false) String descripcion) {
-        log.debug("Modificando categoría con ID: {}", categoriaId);
+    @PutMapping("/{id}")
+    public ResponseEntity<Categoria> modificarCategoria(
+            @PathVariable int id, 
+            @RequestParam String nombre,
+            @RequestParam(required = false) String descripcion) {
+        log.debug("Modificando categoría con ID: {}", id);
         try {
-            Categoria categoriaModificada = categoriaService.modificarCategoria(categoriaId, nombre, descripcion);
+            Categoria categoriaModificada = categoriaService.modificarCategoria(id, nombre, descripcion);
             return ResponseEntity.ok(categoriaModificada);
-        } catch (RuntimeException e) {
-            log.error("Error al modificar la categoría con ID: {}", categoriaId, e);
-            return ResponseEntity.notFound().build();
+        } catch (CategoriaException e) {
+            log.error("Error al modificar la categoría con ID: {}", id, e);
+            throw e;
         }
     }
 
-    @GetMapping("/{categoriaId}")
-    public ResponseEntity<Categoria> obtenerCategoria(@PathVariable int categoriaId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Categoria> obtenerCategoria(@PathVariable int id) {
+        log.debug("Obteniendo categoría con ID: {}", id);
         try {
-            Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
+            Categoria categoria = categoriaService.obtenerCategoria(id);
             return ResponseEntity.ok(categoria);
-        } catch (RuntimeException e) {
-            log.error("Error al obtener la categoría con ID: {}", categoriaId, e);
-            return ResponseEntity.notFound().build();
+        } catch (CategoriaException e) {
+            log.error("Error al obtener la categoría con ID: {}", id, e);
+            throw e;
         }
     }
 }

@@ -1,16 +1,11 @@
 package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Etiqueta;
 import com.grupo25.tp_obj2_hibernate.service.EtiquetaService;
+import com.grupo25.tp_obj2_hibernate.exception.EtiquetaException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,38 +22,35 @@ public class EtiquetaRestController {
     public ResponseEntity<Etiqueta> crearEtiqueta(@RequestParam String nombre) {
         log.debug("Creando nueva etiqueta con nombre: {}", nombre);
         try {
-            Etiqueta etiqueta = new Etiqueta();
-            etiqueta.setNombre(nombre);
-            Etiqueta etiquetaCreada = etiquetaService.crearEtiqueta(etiqueta);
+            Etiqueta etiquetaCreada = etiquetaService.crearEtiqueta(nombre);
             return ResponseEntity.ok(etiquetaCreada);
-        } catch (RuntimeException e) {
+        } catch (EtiquetaException e) {
             log.error("Error al crear la etiqueta: {}", nombre, e);
-            return ResponseEntity.notFound().build();
+            throw e;
         }
     }
 
-    @PutMapping("/{etiquetaId}")
-    public ResponseEntity<Etiqueta> modificarEtiqueta(@PathVariable int etiquetaId, @RequestParam String nombre) {
-        log.debug("Modificando etiqueta con ID: {}", etiquetaId);
+    @PutMapping("/{id}")
+    public ResponseEntity<Etiqueta> modificarEtiqueta(@PathVariable int id, @RequestParam String nombre) {
+        log.debug("Modificando etiqueta con ID: {}", id);
         try {
-            Etiqueta etiqueta = etiquetaService.modificarEtiqueta(etiquetaId, nombre);
+            Etiqueta etiqueta = etiquetaService.modificarEtiqueta(id, nombre);
             return ResponseEntity.ok(etiqueta);
-        } catch (RuntimeException e) {
+        } catch (EtiquetaException e) {
             log.error("Error al actualizar la etiqueta: {}", nombre, e);
-            return ResponseEntity.notFound().build();
+            throw e;
         }
     }
 
-    @GetMapping("/{etiquetaId}")
-    public ResponseEntity<Etiqueta> obtenerEtiqueta(@PathVariable int etiquetaId) {
-        log.debug("Obteniendo etiqueta con ID: {}", etiquetaId);
+    @GetMapping("/{id}")
+    public ResponseEntity<Etiqueta> obtenerEtiqueta(@PathVariable int id) {
+        log.debug("Obteniendo etiqueta con ID: {}", id);
         try {
-            Etiqueta etiqueta = etiquetaService.obtenerEtiqueta(etiquetaId);
+            Etiqueta etiqueta = etiquetaService.obtenerEtiqueta(id);
             return ResponseEntity.ok(etiqueta);
-        } catch (RuntimeException e) {
-            log.error("Error al obtener la etiqueta con ID: {}", etiquetaId, e);
-            return ResponseEntity.notFound().build();
+        } catch (EtiquetaException e) {
+            log.error("Error al obtener la etiqueta con ID: {}", id, e);
+            throw e;
         }
     }
-    
 }
