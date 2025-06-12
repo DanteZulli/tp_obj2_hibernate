@@ -39,7 +39,7 @@ public class TicketsTecnicoViewController {
     public ModelAndView listarTickets(@AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(required = false) String success) {
         ModelAndView mav = new ModelAndView(TICKETS_VIEW);
-        mav.addObject("tickets", ticketService.getAllTickets());
+        mav.addObject("tickets", ticketService.obtenerTodosLosTickets());
         if (success != null) {
             mav.addObject("success", success);
         }
@@ -49,15 +49,15 @@ public class TicketsTecnicoViewController {
     @GetMapping("/{id}")
     public ModelAndView verDetallesTicket(@PathVariable Integer id) {
         ModelAndView mav = new ModelAndView(TICKET_DETALLES_VIEW);
-        mav.addObject("ticket", ticketService.getTicketPorId(id));
+        mav.addObject("ticket", ticketService.obtenerTicket(id));
         return mav;
     }
 
     @GetMapping("/editar/{id}")
     public ModelAndView editarTicket(@PathVariable Integer id) {
         ModelAndView mav = new ModelAndView(EDITAR_TICKET_VIEW);
-        mav.addObject("ticket", ticketService.getTicketPorId(id));
-        mav.addObject("categorias", categoriaService.getCategorias());
+        mav.addObject("ticket", ticketService.obtenerTicket(id));
+        mav.addObject("categorias", categoriaService.obtenerCategorias());
         return mav;
     }
 }
