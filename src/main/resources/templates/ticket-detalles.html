@@ -200,6 +200,16 @@
                     <p class="mt-2 mb-0" th:text="${comentario.mensaje != null ? comentario.mensaje : 'Sin mensaje'}">
                     </p>
                   </div>
+                  <!-- Formulario para agregar comentario -->
+                  <form id="form-comentario" th:if="${#authorization.expression('isAuthenticated()')}" class="mt-3">
+                    <input type="hidden" id="comentario-ticket-id" name="idTicket" th:value="${ticket.id}" />
+                    <div class="mb-3">
+                      <label for="comentario-mensaje" class="form-label">Nuevo comentario</label>
+                      <textarea class="form-control" id="comentario-mensaje" rows="2" maxlength="500"
+                        required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar comentario</button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -305,6 +315,45 @@
           alert('Error: ' + error.message);
         });
     }
+
+    // Script para enviar comentario
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('form-comentario');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const mensaje = document.getElementById('comentario-mensaje').value.trim();
+          if (!mensaje) {
+            alert('Por favor, escribe un comentario.');
+            return;
+          }
+          // Obtener el id del ticket desde el input hidden
+          const ticketId = document.getElementById('comentario-ticket-id').value;
+          fetch('/api/comentarios/crear', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+            },
+            body: new URLSearchParams({
+              mensaje,
+              idTicket: ticketId
+            })
+          })
+            .then(response => {
+              if (response.ok) {
+                // Recargar para mostrar el nuevo comentario
+                window.location.reload();
+              } else {
+                return response.text().then(text => { throw new Error(text); });
+              }
+            })
+            .catch(error => {
+              alert('Error al agregar el comentario: ' + error.message);
+            });
+        });
+      }
+    });
   </script>
 </body>
 

@@ -11,6 +11,8 @@ import com.grupo25.tp_obj2_hibernate.exception.ComentarioException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Slf4j
 @RestController
@@ -24,10 +26,11 @@ public class ComentarioRestController {
 	public ResponseEntity<Comentario> crearComentario(
 			@RequestParam String mensaje,
 			@RequestParam int idTicket,
-			@RequestParam int idUsuario) {
+			@AuthenticationPrincipal UserDetails userDetails) {
 		log.debug("Creando nuevo comentario para el ticket: {}", idTicket);
 		try {
-			Comentario comentarioCreado = comentarioService.crearComentario(mensaje, idTicket, idUsuario);
+			Comentario comentarioCreado = comentarioService.crearComentario(mensaje, idTicket,
+					userDetails.getUsername());
 			return ResponseEntity.ok(comentarioCreado);
 		} catch (ComentarioException e) {
 			log.error("Error al crear el comentario para el ticket con ID: {}", idTicket, e);
@@ -40,10 +43,11 @@ public class ComentarioRestController {
 			@PathVariable int id,
 			@RequestParam String mensaje,
 			@RequestParam int idTicket,
-			@RequestParam int idUsuario) {
+			@AuthenticationPrincipal UserDetails userDetails) {
 		log.debug("Modificando comentario con ID: {}", id);
 		try {
-			Comentario comentarioModificado = comentarioService.modificarComentario(id, mensaje, idTicket, idUsuario);
+			Comentario comentarioModificado = comentarioService.modificarComentario(id, mensaje, idTicket,
+					userDetails.getUsername());
 			return ResponseEntity.ok(comentarioModificado);
 		} catch (ComentarioException e) {
 			log.error("Error al modificar el comentario con ID: {}", id, e);
