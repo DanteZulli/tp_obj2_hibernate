@@ -148,4 +148,30 @@ public class TicketRestController {
             throw e;
         }
     }
+
+    @PutMapping("/{ticketId}/etiquetas/{etiquetaId}")
+    public ResponseEntity<Ticket> agregarEtiquetaATicket(@PathVariable int ticketId, @PathVariable int etiquetaId) {
+        log.debug("Agregando etiqueta con ID: {} al ticket con ID: {}", etiquetaId, ticketId);
+        try {
+            Ticket ticket = ticketService.agregarEtiquetaATicket(ticketId, etiquetaId);
+            return ResponseEntity.ok(ticket);
+        } catch (TicketException e) {
+            log.error("Error al agregar la etiqueta con ID: {} al ticket con ID: {}: {}", etiquetaId, ticketId,
+                    e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    @DeleteMapping("/{ticketId}/etiquetas/{etiquetaId}")
+    public ResponseEntity<Ticket> quitarEtiquetaDeTicket(@PathVariable int ticketId, @PathVariable int etiquetaId) {
+        log.debug("Quitando etiqueta con ID: {} del ticket con ID: {}", etiquetaId, ticketId);
+        try {
+            Ticket ticket = ticketService.quitarEtiquetaDeTicket(ticketId, etiquetaId);
+            return ResponseEntity.ok(ticket);
+        } catch (TicketException e) {
+            log.error("Error al quitar la etiqueta con ID: {} del ticket con ID: {}: {}", etiquetaId, ticketId,
+                    e.getMessage(), e);
+            throw e;
+        }
+    }
 }

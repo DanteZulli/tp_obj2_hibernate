@@ -31,4 +31,8 @@ public class EtiquetaService {
         return etiquetaRepository.findById(id)
                 .orElseThrow(() -> new EtiquetaException("Etiqueta no encontrada"));
     }
+
+    public java.util.List<Etiqueta> obtenerEtiquetas() {
+        return etiquetaRepository.findAll();
+    }
 }

@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.model.entities.Usuario;
 import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
+import com.grupo25.tp_obj2_hibernate.model.entities.Etiqueta;
 import com.grupo25.tp_obj2_hibernate.repository.TicketRepository;
 import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
 import com.grupo25.tp_obj2_hibernate.exception.TicketException;
+import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
+import com.grupo25.tp_obj2_hibernate.service.EtiquetaService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,12 +24,14 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final UsuarioRepository usuarioRepository;
     private final CategoriaService categoriaService;
+    private final EtiquetaService etiquetaService;
 
-    public Ticket crearTicket(String titulo, String descripcion, String estado, String prioridad, String nombreUsuario, Integer categoriaId) {
+    public Ticket crearTicket(String titulo, String descripcion, String estado, String prioridad, String nombreUsuario,
+            Integer categoriaId) {
         Usuario creador = usuarioRepository.findByNombreUsuario(nombreUsuario)
                 .orElseThrow(() -> new TicketException("Usuario creador no encontrado", "USER_NOT_FOUND"));
         Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
-        
+
         Ticket ticket = new Ticket();
         ticket.setTitulo(titulo);
         ticket.setDescripcion(descripcion);
@@ -38,20 +43,21 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public Ticket modificarTicket(int id, String titulo, String descripcion, String estado, String prioridad, Integer categoriaId) {
+    public Ticket modificarTicket(int id, String titulo, String descripcion, String estado, String prioridad,
+            Integer categoriaId) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
-        
+
         ticket.setTitulo(titulo);
         ticket.setDescripcion(descripcion);
         ticket.setEstado(estado);
         ticket.setPrioridad(prioridad);
-        
+
         if (categoriaId != null) {
             Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
             ticket.setCategoria(categoria);
         }
-        
+
         return ticketRepository.save(ticket);
     }
 
@@ -79,7 +85,8 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
         Usuario tecnico = usuarioRepository.findById(idTecnico)
-                .orElseThrow(() -> new TicketException("Tecnico no encontrado con ID: " + idTecnico, "TECHNICIAN_NOT_FOUND"));
+                .orElseThrow(() -> new TicketException("Tecnico no encontrado con ID: " + idTecnico,
+                        "TECHNICIAN_NOT_FOUND"));
         ticket.setAsignado(tecnico);
         return ticketRepository.save(ticket);
     }
@@ -127,6 +134,24 @@ public class TicketService {
         if ("RESUELTO".equals(estado)) {
             ticket.setFechaResolucion(LocalDateTime.now());
         }
+        return ticketRepository.save(ticket);
+    }
+
+    public Ticket agregarEtiquetaATicket(int ticketId, int etiquetaId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + ticketId, "TICKET_NOT_FOUND"));
+        Etiqueta etiqueta = etiquetaService.obtenerEtiqueta(etiquetaId);
+        if (!ticket.getEtiquetas().contains(etiqueta)) {
+            ticket.getEtiquetas().add(etiqueta);
+        }
+        return ticketRepository.save(ticket);
+    }
+
+    public Ticket quitarEtiquetaDeTicket(int ticketId, int etiquetaId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + ticketId, "TICKET_NOT_FOUND"));
+        Etiqueta etiqueta = etiquetaService.obtenerEtiqueta(etiquetaId);
+        ticket.getEtiquetas().remove(etiqueta);
         return ticketRepository.save(ticket);
     }
 }

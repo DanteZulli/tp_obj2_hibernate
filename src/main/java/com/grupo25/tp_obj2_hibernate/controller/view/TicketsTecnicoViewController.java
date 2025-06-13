@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
+import com.grupo25.tp_obj2_hibernate.service.EtiquetaService;
 
 @Controller
 @RequestMapping("/tecnico/tickets")
@@ -25,6 +26,7 @@ public class TicketsTecnicoViewController {
 
     private final TicketService ticketService;
     private final CategoriaService categoriaService;
+    private final EtiquetaService etiquetaService;
 
     @GetMapping
     public ModelAndView listarTickets(@AuthenticationPrincipal UserDetails userDetails,
@@ -49,6 +51,7 @@ public class TicketsTecnicoViewController {
         ModelAndView mav = new ModelAndView(EDITAR_TICKET_VIEW);
         mav.addObject("ticket", ticketService.obtenerTicket(id));
         mav.addObject("categorias", categoriaService.obtenerCategorias());
+        mav.addObject("etiquetas", etiquetaService.obtenerEtiquetas());
         return mav;
     }
 }

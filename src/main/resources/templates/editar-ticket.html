@@ -107,43 +107,57 @@
                       </div>
                     </div>
 
-                    <!-- Información adicional del ticket (estática, compacta) -->
-                    <div class="row mb-2 align-items-center">
-                      <div class="col-md-4 fw-bold">Creado por:</div>
-                      <div class="col-md-8"><span
-                          th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin creador'}"></span></div>
-                    </div>
-                    <div class="row mb-2 align-items-center">
-                      <div class="col-md-4 fw-bold">Fecha de creación:</div>
-                      <div class="col-md-8"><span
-                          th:text="${ticket.fechaCreacion != null ? #temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}"></span>
+                    <!-- Información adicional y etiquetas en dos columnas -->
+                    <div class="row mb-2 align-items-start">
+                      <div class="col-md-6">
+                        <div class="row mb-2 align-items-center">
+                          <div class="col-5 fw-bold">Creado por:</div>
+                          <div class="col-7"><span
+                              th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin creador'}"></span></div>
+                        </div>
+                        <div class="row mb-2 align-items-center">
+                          <div class="col-5 fw-bold">Fecha de creación:</div>
+                          <div class="col-7"><span
+                              th:text="${ticket.fechaCreacion != null ? #temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}"></span>
+                          </div>
+                        </div>
+                        <div class="row mb-2 align-items-center">
+                          <div class="col-5 fw-bold">Asignado a:</div>
+                          <div class="col-7"><span
+                              th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></span>
+                          </div>
+                        </div>
+                        <div class="row mb-2 align-items-center">
+                          <div class="col-5 fw-bold">Fecha de resolución:</div>
+                          <div class="col-7"><span
+                              th:text="${ticket.fechaResolucion != null ? #temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm') : 'No resuelto'}"></span>
+                          </div>
+                        </div>
+                        <div class="row mb-2 align-items-center">
+                          <div class="col-5 fw-bold">ID:</div>
+                          <div class="col-7"><span th:text="${ticket.id}"></span></div>
+                        </div>
                       </div>
-                    </div>
-                    <div class="row mb-2 align-items-center">
-                      <div class="col-md-4 fw-bold">Asignado a:</div>
-                      <div class="col-md-8"><span
-                          th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></span></div>
-                    </div>
-                    <div class="row mb-2 align-items-center">
-                      <div class="col-md-4 fw-bold">Fecha de resolución:</div>
-                      <div class="col-md-8"><span
-                          th:text="${ticket.fechaResolucion != null ? #temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm') : 'No resuelto'}"></span>
+                      <div class="col-md-6 d-flex">
+                        <div class="w-100 d-flex flex-column" style="min-height: 100px;">
+                          <div class="fw-bold mb-2" style="align-self: flex-start;">Etiquetas:</div>
+                          <div class="flex-grow-1">
+                            <div id="etiquetasCheckboxes" class="mb-2">
+                              <div th:each="etiqueta : ${etiquetas}">
+                                <div class="form-check">
+                                  <input class="form-check-input etiqueta-checkbox" type="checkbox"
+                                    th:id="'etiqueta_' + ${etiqueta.id}" th:value="${etiqueta.id}"
+                                    th:checked="${ticket.etiquetas != null and ticket.etiquetas.contains(etiqueta)}">
+                                  <label class="form-check-label" th:for="'etiqueta_' + ${etiqueta.id}"
+                                    th:text="${etiqueta.nombre}"></label>
+                                </div>
+                              </div>
+                            </div>
+                            <span th:if="${etiquetas == null or etiquetas.empty}" class="text-muted">Sin etiquetas
+                              disponibles</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div class="row mb-2 align-items-center">
-                      <div class="col-md-4 fw-bold">Etiquetas:</div>
-                      <div class="col-md-8">
-                        <span th:if="${ticket.etiquetas != null and !ticket.etiquetas.empty}">
-                          <span th:each="etiqueta : ${ticket.etiquetas}">
-                            <span class="badge bg-secondary me-1" th:text="${etiqueta.nombre}">Etiqueta</span>
-                          </span>
-                        </span>
-                        <span th:if="${ticket.etiquetas == null or ticket.etiquetas.empty}">Sin etiquetas</span>
-                      </div>
-                    </div>
-                    <div class="row mb-2 align-items-center">
-                      <div class="col-md-4 fw-bold">ID:</div>
-                      <div class="col-md-8"><span th:text="${ticket.id}"></span></div>
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">
@@ -210,17 +224,19 @@
     crossorigin="anonymous"></script>
 
   <script>
+    // Guardar etiquetas originales para saber cuáles se agregan o quitan
+    const etiquetasOriginales = Array.from(document.querySelectorAll('.etiqueta-checkbox:checked')).map(cb => cb.value);
+    // --- Envío del formulario principal ---
     document.getElementById('editarTicketForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-
-      // Ocultar mensajes previos
       document.getElementById('successMsg').classList.add('d-none');
       document.getElementById('errorMsg').classList.add('d-none');
-
       const ticketId = document.getElementById('ticketId').value;
       const form = e.target;
       const formData = new FormData(form);
-
+      // Obtener etiquetas seleccionadas
+      const etiquetasSeleccionadas = Array.from(document.querySelectorAll('.etiqueta-checkbox:checked')).map(cb => cb.value);
+      // 1. Actualizar los campos principales del ticket
       try {
         const response = await fetch(`/api/tickets/${ticketId}`, {
           method: 'PUT',
@@ -229,29 +245,32 @@
           },
           body: formData
         });
-
-        if (response.ok) {
-          document.getElementById('successText').textContent = 'Ticket actualizado correctamente.';
-          document.getElementById('successMsg').classList.remove('d-none');
-        } else {
-          let errorMsg = 'Error al actualizar el ticket.';
-          try {
-            const errorData = await response.json();
-            if (errorData && errorData.message) {
-              errorMsg = errorData.message;
+        if (!response.ok) throw new Error('Error al actualizar el ticket.');
+        // 2. Sincronizar etiquetas (agregar/quitar)
+        const originales = new Set(etiquetasOriginales);
+        const seleccionadas = new Set(etiquetasSeleccionadas);
+        const aAgregar = etiquetasSeleccionadas.filter(id => !originales.has(id));
+        const aQuitar = etiquetasOriginales.filter(id => !seleccionadas.has(id));
+        for (const id of aAgregar) {
+          await fetch(`/api/tickets/${ticketId}/etiquetas/${id}`, {
+            method: 'PUT',
+            headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
             }
-          } catch (e) {
-            // Si no es JSON, intentar mostrar texto plano
-            try {
-              const errorText = await response.text();
-              if (errorText) errorMsg = errorText;
-            } catch (e2) { }
-          }
-          document.getElementById('errorText').textContent = errorMsg;
-          document.getElementById('errorMsg').classList.remove('d-none');
+          });
         }
+        for (const id of aQuitar) {
+          await fetch(`/api/tickets/${ticketId}/etiquetas/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+            }
+          });
+        }
+        document.getElementById('successText').textContent = 'Ticket actualizado correctamente.';
+        document.getElementById('successMsg').classList.remove('d-none');
       } catch (error) {
-        document.getElementById('errorText').textContent = 'Error de red al actualizar el ticket.';
+        document.getElementById('errorText').textContent = error.message || 'Error al actualizar el ticket.';
         document.getElementById('errorMsg').classList.remove('d-none');
       }
     });
