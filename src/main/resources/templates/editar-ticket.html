@@ -41,9 +41,9 @@
           </div>
 
           <!-- Formulario de edición -->
-          <div th:if="${ticket}" class="row justify-content-center">
+          <div th:if="${ticket}" class="row">
             <div class="col-lg-8">
-              <div class="card">
+              <div class="card mb-4">
                 <div class="card-header">
                   <i class="fas fa-edit me-1"></i>
                   Editar Ticket #<span th:text="${ticket.id}"></span>
@@ -51,29 +51,31 @@
                 <div class="card-body">
                   <form id="editarTicketForm">
                     <input type="hidden" id="ticketId" th:value="${ticket.id}">
-                    <div class="row">
-                      <div class="col-md-12 mb-3">
-                        <label for="titulo" class="form-label">Título *</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" th:value="${ticket.titulo}"
-                          required minlength="5" maxlength="100">
-                        <div class="form-text">Mínimo 5 caracteres, máximo 100.</div>
+                    <!-- Título (solo lectura) -->
+                    <div class="row mb-3 align-items-center">
+                      <div class="col-md-3 fw-bold">
+                        Título:
+                      </div>
+                      <div class="col-md-9">
+                        <span th:text="${ticket.titulo}"></span>
+                        <input type="hidden" name="titulo" th:value="${ticket.titulo}" />
                       </div>
                     </div>
-
-                    <div class="row">
-                      <div class="col-md-12 mb-3">
-                        <label for="descripcion" class="form-label">Descripción *</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" required
-                          minlength="10" maxlength="1000" th:text="${ticket.descripcion}"></textarea>
-                        <div class="form-text">Mínimo 10 caracteres, máximo 1000.</div>
+                    <!-- Descripción (solo lectura) -->
+                    <div class="row mb-3 align-items-center">
+                      <div class="col-md-3 fw-bold">
+                        Descripción:
+                      </div>
+                      <div class="col-md-9">
+                        <span th:text="${ticket.descripcion}"></span>
+                        <input type="hidden" name="descripcion" th:value="${ticket.descripcion}" />
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col-md-6 mb-3">
-                        <label for="estado" class="form-label">Estado *</label>
+                        <label for="estado" class="form-label fw-bold">Estado <span class="text-danger">*</span></label>
                         <select class="form-select" id="estado" name="estado" required>
-                          <option value="">Seleccione un estado</option>
                           <option value="ABIERTO" th:selected="${ticket.estado == 'ABIERTO'}">Abierto</option>
                           <option value="EN_PROGRESO" th:selected="${ticket.estado == 'EN_PROGRESO'}">En Progreso
                           </option>
@@ -81,29 +83,22 @@
                           <option value="CERRADO" th:selected="${ticket.estado == 'CERRADO'}">Cerrado</option>
                         </select>
                       </div>
-
                       <div class="col-md-6 mb-3">
-                        <label for="prioridad" class="form-label">Prioridad *</label>
+                        <label for="prioridad" class="form-label fw-bold">Prioridad <span
+                            class="text-danger">*</span></label>
                         <select class="form-select" id="prioridad" name="prioridad" required>
-                          <option value="">Seleccione una prioridad</option>
-                          <option value="BAJA" th:selected="${ticket.prioridad == 'BAJA'}">
-                            <i class="fas fa-arrow-down text-success"></i> Baja
-                          </option>
-                          <option value="MEDIA" th:selected="${ticket.prioridad == 'MEDIA'}">
-                            <i class="fas fa-minus text-warning"></i> Media
-                          </option>
-                          <option value="ALTA" th:selected="${ticket.prioridad == 'ALTA'}">
-                            <i class="fas fa-arrow-up text-danger"></i> Alta
-                          </option>
+                          <option value="BAJA" th:selected="${ticket.prioridad == 'BAJA'}">Baja</option>
+                          <option value="MEDIA" th:selected="${ticket.prioridad == 'MEDIA'}">Media</option>
+                          <option value="ALTA" th:selected="${ticket.prioridad == 'ALTA'}">Alta</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col-md-12 mb-3">
-                        <label for="categoriaId" class="form-label">Categoría *</label>
+                        <label for="categoriaId" class="form-label fw-bold">Categoría <span
+                            class="text-danger">*</span></label>
                         <select class="form-select" id="categoriaId" name="categoriaId" required>
-                          <option value="">Seleccione una categoría</option>
                           <option th:each="categoria : ${categorias}" th:value="${categoria.id}"
                             th:text="${categoria.nombre}"
                             th:selected="${ticket.categoria != null && ticket.categoria.id == categoria.id}">
@@ -112,34 +107,46 @@
                       </div>
                     </div>
 
-                    <!-- Información adicional del ticket -->
-                    <div class="row">
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label">Creado por:</label>
-                        <p class="form-control-plaintext"
-                          th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin asignar'}"></p>
-                      </div>
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label">Fecha de creación:</label>
-                        <p class="form-control-plaintext"
-                          th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></p>
+                    <!-- Información adicional del ticket (estática, compacta) -->
+                    <div class="row mb-2 align-items-center">
+                      <div class="col-md-4 fw-bold">Creado por:</div>
+                      <div class="col-md-8"><span
+                          th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin creador'}"></span></div>
+                    </div>
+                    <div class="row mb-2 align-items-center">
+                      <div class="col-md-4 fw-bold">Fecha de creación:</div>
+                      <div class="col-md-8"><span
+                          th:text="${ticket.fechaCreacion != null ? #temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}"></span>
                       </div>
                     </div>
-
-                    <div class="row">
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label">Asignado a:</label>
-                        <p class="form-control-plaintext"
-                          th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></p>
-                      </div>
-                      <div th:if="${ticket.fechaResolucion}" class="col-md-6 mb-3">
-                        <label class="form-label">Fecha de resolución:</label>
-                        <p class="form-control-plaintext"
-                          th:text="${#temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm')}"></p>
+                    <div class="row mb-2 align-items-center">
+                      <div class="col-md-4 fw-bold">Asignado a:</div>
+                      <div class="col-md-8"><span
+                          th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></span></div>
+                    </div>
+                    <div class="row mb-2 align-items-center">
+                      <div class="col-md-4 fw-bold">Fecha de resolución:</div>
+                      <div class="col-md-8"><span
+                          th:text="${ticket.fechaResolucion != null ? #temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm') : 'No resuelto'}"></span>
                       </div>
                     </div>
+                    <div class="row mb-2 align-items-center">
+                      <div class="col-md-4 fw-bold">Etiquetas:</div>
+                      <div class="col-md-8">
+                        <span th:if="${ticket.etiquetas != null and !ticket.etiquetas.empty}">
+                          <span th:each="etiqueta : ${ticket.etiquetas}">
+                            <span class="badge bg-secondary me-1" th:text="${etiqueta.nombre}">Etiqueta</span>
+                          </span>
+                        </span>
+                        <span th:if="${ticket.etiquetas == null or ticket.etiquetas.empty}">Sin etiquetas</span>
+                      </div>
+                    </div>
+                    <div class="row mb-2 align-items-center">
+                      <div class="col-md-4 fw-bold">ID:</div>
+                      <div class="col-md-8"><span th:text="${ticket.id}"></span></div>
+                    </div>
 
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between mt-4">
                       <a th:href="@{'/tecnico/tickets/' + ${ticket.id}}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Volver a Detalles
                       </a>
@@ -153,6 +160,41 @@
                       </div>
                     </div>
                   </form>
+                </div>
+              </div>
+            </div>
+            <!-- Columna de revisiones -->
+            <div class="col-lg-4">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <i class="fas fa-history me-1"></i>
+                  Revisiones
+                </div>
+                <div class="card-body">
+                  <div th:if="${ticket.revisiones == null or ticket.revisiones.empty}"
+                    class="text-muted text-center py-3">
+                    Sin revisiones para este ticket.
+                  </div>
+                  <div th:each="revision : ${ticket.revisiones}" class="border-bottom pb-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <strong
+                          th:text="${revision.usuarioModificacion != null ? revision.usuarioModificacion.nombre : 'Usuario desconocido'}"></strong>
+                        <small class="text-muted ms-2"
+                          th:text="${revision.fechaCambio != null ? #temporals.format(revision.fechaCambio, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}"></small>
+                      </div>
+                    </div>
+                    <div class="mt-2 mb-1">
+                      <span><strong>Campo modificado:</strong> <span
+                          th:text="${revision.campoModificado != null ? revision.campoModificado : 'Desconocido'}"></span></span><br />
+                      <span><strong>Valor anterior:</strong> <span
+                          th:text="${revision.valorAnterior != null ? revision.valorAnterior : 'N/A'}"></span></span><br />
+                      <span><strong>Valor nuevo:</strong> <span
+                          th:text="${revision.valorNuevo != null ? revision.valorNuevo : 'N/A'}"></span></span><br />
+                      <span><strong>Observaciones:</strong> <span
+                          th:text="${revision.observaciones != null ? revision.observaciones : 'Sin observaciones'}"></span></span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class TicketRestController {
 
     private final TicketService ticketService;
-    
+
     @PostMapping("/crear")
     public ResponseEntity<Ticket> crearTicket(
             @RequestParam String titulo,
@@ -35,7 +35,8 @@ public class TicketRestController {
             @AuthenticationPrincipal UserDetails userDetails) {
         log.debug("Creando nuevo ticket con titulo: {}", titulo);
         try {
-            Ticket ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad, userDetails.getUsername(), categoriaId);
+            Ticket ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad, userDetails.getUsername(),
+                    categoriaId);
             return ResponseEntity.ok(ticket);
         } catch (TicketException e) {
             log.error("Error al crear el ticket: {}", e.getMessage(), e);
@@ -43,6 +44,8 @@ public class TicketRestController {
         }
     }
 
+    // TODO: Este y otros métodos de modificacion definidos con PUT deberían de
+    // utilizar DTOs para manejar datos opcionales de entrada.
     @PutMapping("/{id}")
     public ResponseEntity<Ticket> modificarTicket(
             @PathVariable int id,
@@ -101,7 +104,7 @@ public class TicketRestController {
     public ResponseEntity<List<Ticket>> obtenerTodosLosTicketsPorUsuarioCreador(@PathVariable int id) {
         log.debug("Obteniendo todos los tickets creados por el usuario con ID: {}", id);
         try {
-            List<Ticket> tickets = ticketService.obtenerTodosLosTicketsPorUsuarioCreador(id);            
+            List<Ticket> tickets = ticketService.obtenerTodosLosTicketsPorUsuarioCreador(id);
             return ResponseEntity.ok(tickets);
         } catch (TicketException e) {
             log.error("Error al obtener los tickets creados por el usuario con ID: {}: {}", id, e.getMessage(), e);
@@ -116,7 +119,8 @@ public class TicketRestController {
             Ticket ticket = ticketService.asignarTicketATecnico(id, idTecnico);
             return ResponseEntity.ok(ticket);
         } catch (TicketException e) {
-            log.error("Error al asignar el ticket con ID: {} al tecnico con ID: {}: {}", id, idTecnico, e.getMessage(), e);
+            log.error("Error al asignar el ticket con ID: {} al tecnico con ID: {}: {}", id, idTecnico, e.getMessage(),
+                    e);
             throw e;
         }
     }
