@@ -10,6 +10,8 @@
   <link rel="icon" th:href="@{/assets/img/favicon.ico}" type="image/x-icon" />
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <meta name="usuario" th:content="${#authentication.name}" />
+  <meta name="usuario-actual" th:content="${#authentication.name}" />
   <title>Detalles del Ticket - Ticketera Grupo 25</title>
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -79,7 +81,8 @@
                     </div>
                     <div class="col-md-6 mb-2">
                       <strong>Asignado:</strong>
-                      <span th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></span>
+                      <span id="asignado-actual"
+                        th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></span>
                     </div>
                   </div>
 
@@ -170,17 +173,6 @@
                     <button class="btn btn-outline-primary" type="button" th:data-ticket-id="${ticket.id}"
                       onclick="tomarTicket(this)">
                       <i class="fas fa-user-plus"></i> Tomar Ticket
-                    </button>
-                    <button class="btn btn-outline-info" type="button" th:data-ticket-id="${ticket.id}"
-                      th:data-titulo="${ticket.titulo}" th:data-descripcion="${ticket.descripcion}"
-                      th:data-prioridad="${ticket.prioridad}"
-                      th:data-categoria-id="${ticket.categoria != null ? ticket.categoria.id : ''}"
-                      onclick="mostrarModalEstado(this)">
-                      <i class="fas fa-sync-alt"></i> Cambiar Estado
-                    </button>
-                    <button class="btn btn-outline-warning" type="button" th:data-ticket-id="${ticket.id}"
-                      onclick="mostrarModalPrioridad(this)">
-                      <i class="fas fa-exclamation-triangle"></i> Cambiar Prioridad
                     </button>
                   </div>
                 </div>
@@ -273,6 +265,9 @@
   <script>
     function tomarTicket(button) {
       const ticketId = button.dataset.ticketId;
+      // Obtener el nombre del técnico asignado antes de tomar el ticket
+      const asignadoAnterior = document.getElementById('asignado-actual').textContent.trim();
+      const usuarioActual = document.querySelector('meta[name="usuario-actual"]').getAttribute('content');
       fetch(`/api/tickets/${ticketId}/tomar`, {
         method: 'PUT',
         headers: {
@@ -282,90 +277,29 @@
       })
         .then(response => {
           if (response.ok) {
-            window.location.reload();
+            // Registrar la revisión automáticamente
+            // El valor nuevo será 'Técnico actual' (el backend lo resuelve por usuario autenticado)
+            return fetch('/api/revisiones/crear', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+              },
+              body: new URLSearchParams({
+                ticketId,
+                campoModificado: 'Asignado',
+                valorAnterior: asignadoAnterior,
+                valorNuevo: usuarioActual,
+                observaciones: `Revisión generada automáticamente al tomar el ticket por ${usuarioActual}`
+              })
+            });
           } else {
             throw new Error('Error al tomar el ticket');
           }
         })
-        .catch(error => {
-          alert('Error: ' + error.message);
-        });
-    }
-
-    function mostrarModalEstado(button) {
-      const modalEstado = new bootstrap.Modal(document.getElementById('modalEstado'));
-      modalEstado.show();
-
-      // Guardar los datos del ticket en el modal para usarlos después
-      const modal = document.getElementById('modalEstado');
-      modal.dataset.ticketId = button.dataset.ticketId;
-      modal.dataset.titulo = button.dataset.titulo;
-      modal.dataset.descripcion = button.dataset.descripcion;
-      modal.dataset.prioridad = button.dataset.prioridad;
-      modal.dataset.categoriaId = button.dataset.categoriaId;
-    }
-
-    function mostrarModalPrioridad(button) {
-      const modalPrioridad = new bootstrap.Modal(document.getElementById('modalPrioridad'));
-      modalPrioridad.show();
-
-      // Guardar el ID del ticket en el modal
-      document.getElementById('modalPrioridad').dataset.ticketId = button.dataset.ticketId;
-    }
-
-    function cambiarEstado() {
-      const modal = document.getElementById('modalEstado');
-      const ticketId = modal.dataset.ticketId;
-      const titulo = modal.dataset.titulo;
-      const descripcion = modal.dataset.descripcion;
-      const prioridad = modal.dataset.prioridad;
-      const categoriaId = modal.dataset.categoriaId;
-      const nuevoEstado = document.getElementById('selectEstado').value;
-
-      fetch(`/api/tickets/${ticketId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-          titulo: titulo,
-          descripcion: descripcion,
-          estado: nuevoEstado,
-          prioridad: prioridad,
-          categoriaId: categoriaId
-        })
-      })
-        .then(response => {
-          if (response.ok) {
-            window.location.reload();
-          } else {
-            throw new Error('Error al cambiar el estado');
-          }
-        })
-        .catch(error => {
-          alert('Error: ' + error.message);
-        });
-    }
-
-    function cambiarPrioridad() {
-      const modal = document.getElementById('modalPrioridad');
-      const ticketId = modal.dataset.ticketId;
-      const nuevaPrioridad = document.getElementById('selectPrioridad').value;
-
-      fetch(`/api/tickets/${ticketId}/prioridad?prioridad=${nuevaPrioridad}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
-        }
-      })
-        .then(response => {
-          if (response.ok) {
-            window.location.reload();
-          } else {
-            throw new Error('Error al cambiar la prioridad');
-          }
+        .then(revResponse => {
+          // No importa si la revisión falla, recargamos igual
+          window.location.reload();
         })
         .catch(error => {
           alert('Error: ' + error.message);
