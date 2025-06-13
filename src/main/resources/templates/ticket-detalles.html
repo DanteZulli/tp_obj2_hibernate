@@ -57,58 +57,110 @@
                   <p class="card-text" th:text="${ticket.descripcion}"></p>
 
                   <div class="row mt-3">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                       <strong>Estado:</strong>
                       <span class="badge ms-2" th:classappend="${ticket.estado == 'ABIERTO' ? 'bg-warning' : 
                                               ticket.estado == 'EN_PROGRESO' ? 'bg-info' : 
                                               ticket.estado == 'RESUELTO' ? 'bg-success' : 'bg-secondary'}"
-                        th:text="${ticket.estado}">
-                      </span>
+                        th:text="${ticket.estado}"></span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                       <strong>Prioridad:</strong>
                       <span class="badge ms-2" th:classappend="${ticket.prioridad == 'ALTA' ? 'bg-danger' : 
-                                              ticket.prioridad == 'MEDIA' ? 'bg-warning' : 'bg-secondary'}"
-                        th:text="${ticket.prioridad}">
-                      </span>
+                                              ticket.prioridad == 'MEDIA' ? 'bg-warning' : 'bg-info'}"
+                        th:text="${ticket.prioridad}"></span>
                     </div>
                   </div>
 
                   <div class="row mt-2">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                       <strong>Creador:</strong>
-                      <span th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin asignar'}"></span>
+                      <span th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin creador'}"></span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                       <strong>Asignado:</strong>
                       <span th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></span>
                     </div>
                   </div>
 
                   <div class="row mt-2">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                       <strong>Categoría:</strong>
                       <span th:text="${ticket.categoria != null ? ticket.categoria.nombre : 'Sin categoría'}"></span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                       <strong>Fecha de Creación:</strong>
-                      <span th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span>
+                      <span
+                        th:text="${ticket.fechaCreacion != null ? #temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}"></span>
                     </div>
                   </div>
 
-                  <div th:if="${ticket.fechaResolucion}" class="row mt-2">
-                    <div class="col-md-6">
+                  <div class="row mt-2">
+                    <div class="col-md-6 mb-2">
                       <strong>Fecha de Resolución:</strong>
-                      <span th:text="${#temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm')}"></span>
+                      <span
+                        th:text="${ticket.fechaResolucion != null ? #temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm') : 'No resuelto'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                      <strong>Etiquetas:</strong>
+                      <span th:if="${ticket.etiquetas != null and !ticket.etiquetas.empty}">
+                        <span th:each="etiqueta : ${ticket.etiquetas}">
+                          <span class="badge bg-secondary me-1" th:text="${etiqueta.nombre}">Etiqueta</span>
+                        </span>
+                      </span>
+                      <span th:if="${ticket.etiquetas == null or ticket.etiquetas.empty}">Sin etiquetas</span>
+                    </div>
+                  </div>
+
+                  <div class="row mt-2">
+                    <div class="col-md-6 mb-2">
+                      <strong>ID:</strong>
+                      <span th:text="${ticket.id}"></span>
                     </div>
                   </div>
                 </div>
               </div>
+
+              <!-- Sección de Revisiones -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <i class="fas fa-history me-1"></i>
+                  Revisiones
+                </div>
+                <div class="card-body">
+                  <div th:if="${ticket.revisiones == null or ticket.revisiones.empty}"
+                    class="text-muted text-center py-3">
+                    Sin revisiones para este ticket.
+                  </div>
+                  <div th:each="revision : ${ticket.revisiones}" class="border-bottom pb-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <strong
+                          th:text="${revision.usuarioModificacion != null ? revision.usuarioModificacion.nombre : 'Usuario desconocido'}"></strong>
+                        <small class="text-muted ms-2"
+                          th:text="${revision.fechaCambio != null ? #temporals.format(revision.fechaCambio, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}"></small>
+                      </div>
+                    </div>
+                    <div class="mt-2 mb-1">
+                      <span><strong>Campo modificado:</strong> <span
+                          th:text="${revision.campoModificado != null ? revision.campoModificado : 'Desconocido'}"></span></span><br />
+                      <span><strong>Valor anterior:</strong> <span
+                          th:text="${revision.valorAnterior != null ? revision.valorAnterior : 'N/A'}"></span></span><br />
+                      <span><strong>Valor nuevo:</strong> <span
+                          th:text="${revision.valorNuevo != null ? revision.valorNuevo : 'N/A'}"></span></span><br />
+                      <span><strong>Observaciones:</strong> <span
+                          th:text="${revision.observaciones != null ? revision.observaciones : 'Sin observaciones'}"></span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div class="col-lg-4"
-              th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}">
-              <div class="card mb-4">
+            <div class="col-lg-4">
+              <!-- Acciones (solo para técnicos) -->
+              <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}"
+                class="card mb-4">
                 <div class="card-header">
                   <i class="fas fa-cogs me-1"></i>
                   Acciones
@@ -121,7 +173,8 @@
                     </button>
                     <button class="btn btn-outline-info" type="button" th:data-ticket-id="${ticket.id}"
                       th:data-titulo="${ticket.titulo}" th:data-descripcion="${ticket.descripcion}"
-                      th:data-prioridad="${ticket.prioridad}" th:data-categoria-id="${ticket.categoria.id}"
+                      th:data-prioridad="${ticket.prioridad}"
+                      th:data-categoria-id="${ticket.categoria != null ? ticket.categoria.id : ''}"
                       onclick="mostrarModalEstado(this)">
                       <i class="fas fa-sync-alt"></i> Cambiar Estado
                     </button>
@@ -129,6 +182,31 @@
                       onclick="mostrarModalPrioridad(this)">
                       <i class="fas fa-exclamation-triangle"></i> Cambiar Prioridad
                     </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Comentarios debajo de acciones, o arriba si no hay acciones -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <i class="fas fa-comments me-1"></i>
+                  Comentarios
+                </div>
+                <div class="card-body">
+                  <div th:if="${ticket.comentarios == null or ticket.comentarios.empty}"
+                    class="text-muted text-center py-3">
+                    Sin comentarios para este ticket.
+                  </div>
+                  <div th:each="comentario : ${ticket.comentarios}" class="border-bottom pb-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <strong
+                          th:text="${comentario.usuario != null ? comentario.usuario.nombre : 'Usuario Anónimo'}"></strong>
+                        <small class="text-muted ms-2"
+                          th:text="${comentario.fecha != null ? #temporals.format(comentario.fecha, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}"></small>
+                      </div>
+                    </div>
+                    <p class="mt-2 mb-0" th:text="${comentario.mensaje != null ? comentario.mensaje : 'Sin mensaje'}">
+                    </p>
                   </div>
                 </div>
               </div>
@@ -178,48 +256,6 @@
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                   <button type="button" class="btn btn-primary" onclick="cambiarPrioridad()">Guardar Cambios</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Comentarios -->
-          <div th:if="${comentarios}" class="row mt-4">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <i class="fas fa-comments me-1"></i>
-                  Comentarios (<span th:text="${#lists.size(comentarios)}"></span>)
-                </div>
-                <div class="card-body">
-                  <div th:if="${#lists.isEmpty(comentarios)}" class="text-muted text-center py-3">
-                    No hay comentarios para este ticket.
-                  </div>
-
-                  <div th:each="comentario : ${comentarios}" class="border-bottom pb-3 mb-3">
-                    <div class="d-flex justify-content-between align-items-start">
-                      <div>
-                        <strong
-                          th:text="${comentario.usuario != null ? comentario.usuario.nombre : 'Usuario Anónimo'}"></strong>
-                        <small class="text-muted ms-2"
-                          th:text="${#temporals.format(comentario.fecha, 'dd/MM/yyyy HH:mm')}"></small>
-                      </div>
-                    </div>
-                    <p class="mt-2 mb-0" th:text="${comentario.mensaje}"></p>
-                  </div>
-
-                  <!-- Formulario para agregar comentario -->
-                  <div class="mt-4">
-                    <h6>Agregar Comentario</h6>
-                    <form>
-                      <div class="mb-3">
-                        <textarea class="form-control" rows="3" placeholder="Escribe tu comentario aquí..."></textarea>
-                      </div>
-                      <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> Enviar Comentario
-                      </button>
-                    </form>
-                  </div>
                 </div>
               </div>
             </div>
