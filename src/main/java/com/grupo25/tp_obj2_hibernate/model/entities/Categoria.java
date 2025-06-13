@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "categorias")
@@ -18,7 +19,7 @@ public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @NotBlank(message = "El nombre no puede estar vacío")
     @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
     @Column(nullable = false)
@@ -26,8 +27,9 @@ public class Categoria {
 
     @Size(max = 200, message = "La descripción no puede tener más de 200 caracteres")
     private String descripcion;
-    
+
     @OneToMany(mappedBy = "categoria")
+    @JsonManagedReference
     private List<Ticket> tickets;
 
     @Column(name = "create_at_categoria")
