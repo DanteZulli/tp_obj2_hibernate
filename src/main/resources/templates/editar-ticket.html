@@ -1,204 +1,219 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <title>Editar Ticket - Ticketera Grupo 25</title>
-    <link th:href="@{/css/styles.css}" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-  </head>
 
-  <body class="sb-nav-fixed">
-    <nav th:replace="~{fragments/navbar.html}"></nav>
-    <div id="layoutSidenav">
-      <div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
-      
-      <div id="layoutSidenav_content">
-        <main>
-          <div class="container-fluid px-4">
-            <h1 class="mt-4">Editar Ticket</h1>
-            <ol class="breadcrumb mb-4">
-              <li class="breadcrumb-item"><a th:href="@{/}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/tecnico/tickets}">Tickets</a></li>
-              <li class="breadcrumb-item active">Editar</li>
-            </ol>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="icon" th:href="@{/assets/img/favicon.ico}" type="image/x-icon" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>Editar Ticket - Ticketera Grupo 25</title>
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
 
-            <!-- Mensaje de error si existe -->
-            <div th:if="${error}" class="alert alert-danger" role="alert">
-              <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
-            </div>
+<body class="sb-nav-fixed">
+  <nav th:replace="~{fragments/navbar.html}"></nav>
+  <div id="layoutSidenav">
+    <div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
 
-            <!-- Formulario de edición -->
-            <div th:if="${ticket}" class="row justify-content-center">
-              <div class="col-lg-8">
-                <div class="card">
-                  <div class="card-header">
-                    <i class="fas fa-edit me-1"></i>
-                    Editar Ticket #<span th:text="${ticket.id}"></span>
-                  </div>
-                  <div class="card-body">
-                    <form id="editarTicketForm">
-                      <input type="hidden" id="ticketId" th:value="${ticket.id}">
-                      <div class="row">
-                        <div class="col-md-12 mb-3">
-                          <label for="titulo" class="form-label">Título *</label>
-                          <input type="text" class="form-control" id="titulo" name="titulo" 
-                                 th:value="${ticket.titulo}" required 
-                                 minlength="5" maxlength="100">
-                          <div class="form-text">Mínimo 5 caracteres, máximo 100.</div>
-                        </div>
+    <div id="layoutSidenav_content">
+      <main>
+        <div class="container-fluid px-4">
+          <h1 class="mt-4">Editar Ticket</h1>
+          <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a th:href="@{/}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/tecnico/tickets}">Tickets</a></li>
+            <li class="breadcrumb-item active">Editar</li>
+          </ol>
+
+          <!-- Mensaje de éxito si existe -->
+          <div id="successMsg" class="alert alert-success d-none" role="alert">
+            <i class="fas fa-check-circle"></i> <span id="successText"></span>
+          </div>
+
+          <!-- Mensaje de error si existe -->
+          <div id="errorMsg" class="alert alert-danger d-none" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> <span id="errorText"></span>
+          </div>
+
+          <!-- Formulario de edición -->
+          <div th:if="${ticket}" class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="card">
+                <div class="card-header">
+                  <i class="fas fa-edit me-1"></i>
+                  Editar Ticket #<span th:text="${ticket.id}"></span>
+                </div>
+                <div class="card-body">
+                  <form id="editarTicketForm">
+                    <input type="hidden" id="ticketId" th:value="${ticket.id}">
+                    <div class="row">
+                      <div class="col-md-12 mb-3">
+                        <label for="titulo" class="form-label">Título *</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" th:value="${ticket.titulo}"
+                          required minlength="5" maxlength="100">
+                        <div class="form-text">Mínimo 5 caracteres, máximo 100.</div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12 mb-3">
+                        <label for="descripcion" class="form-label">Descripción *</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" required
+                          minlength="10" maxlength="1000" th:text="${ticket.descripcion}"></textarea>
+                        <div class="form-text">Mínimo 10 caracteres, máximo 1000.</div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="estado" class="form-label">Estado *</label>
+                        <select class="form-select" id="estado" name="estado" required>
+                          <option value="">Seleccione un estado</option>
+                          <option value="ABIERTO" th:selected="${ticket.estado == 'ABIERTO'}">Abierto</option>
+                          <option value="EN_PROGRESO" th:selected="${ticket.estado == 'EN_PROGRESO'}">En Progreso
+                          </option>
+                          <option value="RESUELTO" th:selected="${ticket.estado == 'RESUELTO'}">Resuelto</option>
+                          <option value="CERRADO" th:selected="${ticket.estado == 'CERRADO'}">Cerrado</option>
+                        </select>
                       </div>
 
-                      <div class="row">
-                        <div class="col-md-12 mb-3">
-                          <label for="descripcion" class="form-label">Descripción *</label>
-                          <textarea class="form-control" id="descripcion" name="descripcion" 
-                                    rows="4" required minlength="10" maxlength="1000" 
-                                    th:text="${ticket.descripcion}"></textarea>
-                          <div class="form-text">Mínimo 10 caracteres, máximo 1000.</div>
-                        </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="prioridad" class="form-label">Prioridad *</label>
+                        <select class="form-select" id="prioridad" name="prioridad" required>
+                          <option value="">Seleccione una prioridad</option>
+                          <option value="BAJA" th:selected="${ticket.prioridad == 'BAJA'}">
+                            <i class="fas fa-arrow-down text-success"></i> Baja
+                          </option>
+                          <option value="MEDIA" th:selected="${ticket.prioridad == 'MEDIA'}">
+                            <i class="fas fa-minus text-warning"></i> Media
+                          </option>
+                          <option value="ALTA" th:selected="${ticket.prioridad == 'ALTA'}">
+                            <i class="fas fa-arrow-up text-danger"></i> Alta
+                          </option>
+                        </select>
                       </div>
+                    </div>
 
-                      <div class="row">
-                        <div class="col-md-6 mb-3">
-                          <label for="estado" class="form-label">Estado *</label>
-                          <select class="form-select" id="estado" name="estado" required>
-                            <option value="">Seleccione un estado</option>
-                            <option value="ABIERTO" th:selected="${ticket.estado == 'ABIERTO'}">Abierto</option>
-                            <option value="EN_PROGRESO" th:selected="${ticket.estado == 'EN_PROGRESO'}">En Progreso</option>
-                            <option value="RESUELTO" th:selected="${ticket.estado == 'RESUELTO'}">Resuelto</option>
-                            <option value="CERRADO" th:selected="${ticket.estado == 'CERRADO'}">Cerrado</option>
-                          </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                          <label for="prioridad" class="form-label">Prioridad *</label>
-                          <select class="form-select" id="prioridad" name="prioridad" required>
-                            <option value="">Seleccione una prioridad</option>
-                            <option value="BAJA" th:selected="${ticket.prioridad == 'BAJA'}">
-                              <i class="fas fa-arrow-down text-success"></i> Baja
-                            </option>
-                            <option value="MEDIA" th:selected="${ticket.prioridad == 'MEDIA'}">
-                              <i class="fas fa-minus text-warning"></i> Media
-                            </option>
-                            <option value="ALTA" th:selected="${ticket.prioridad == 'ALTA'}">
-                              <i class="fas fa-arrow-up text-danger"></i> Alta
-                            </option>
-                          </select>
-                        </div>
+                    <div class="row">
+                      <div class="col-md-12 mb-3">
+                        <label for="categoriaId" class="form-label">Categoría *</label>
+                        <select class="form-select" id="categoriaId" name="categoriaId" required>
+                          <option value="">Seleccione una categoría</option>
+                          <option th:each="categoria : ${categorias}" th:value="${categoria.id}"
+                            th:text="${categoria.nombre}"
+                            th:selected="${ticket.categoria != null && ticket.categoria.id == categoria.id}">
+                          </option>
+                        </select>
                       </div>
+                    </div>
 
-                      <div class="row">
-                        <div class="col-md-12 mb-3">
-                          <label for="categoriaId" class="form-label">Categoría *</label>
-                          <select class="form-select" id="categoriaId" name="categoriaId" required>
-                            <option value="">Seleccione una categoría</option>
-                            <option th:each="categoria : ${categorias}" 
-                                    th:value="${categoria.id}" 
-                                    th:text="${categoria.nombre}"
-                                    th:selected="${ticket.categoria != null && ticket.categoria.id == categoria.id}">
-                            </option>
-                          </select>
-                        </div>
+                    <!-- Información adicional del ticket -->
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Creado por:</label>
+                        <p class="form-control-plaintext"
+                          th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin asignar'}"></p>
                       </div>
-
-                      <!-- Información adicional del ticket -->
-                      <div class="row">
-                        <div class="col-md-6 mb-3">
-                          <label class="form-label">Creado por:</label>
-                          <p class="form-control-plaintext" th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin asignar'}"></p>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                          <label class="form-label">Fecha de creación:</label>
-                          <p class="form-control-plaintext" th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></p>
-                        </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Fecha de creación:</label>
+                        <p class="form-control-plaintext"
+                          th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></p>
                       </div>
+                    </div>
 
-                      <div class="row">
-                        <div class="col-md-6 mb-3">
-                          <label class="form-label">Asignado a:</label>
-                          <p class="form-control-plaintext" th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></p>
-                        </div>
-                        <div th:if="${ticket.fechaResolucion}" class="col-md-6 mb-3">
-                          <label class="form-label">Fecha de resolución:</label>
-                          <p class="form-control-plaintext" th:text="${#temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm')}"></p>
-                        </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Asignado a:</label>
+                        <p class="form-control-plaintext"
+                          th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></p>
                       </div>
+                      <div th:if="${ticket.fechaResolucion}" class="col-md-6 mb-3">
+                        <label class="form-label">Fecha de resolución:</label>
+                        <p class="form-control-plaintext"
+                          th:text="${#temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm')}"></p>
+                      </div>
+                    </div>
 
-                      <div class="d-flex justify-content-between">
-                        <a th:href="@{'/tecnico/tickets/' + ${ticket.id}}" class="btn btn-secondary">
-                          <i class="fas fa-arrow-left"></i> Volver a Detalles
+                    <div class="d-flex justify-content-between">
+                      <a th:href="@{'/tecnico/tickets/' + ${ticket.id}}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver a Detalles
+                      </a>
+                      <div>
+                        <a th:href="@{/tecnico/tickets}" class="btn btn-outline-secondary me-2">
+                          <i class="fas fa-times"></i> Cancelar
                         </a>
-                        <div>
-                          <a th:href="@{/tecnico/tickets}" class="btn btn-outline-secondary me-2">
-                            <i class="fas fa-times"></i> Cancelar
-                          </a>
-                          <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Guardar Cambios
-                          </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary">
+                          <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
                       </div>
-                    </form>
-                  </div>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
-        </main>
-        <footer th:replace="~{fragments/footer.html}"></footer>
-      </div>
+        </div>
+      </main>
+      <footer th:replace="~{fragments/footer.html}"></footer>
     </div>
+  </div>
 
-    <script th:src="@{/js/sidebar.js}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    
-    <script>
-      document.getElementById('editarTicketForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const ticketId = document.getElementById('ticketId').value;
-        const formData = {
-          titulo: document.getElementById('titulo').value,
-          descripcion: document.getElementById('descripcion').value,
-          estado: document.getElementById('estado').value,
-          prioridad: document.getElementById('prioridad').value,
-          categoriaId: document.getElementById('categoriaId').value
-        };
+  <script th:src="@{/js/sidebar.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
 
-        try {
-          const response = await fetch(`/api/tickets/${ticketId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
-            },
-            body: JSON.stringify(formData)
-          });
+  <script>
+    document.getElementById('editarTicketForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-          if (response.ok) {
-            window.location.href = `/tecnico/tickets/${ticketId}?success=Ticket actualizado correctamente`;
-          } else {
-            const error = await response.text();
-            throw new Error(error);
+      // Ocultar mensajes previos
+      document.getElementById('successMsg').classList.add('d-none');
+      document.getElementById('errorMsg').classList.add('d-none');
+
+      const ticketId = document.getElementById('ticketId').value;
+      const form = e.target;
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(`/api/tickets/${ticketId}`, {
+          method: 'PUT',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+          },
+          body: formData
+        });
+
+        if (response.ok) {
+          document.getElementById('successText').textContent = 'Ticket actualizado correctamente.';
+          document.getElementById('successMsg').classList.remove('d-none');
+        } else {
+          let errorMsg = 'Error al actualizar el ticket.';
+          try {
+            const errorData = await response.json();
+            if (errorData && errorData.message) {
+              errorMsg = errorData.message;
+            }
+          } catch (e) {
+            // Si no es JSON, intentar mostrar texto plano
+            try {
+              const errorText = await response.text();
+              if (errorText) errorMsg = errorText;
+            } catch (e2) { }
           }
-        } catch (error) {
-          const alertDiv = document.createElement('div');
-          alertDiv.className = 'alert alert-danger';
-          alertDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${error.message}`;
-          
-          const existingAlert = document.querySelector('.alert');
-          if (existingAlert) {
-            existingAlert.remove();
-          }
-          
-          document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.row'));
+          document.getElementById('errorText').textContent = errorMsg;
+          document.getElementById('errorMsg').classList.remove('d-none');
         }
-      });
-    </script>
-  </body>
+      } catch (error) {
+        document.getElementById('errorText').textContent = 'Error de red al actualizar el ticket.';
+        document.getElementById('errorMsg').classList.remove('d-none');
+      }
+    });
+  </script>
+</body>
+
 </html>
