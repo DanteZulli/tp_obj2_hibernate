@@ -223,21 +223,121 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     crossorigin="anonymous"></script>
 
+  <!-- Modal de revisión -->
+  <div class="modal fade" id="modalRevision" tabindex="-1" aria-labelledby="modalRevisionLabel" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalRevisionLabel">Resumen de cambios y revisión</h5>
+        </div>
+        <div class="modal-body">
+          <div id="resumenCambios"></div>
+          <div class="mb-3 mt-3">
+            <label for="observacionRevision" class="form-label fw-bold">Observación <span
+                class="text-danger">*</span></label>
+            <textarea class="form-control" id="observacionRevision" rows="3" required></textarea>
+            <div class="invalid-feedback">La observación es obligatoria.</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="confirmarRevisionBtn">Confirmar y guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Guardar etiquetas originales para saber cuáles se agregan o quitan
-    const etiquetasOriginales = Array.from(document.querySelectorAll('.etiqueta-checkbox:checked')).map(cb => cb.value);
+    // Guardar valores originales de los campos editables
+    const valoresOriginales = {
+      estado: document.getElementById('estado').value,
+      prioridad: document.getElementById('prioridad').value,
+      categoriaId: document.getElementById('categoriaId').value,
+      etiquetas: Array.from(document.querySelectorAll('.etiqueta-checkbox:checked')).map(cb => cb.value)
+    };
+
     // --- Envío del formulario principal ---
-    document.getElementById('editarTicketForm').addEventListener('submit', async function (e) {
+    document.getElementById('editarTicketForm').addEventListener('submit', function (e) {
       e.preventDefault();
       document.getElementById('successMsg').classList.add('d-none');
       document.getElementById('errorMsg').classList.add('d-none');
       const ticketId = document.getElementById('ticketId').value;
       const form = e.target;
       const formData = new FormData(form);
-      // Obtener etiquetas seleccionadas
+      // Detectar cambios
+      const cambios = [];
+      // Estado
+      const estadoActual = document.getElementById('estado').value;
+      if (estadoActual !== valoresOriginales.estado) {
+        cambios.push({ campo: 'Estado', anterior: valoresOriginales.estado, nuevo: estadoActual });
+      }
+      // Prioridad
+      const prioridadActual = document.getElementById('prioridad').value;
+      if (prioridadActual !== valoresOriginales.prioridad) {
+        cambios.push({ campo: 'Prioridad', anterior: valoresOriginales.prioridad, nuevo: prioridadActual });
+      }
+      // Categoría
+      const categoriaActual = document.getElementById('categoriaId').value;
+      if (categoriaActual !== valoresOriginales.categoriaId) {
+        const catOriginal = document.querySelector(`#categoriaId option[value='${valoresOriginales.categoriaId}']`);
+        const catActual = document.querySelector(`#categoriaId option[value='${categoriaActual}']`);
+        cambios.push({ campo: 'Categoría', anterior: catOriginal ? catOriginal.textContent : valoresOriginales.categoriaId, nuevo: catActual ? catActual.textContent : categoriaActual });
+      }
+      // Etiquetas
       const etiquetasSeleccionadas = Array.from(document.querySelectorAll('.etiqueta-checkbox:checked')).map(cb => cb.value);
-      // 1. Actualizar los campos principales del ticket
+      const etiquetasOriginalesSet = new Set(valoresOriginales.etiquetas);
+      const etiquetasActualesSet = new Set(etiquetasSeleccionadas);
+      const etiquetasAgregadas = etiquetasSeleccionadas.filter(id => !etiquetasOriginalesSet.has(id));
+      const etiquetasQuitadas = valoresOriginales.etiquetas.filter(id => !etiquetasActualesSet.has(id));
+      if (etiquetasAgregadas.length > 0 || etiquetasQuitadas.length > 0) {
+        let anterior = valoresOriginales.etiquetas.map(id => {
+          const label = document.querySelector(`label[for='etiqueta_${id}']`);
+          return label ? label.textContent : id;
+        }).join(', ');
+        let nuevo = etiquetasSeleccionadas.map(id => {
+          const label = document.querySelector(`label[for='etiqueta_${id}']`);
+          return label ? label.textContent : id;
+        }).join(', ');
+        cambios.push({ campo: 'Etiquetas', anterior, nuevo });
+      }
+      // Si no hay cambios, enviar normalmente
+      if (cambios.length === 0) {
+        enviarTicketYEtiquetas(formData, ticketId, etiquetasSeleccionadas, valoresOriginales.etiquetas, '');
+        return;
+      }
+      // Mostrar modal de revisión
+      mostrarModalRevision(cambios, function (observacion) {
+        enviarTicketYEtiquetas(formData, ticketId, etiquetasSeleccionadas, valoresOriginales.etiquetas, observacion, cambios);
+      });
+    });
+
+    function mostrarModalRevision(cambios, onConfirm) {
+      // Construir resumen de cambios
+      let html = '<ul class="list-group">';
+      cambios.forEach(c => {
+        html += `<li class='list-group-item'><strong>${c.campo}:</strong> <span class='text-danger'>${c.anterior}</span> → <span class='text-success'>${c.nuevo}</span></li>`;
+      });
+      html += '</ul>';
+      document.getElementById('resumenCambios').innerHTML = html;
+      document.getElementById('observacionRevision').value = '';
+      document.getElementById('observacionRevision').classList.remove('is-invalid');
+      const modal = new bootstrap.Modal(document.getElementById('modalRevision'));
+      modal.show();
+      // Confirmar
+      document.getElementById('confirmarRevisionBtn').onclick = function () {
+        const obs = document.getElementById('observacionRevision').value.trim();
+        if (!obs) {
+          document.getElementById('observacionRevision').classList.add('is-invalid');
+          return;
+        }
+        modal.hide();
+        onConfirm(obs);
+      };
+    }
+
+    async function enviarTicketYEtiquetas(formData, ticketId, etiquetasSeleccionadas, etiquetasOriginales, observacion, cambios = []) {
       try {
+        // 1. Actualizar ticket
         const response = await fetch(`/api/tickets/${ticketId}`, {
           method: 'PUT',
           headers: {
@@ -246,7 +346,7 @@
           body: formData
         });
         if (!response.ok) throw new Error('Error al actualizar el ticket.');
-        // 2. Sincronizar etiquetas (agregar/quitar)
+        // 2. Sincronizar etiquetas
         const originales = new Set(etiquetasOriginales);
         const seleccionadas = new Set(etiquetasSeleccionadas);
         const aAgregar = etiquetasSeleccionadas.filter(id => !originales.has(id));
@@ -267,13 +367,32 @@
             }
           });
         }
+        // 3. Registrar revisiones si corresponde
+        if (cambios.length > 0) {
+          for (const c of cambios) {
+            await fetch('/api/revisiones/crear', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+              },
+              body: new URLSearchParams({
+                ticketId,
+                campoModificado: c.campo,
+                valorAnterior: c.anterior,
+                valorNuevo: c.nuevo,
+                observaciones: observacion
+              })
+            });
+          }
+        }
         document.getElementById('successText').textContent = 'Ticket actualizado correctamente.';
         document.getElementById('successMsg').classList.remove('d-none');
       } catch (error) {
         document.getElementById('errorText').textContent = error.message || 'Error al actualizar el ticket.';
         document.getElementById('errorMsg').classList.remove('d-none');
       }
-    });
+    }
   </script>
 </body>
 

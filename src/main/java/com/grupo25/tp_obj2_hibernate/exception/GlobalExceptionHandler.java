@@ -52,6 +52,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, "Error en operación de etiqueta");
     }
 
+    @ExceptionHandler(RevisionesException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleRevisionesException(RevisionesException ex, WebRequest request) {
+        log.error("Error en operación de revisión: {}", ex.getMessage(), ex);
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, "Error en operación de revisión");
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> handleGlobalException(Exception ex, WebRequest request) {
@@ -65,7 +72,7 @@ public class GlobalExceptionHandler {
         body.put("message", ex.getMessage());
         body.put("status", status.value());
         body.put("error", errorType);
-        
+
         if (ex instanceof TicketException) {
             body.put("codigo", ((TicketException) ex).getCodigo());
         } else if (ex instanceof AreaException) {
@@ -76,6 +83,8 @@ public class GlobalExceptionHandler {
             body.put("codigo", ((ComentarioException) ex).getCodigo());
         } else if (ex instanceof EtiquetaException) {
             body.put("codigo", ((EtiquetaException) ex).getCodigo());
+        } else if (ex instanceof RevisionesException) {
+            body.put("codigo", ((RevisionesException) ex).getCodigo());
         }
 
         return new ResponseEntity<>(body, status);
