@@ -41,55 +41,58 @@
           <!-- Formulario de creación -->
           <div class="row">
             <div class="col-lg-8">
-              <div class="card">
+              <div class="card mb-4">
                 <div class="card-header">
                   <i class="fas fa-plus me-1"></i>
-                  Información del Ticket
+                  Crear Ticket
                 </div>
                 <div class="card-body">
                   <form th:action="@{/api/tickets/crear}" method="post" id="crearTicketForm">
-                    <div class="row mb-3">
-                      <div class="col-md-12">
-                        <div class="form-floating">
-                          <input class="form-control" id="titulo" name="titulo" type="text"
-                            placeholder="Título del ticket" required />
-                          <label for="titulo">Título del ticket *</label>
-                        </div>
+                    <div class="row mb-3 align-items-center">
+                      <div class="col-md-3 fw-bold">
+                        Título <span class="text-danger">*</span>
+                      </div>
+                      <div class="col-md-9">
+                        <input class="form-control" id="titulo" name="titulo" type="text"
+                          placeholder="Título del ticket" required maxlength="100" minlength="5" />
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <div class="col-md-6">
-                        <div class="form-floating">
-                          <select class="form-select" id="prioridad" name="prioridad" required>
-                            <option value="">Seleccionar prioridad</option>
-                            <option value="BAJA">Baja</option>
-                            <option value="MEDIA">Media</option>
-                            <option value="ALTA">Alta</option>
-                          </select>
-                          <label for="prioridad">Prioridad *</label>
-                        </div>
+                    <div class="row mb-3 align-items-center">
+                      <div class="col-md-3 fw-bold">
+                        Prioridad <span class="text-danger">*</span>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-floating">
-                          <select class="form-select" id="categoriaId" name="categoriaId" required>
-                            <option value="">Seleccionar categoría</option>
-                            <option th:each="categoria : ${categorias}" th:value="${categoria.id}"
-                              th:text="${categoria.nombre}">
-                            </option>
-                          </select>
-                          <label for="categoriaId">Categoría *</label>
-                        </div>
+                      <div class="col-md-9">
+                        <select class="form-select" id="prioridad" name="prioridad" required>
+                          <option value="">Seleccionar prioridad</option>
+                          <option value="BAJA">Baja</option>
+                          <option value="MEDIA">Media</option>
+                          <option value="ALTA">Alta</option>
+                        </select>
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <div class="col-md-12">
-                        <div class="form-floating">
-                          <textarea class="form-control" id="descripcion" name="descripcion" style="height: 150px"
-                            placeholder="Descripción detallada del problema" required></textarea>
-                          <label for="descripcion">Descripción *</label>
-                        </div>
+                    <div class="row mb-3 align-items-center">
+                      <div class="col-md-3 fw-bold">
+                        Categoría <span class="text-danger">*</span>
+                      </div>
+                      <div class="col-md-9">
+                        <select class="form-select" id="categoriaId" name="categoriaId" required>
+                          <option value="">Seleccionar categoría</option>
+                          <option th:each="categoria : ${categorias}" th:value="${categoria.id}"
+                            th:text="${categoria.nombre}"></option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3 align-items-center">
+                      <div class="col-md-3 fw-bold">
+                        Descripción <span class="text-danger">*</span>
+                      </div>
+                      <div class="col-md-9">
+                        <textarea class="form-control" id="descripcion" name="descripcion" style="height: 120px"
+                          placeholder="Descripción detallada del problema" required maxlength="1000"
+                          minlength="10"></textarea>
                       </div>
                     </div>
 
@@ -97,19 +100,18 @@
 
                     <div class="row mb-3">
                       <div class="col-md-12">
-                        <small class="text-muted">Los campos marcados con * son obligatorios</small>
+                        <small class="text-muted">Los campos marcados con <span class="text-danger">*</span> son
+                          obligatorios</small>
                       </div>
                     </div>
 
-                    <div class="row">
-                      <div class="col-12">
-                        <button class="btn btn-primary" type="submit">
-                          <i class="fas fa-save"></i> Crear Ticket
-                        </button>
-                        <a th:href="@{/cliente/tickets}" class="btn btn-secondary ms-2">
-                          <i class="fas fa-times"></i> Cancelar
-                        </a>
-                      </div>
+                    <div class="d-flex justify-content-end">
+                      <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-save"></i> Crear Ticket
+                      </button>
+                      <a th:href="@{/cliente/tickets}" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i> Cancelar
+                      </a>
                     </div>
                   </form>
                 </div>
@@ -121,22 +123,21 @@
               <div class="card">
                 <div class="card-header">
                   <i class="fas fa-info-circle me-1"></i>
-                  Información
+                  Lineamientos para crear un ticket efectivo
                 </div>
                 <div class="card-body">
-                  <h6>Consejos para crear un buen ticket:</h6>
                   <ul class="mb-3">
-                    <li><strong>Título claro:</strong> Resume el problema en pocas palabras</li>
-                    <li><strong>Descripción detallada:</strong> Incluye pasos para reproducir el problema</li>
-                    <li><strong>Prioridad adecuada:</strong> Evalúa la urgencia real del problema</li>
+                    <li><strong>Título:</strong> Sé claro y conciso. Resume el problema en una frase.</li>
+                    <li><strong>Descripción:</strong> Explica el inconveniente con el mayor detalle posible. Incluí
+                      pasos, mensajes de error, contexto y cualquier dato relevante.</li>
+                    <li><strong>Prioridad:</strong> Seleccioná la urgencia real del problema. Si es crítico para tu
+                      trabajo, marcá como "Alta".</li>
+                    <li><strong>Categoría:</strong> Elegí la opción que mejor se ajuste al tipo de problema.</li>
                   </ul>
-
-                  <h6>Estados del ticket:</h6>
-                  <ul class="mb-0">
-                    <li><span class="badge bg-warning">ABIERTO</span> - Ticket recién creado</li>
-                    <li><span class="badge bg-info">EN_PROGRESO</span> - Siendo trabajado</li>
-                    <li><span class="badge bg-success">RESUELTO</span> - Problema solucionado</li>
-                  </ul>
+                  <div class="mb-3">
+                    <strong>Recordá:</strong> Cuanto mejor definas tu ticket, más probabilidades hay de que los técnicos
+                    lo tomen antes y lo resuelvan rápidamente.
+                  </div>
                 </div>
               </div>
             </div>
