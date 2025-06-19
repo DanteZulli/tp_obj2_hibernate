@@ -12,9 +12,6 @@ import com.grupo25.tp_obj2_hibernate.model.entities.Etiqueta;
 import com.grupo25.tp_obj2_hibernate.repository.TicketRepository;
 import com.grupo25.tp_obj2_hibernate.repository.UsuarioRepository;
 import com.grupo25.tp_obj2_hibernate.exception.TicketException;
-import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
-import com.grupo25.tp_obj2_hibernate.service.EtiquetaService;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
