@@ -42,7 +42,7 @@ public class TicketsClienteViewController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = usuarioRepository.findByNombreUsuario(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        mav.addObject("tickets", ticketService.getTodosLosTicketsPorUsuarioCreador(usuario.getId()));
+        mav.addObject("tickets", ticketService.obtenerTodosLosTicketsPorUsuarioCreador(usuario.getId()));
         if (success != null) {
             mav.addObject("success", success);
         }
@@ -52,14 +52,14 @@ public class TicketsClienteViewController {
     @GetMapping("/crear")
     public ModelAndView mostrarFormularioCreacion() {
         ModelAndView mav = new ModelAndView(CREAR_TICKET_VIEW);
-        mav.addObject("categorias", categoriaService.getCategorias());
+        mav.addObject("categorias", categoriaService.obtenerCategorias());
         return mav;
     }
 
     @GetMapping("/{id}")
     public ModelAndView verDetallesTicket(@PathVariable Integer id) {
         ModelAndView mav = new ModelAndView(TICKET_DETALLES_VIEW);
-        mav.addObject("ticket", ticketService.getTicketPorId(id));
+        mav.addObject("ticket", ticketService.obtenerTicket(id));
         return mav;
     }
 }

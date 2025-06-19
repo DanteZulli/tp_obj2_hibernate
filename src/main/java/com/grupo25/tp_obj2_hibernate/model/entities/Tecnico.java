@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "tecnicos")
@@ -18,9 +19,10 @@ public class Tecnico extends Usuario {
 
     @NotBlank(message = "La empresa no puede estar vacía")
     private String empresa;
-    
+
     @NotNull(message = "El área es requerida")
     @ManyToOne
     @JoinColumn(name = "area_id")
+    @JsonBackReference
     private Area area;
 }

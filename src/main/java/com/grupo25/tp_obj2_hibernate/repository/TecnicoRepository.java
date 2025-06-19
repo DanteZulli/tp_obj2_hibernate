@@ -4,11 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.grupo25.tp_obj2_hibernate.model.entities.Tecnico;
 
-/**
- * Repositorio para la entidad Tecnico.
- * 
- * @author Grupo 25
- */
 @Repository
 public interface TecnicoRepository extends JpaRepository<Tecnico, Integer> {
 }

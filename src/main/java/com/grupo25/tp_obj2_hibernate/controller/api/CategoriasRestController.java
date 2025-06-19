@@ -1,68 +1,61 @@
 package com.grupo25.tp_obj2_hibernate.controller.api;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Categoria;
 import com.grupo25.tp_obj2_hibernate.service.CategoriaService;
+import com.grupo25.tp_obj2_hibernate.exception.CategoriaException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Controlador REST para manejar las operaciones relacionadas con categorías.
- * 
- * @author Grupo 25
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/categorias")
+@RequiredArgsConstructor
 public class CategoriasRestController {
 
-    private CategoriaService categoriaService;
+    private final CategoriaService categoriaService;
 
-    public CategoriasRestController(CategoriaService categoriaService) {
-        this.categoriaService = categoriaService;
-    }
-
-    /**
-     * Crear categoría
-     * 
-     * @param Categoria
-     * @return ResponseEntity con la categoría creada, o un error si no existe
-     * 
-     * @author Ariel Serato
-     */
     @PostMapping("/crear")
-    public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
+    public ResponseEntity<Categoria> crearCategoria(
+            @RequestParam String nombre, 
+            @RequestParam(required = false) String descripcion) {
+        log.debug("Creando nueva categoría con nombre: {}", nombre);
         try {
-            Categoria cat = categoriaService.crearCategoria(categoria);
-            return ResponseEntity.ok(cat);
-        } catch (RuntimeException e) {
-            log.error("Error al crear la categoría: {}", categoria, e);
-            return ResponseEntity.notFound().build();
+            Categoria categoriaCreada = categoriaService.crearCategoria(nombre, descripcion);
+            return ResponseEntity.ok(categoriaCreada);
+        } catch (CategoriaException e) {
+            log.error("Error al crear la categoría con nombre: {}", nombre, e);
+            throw e;
         }
     }
 
-    /**
-     * Actualizar categoría
-     * 
-     * @param Categoria
-     * @return ResponseEntity con la categoría actualizada, o un error si no existe
-     * 
-     * @author Ariel Serato
-     */
-    @PutMapping("/actualizar")
-    public ResponseEntity<Categoria> actualizarCategoria(@RequestBody Categoria categoria) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Categoria> modificarCategoria(
+            @PathVariable int id, 
+            @RequestParam String nombre,
+            @RequestParam(required = false) String descripcion) {
+        log.debug("Modificando categoría con ID: {}", id);
         try {
-            Categoria cat = categoriaService.actualizarCategoria(categoria);
-            return ResponseEntity.ok(cat);
-        } catch (RuntimeException e) {
-            log.error("Error al actualizar la categoría: {}", categoria, e);
-            return ResponseEntity.notFound().build();
+            Categoria categoriaModificada = categoriaService.modificarCategoria(id, nombre, descripcion);
+            return ResponseEntity.ok(categoriaModificada);
+        } catch (CategoriaException e) {
+            log.error("Error al modificar la categoría con ID: {}", id, e);
+            throw e;
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Categoria> obtenerCategoria(@PathVariable int id) {
+        log.debug("Obteniendo categoría con ID: {}", id);
+        try {
+            Categoria categoria = categoriaService.obtenerCategoria(id);
+            return ResponseEntity.ok(categoria);
+        } catch (CategoriaException e) {
+            log.error("Error al obtener la categoría con ID: {}", id, e);
+            throw e;
         }
     }
 }

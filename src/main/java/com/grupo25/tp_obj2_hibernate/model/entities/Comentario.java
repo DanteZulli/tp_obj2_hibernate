@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "comentarios")
@@ -19,7 +20,7 @@ public class Comentario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @NotBlank(message = "El mensaje no puede estar vacío")
     @Size(min = 1, max = 500, message = "El mensaje debe tener entre 1 y 500 caracteres")
     @Column(nullable = false)
@@ -27,12 +28,13 @@ public class Comentario {
 
     @NotNull(message = "La fecha es requerida")
     private LocalDateTime fecha;
-    
+
     @NotNull(message = "El ticket es requerido")
     @ManyToOne
     @JoinColumn(name = "ticket_id", nullable = false)
+    @JsonBackReference
     private Ticket ticket;
-    
+
     @NotNull(message = "El usuario es requerido")
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "clientes")
@@ -19,11 +20,12 @@ public class Cliente extends Usuario {
 
     @NotBlank(message = "El plan no puede estar vacío")
     private String plan;
-    
+
     private boolean particular;
-    
+
     @NotNull(message = "La dirección es requerida")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "direccion_id")
+    @JsonManagedReference
     private Direccion direccion;
 }

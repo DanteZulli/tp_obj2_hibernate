@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "localidades")
@@ -18,15 +19,16 @@ public class Localidad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @NotBlank(message = "El nombre no puede estar vacío")
     @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
     @Column(nullable = false)
     private String nombre;
-    
+
     @NotNull(message = "La provincia es requerida")
     @ManyToOne
     @JoinColumn(name = "provincia_id", nullable = false)
+    @JsonBackReference
     private Provincia provincia;
 
     @Column(name = "create_at_localidad")

@@ -2,128 +2,135 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<link rel="icon" th:href="@{/assets/img/favicon.ico}" type="image/x-icon" />
 	<title>Perfil - Ticketera Grupo 25</title>
-	<link rel="stylesheet" th:href="@{/css/profile.css}">
-	<link
-	     href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
-	     rel="stylesheet"
-	   />
-	   <link th:href="@{/css/styles.css}" rel="stylesheet" />
-	   <script
-	     src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
-	     crossorigin="anonymous"
-	   ></script>>
+	<link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+	<link th:href="@{/css/styles.css}" rel="stylesheet" />
+	<script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="sb-nav-fixed">
-   <nav th:replace="~{fragments/navbar.html}"></nav>
-   <div id="layoutSidenav">
-     <div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
-     <div id="layoutSidenav_content">
-       <main>
-         <div class="container-fluid px-4">
-			<section class="profile-section">
-					<div class="container">
-						<div class="row">
-							<div class="col-left">
-								<div class="card profile-card">
-									<div class="card-body text-center">
-										<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-											alt="avatar" class="avatar">
-										<h5 th:text="${usuario.nombre}">John Smith</h5>
-										<p class="subtitle" th:text="${tipoUsuario}">Rol</p>
+	<nav th:replace="~{fragments/navbar.html}"></nav>
+	<div id="layoutSidenav">
+		<div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
+		<div id="layoutSidenav_content">
+			<main>
+				<div class="container-fluid px-4">
+					<section class="profile-section">
+						<div class="container py-4">
+							<div class="row justify-content-center">
+								<div class="col-md-4 mb-4">
+									<div class="card text-center">
+										<div class="card-body">
+											<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+												alt="avatar" class="rounded-circle mb-3"
+												style="width: 120px; height: 120px;">
+											<h5 class="card-title mb-1" th:text="${usuario.nombre}">John Smith</h5>
+											<p class="text-muted mb-2" th:text="${tipoUsuario}">Rol</p>
+										</div>
 									</div>
 								</div>
-							</div>
-
-							<div class="col-right">
-								<div class="card">
-									<div class="card-body">
-										<div class="info-row"><span>Email</span><span th:text="${usuario.email}">example@example.com</span></div>
-										<hr>
-
-										<div th:if="${tipoUsuario == 'Técnico'}">
-											<h4 class="mb-3">Información del Técnico</h4>
-											<div class="info-row">
-												<span>Número de Contacto</span>
-												<span th:text="${usuario.nroContacto}"></span>
+								<div class="col-md-8">
+									<div class="card mb-4">
+										<div class="card-body">
+											<h4 class="mb-4">Datos del usuario</h4>
+											<div class="row mb-2">
+												<div class="col-sm-4 fw-bold">Nombre:</div>
+												<div class="col-sm-8" th:text="${usuario.nombre}"></div>
 											</div>
-											<hr>
-											<div class="info-row">
-												<span>Empresa</span>
-												<span th:text="${usuario.empresa}"></span>
+											<div class="row mb-2">
+												<div class="col-sm-4 fw-bold">Nombre de usuario:</div>
+												<div class="col-sm-8" th:text="${usuario.nombreUsuario}"></div>
 											</div>
-											<hr>
-											<div class="info-row">
-												<span>Área</span>
-												<span th:text="${usuario.area.nombre}"></span>
+											<div class="row mb-2">
+												<div class="col-sm-4 fw-bold">Email:</div>
+												<div class="col-sm-8" th:text="${usuario.email}"></div>
+											</div>
+											<div class="row mb-2">
+												<div class="col-sm-4 fw-bold">Administrador:</div>
+												<div class="col-sm-8">
+													<span th:text="${usuario.esAdmin ? 'Sí' : 'No'}"></span>
+												</div>
 											</div>
 										</div>
-
-										<div th:if="${tipoUsuario == 'Cliente'}">
-											<h4 class="mb-3">Información del Cliente</h4>
-											<div class="info-row">
-												<span>Número de Cliente</span>
-												<span th:text="${usuario.nroCliente}"></span>
+									</div>
+									<!-- Sección de técnico o cliente -->
+									<div class="card">
+										<div class="card-body">
+											<div th:if="${tipoUsuario == 'Técnico'}">
+												<h5 class="mb-3">Información del Técnico</h5>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Número de Contacto:</div>
+													<div class="col-sm-7" th:text="${usuario.nroContacto}"></div>
+												</div>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Empresa:</div>
+													<div class="col-sm-7" th:text="${usuario.empresa}"></div>
+												</div>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Área:</div>
+													<div class="col-sm-7" th:text="${usuario.area.nombre}"></div>
+												</div>
 											</div>
-											<hr>
-											<div class="info-row">
-												<span>Plan</span>
-												<span th:text="${usuario.plan}"></span>
-											</div>
-											<hr>
-											<div class="info-row">
-												<span>Tipo de Cliente</span>
-												<span th:text="${usuario.particular ? 'Particular' : 'Empresa'}"></span>
-											</div>
-											<hr>
-											<h5 class="mt-4 mb-3">Dirección</h5>
-											<div class="info-row">
-												<span>Calle</span>
-												<span th:text="${usuario.direccion.calle}"></span>
-											</div>
-											<hr>
-											<div class="info-row">
-												<span>Número</span>
-												<span th:text="${usuario.direccion.nro}"></span>
-											</div>
-											<hr>
-											<div class="info-row">
-												<span>Código Postal</span>
-												<span th:text="${usuario.direccion.codigoPostal}"></span>
-											</div>
-											<hr>
-											<div class="info-row">
-												<span>Localidad</span>
-												<span th:text="${usuario.direccion.localidad.nombre}"></span>
+											<div th:if="${tipoUsuario == 'Cliente'}">
+												<h5 class="mb-3">Información del Cliente</h5>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Número de Cliente:</div>
+													<div class="col-sm-7" th:text="${usuario.nroCliente}"></div>
+												</div>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Plan:</div>
+													<div class="col-sm-7" th:text="${usuario.plan}"></div>
+												</div>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Tipo de Cliente:</div>
+													<div class="col-sm-7"
+														th:text="${usuario.particular ? 'Particular' : 'Empresa'}">
+													</div>
+												</div>
+												<h6 class="mt-4 mb-2">Dirección</h6>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Calle:</div>
+													<div class="col-sm-7" th:text="${usuario.direccion.calle}"></div>
+												</div>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Número:</div>
+													<div class="col-sm-7" th:text="${usuario.direccion.nro}"></div>
+												</div>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Código Postal:</div>
+													<div class="col-sm-7" th:text="${usuario.direccion.codigoPostal}">
+													</div>
+												</div>
+												<div class="row mb-2">
+													<div class="col-sm-5 fw-bold">Localidad:</div>
+													<div class="col-sm-7"
+														th:text="${usuario.direccion.localidad.nombre}"></div>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				</section>
-         </div>
-       </main>
-       <footer th:replace="~{fragments/footer.html}"></footer>
-     </div>
-   </div>
+					</section>
+				</div>
+			</main>
+			<footer th:replace="~{fragments/footer.html}"></footer>
+		</div>
+	</div>
 
-   <script th:src="@{/js/sidebar.js}"></script>
-   <script
-     src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-     crossorigin="anonymous"
-   ></script>
-   <script
-     src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
-     crossorigin="anonymous"
-   ></script>
-   <script
-     src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
-     crossorigin="anonymous"
-   ></script>
- </body>
+	<script th:src="@{/js/sidebar.js}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+		crossorigin="anonymous"></script>
+</body>
 
 </html>
