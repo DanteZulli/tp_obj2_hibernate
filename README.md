@@ -10,7 +10,7 @@
 El proyecto está configurado para conectarse a MySQL con los siguientes valores por defecto:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3307/tp_obj2_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Argentina/Buenos_Aires
+spring.datasource.url=jdbc:mysql://localhost:3306/tp_obj2_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Argentina/Buenos_Aires
 spring.datasource.username=root
 spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
