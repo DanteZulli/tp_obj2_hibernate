@@ -9,7 +9,10 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <!-- Menú de Tickets (visible para todos) -->
+						<a class="sb-sidenav-menu-heading" th:href="@{/}">Dashboard</a>
+					
                         <div class="sb-sidenav-menu-heading">Tickets</div>
+						
 
                         <!-- Opciones para CLIENTE -->
                         <div th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'')')}">

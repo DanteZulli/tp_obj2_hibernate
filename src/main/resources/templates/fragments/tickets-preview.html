@@ -48,8 +48,8 @@
                             </small>
                         </div>
                         <div class="col-6 text-end">
-                            <a href="#" class="btn btn-sm btn-outline-primary"
-                                th:onclick="'alert(\'Ver detalles del ticket #' + ${ticket.id} + '\')'">
+                            <a th:href="${#authorization.expression('hasRole(''ROLE_TECNICO'')') ? '/tecnico/tickets/' + ticket.id : '/cliente/tickets/' + ticket.id}"
+							 class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-eye"></i> Ver
                             </a>
                         </div>
