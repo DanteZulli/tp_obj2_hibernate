@@ -11241,3 +11241,24 @@ body {
   font-size: 0.75rem;
   border-radius: 0.375rem !important;
 }
+/************************/
+.card-link {
+    display: block;       /* Para que ocupe todo el ancho disponible */
+    width: 100%;          /* Ocupa todo el ancho de la columna */
+    height: 100%;         /* Ocupa todo el alto del contenedor */
+    text-decoration: none; /* Sin subrayado */
+}
+
+.card-button {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+

@@ -4,42 +4,65 @@
         <span th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'') and !hasRole(''ROLE_ADMIN'')')}">Menú Técnico</span>
         <span th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'')')}">Menú Cliente</span>
     </h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}">Todos los Tickets</li>
-        <li class="breadcrumb-item active" th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}">Mis Tickets</li>
-    </ol>
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">
-                    Abiertos
-                    <span class="badge bg-light text-primary ms-2" th:text="${ticketsAbiertos}">0</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">
-                    En Progreso
-                    <span class="badge bg-light text-warning ms-2" th:text="${ticketsEnProgreso}">0</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">
-                    Resueltos
-                    <span class="badge bg-light text-success ms-2" th:text="${ticketsResueltos}">0</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-danger text-white mb-4">
-                <div class="card-body">
-                    Urgentes
-                    <span class="badge bg-light text-danger ms-2" th:text="${ticketsUrgentes}">0</span>
-                </div>
-            </div>
-        </div>
-    </div>
+	<ol class="breadcrumb mb-4">
+	    <li class="breadcrumb-item active" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or hasRole(''ROLE_TECNICO'')')}">
+	        <a th:href="@{/}" class="text-decoration-none text-reset">Todos los Tickets</a>
+	    </li>
+	    <li class="breadcrumb-item active" th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}">
+	        <a th:href="@{/}" class="text-decoration-none text-reset">Mis Tickets</a>
+	    </li>
+	</ol>
+
+	<div class="row">
+
+	    <div class="col-xl-3 col-md-6">
+			<a th:href="@{/{estado}(estado='ABIERTO')}" class="card-link">
+
+	            <div class="card bg-primary text-white mb-4 card-button">
+	                <div class="card-body">
+	                    Abiertos
+	                    <span class="badge bg-light text-primary ms-2" th:text="${ticketsAbiertos}">0</span>
+	                </div>
+	            </div>
+	        </a>
+	    </div>
+
+	    <div class="col-xl-3 col-md-6">
+			<a th:href="@{/{estado}(estado='EN_PROGRESO')}" class="card-link">
+
+	            <div class="card bg-warning text-white mb-4 card-button">
+	                <div class="card-body">
+	                    En Progreso
+	                    <span class="badge bg-light text-warning ms-2" th:text="${ticketsEnProgreso}">0</span>
+	                </div>
+	            </div>
+	        </a>
+	    </div>
+
+	    <div class="col-xl-3 col-md-6">
+			<a th:href="@{/{estado}(estado='RESUELTO')}" class="card-link">
+
+	            <div class="card bg-success text-white mb-4 card-button">
+	                <div class="card-body">
+	                    Resueltos
+	                    <span class="badge bg-light text-success ms-2" th:text="${ticketsResueltos}">0</span>
+	                </div>
+	            </div>
+	        </a>
+	    </div>
+
+	    <div class="col-xl-3 col-md-6">
+			<a th:href="@{/{estado}(estado='ALTA')}" class="card-link">
+
+	            <div class="card bg-danger text-white mb-4 card-button">
+	                <div class="card-body">
+	                    Urgentes
+	                    <span class="badge bg-light text-danger ms-2" th:text="${ticketsUrgentes}">0</span>
+	                </div>
+	            </div>
+	        </a>
+	    </div>
+
+	</div>
+
 </div>

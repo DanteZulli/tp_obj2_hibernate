@@ -67,10 +67,7 @@
                                 ID: #<span th:text="${ticket.id}">123</span>
                             </small>
                         </div>
-                        <div class="col-6 text-end">
-
-                            <!-- <a th:href="${#authorization.expression('hasRole(''ROLE_TECNICO'')') ? '/tecnico/tickets/' + ticket.id : '/cliente/tickets/' + ticket.id}"
-							 class="btn btn-sm btn-outline-primary">-->
+                        <div class="col-6 text-end"> 
 
                             <!-- Mostrar el enlace correcto según el rol -->
                             <a th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}"

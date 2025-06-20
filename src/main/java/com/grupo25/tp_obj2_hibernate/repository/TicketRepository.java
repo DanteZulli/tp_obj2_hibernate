@@ -21,6 +21,15 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer>, JpaSpe
     List<Ticket> findByAsignado(Usuario asignado);
 
     List<Ticket> findByEstado(String estado);
+ // Para Admin y Técnico
+    List<Ticket> findByEstadoIgnoreCase(String estado);
+
+    // Para Cliente
+    List<Ticket> findByEstadoIgnoreCaseAndCreadorId(String estado, int creadorId);
+    
+    List<Ticket> findByPrioridadIgnoreCaseAndCreadorId(String prioridad, Long creadorId);
+    
+    List<Ticket> findByPrioridadIgnoreCase(String prioridad);
 
     String findEstadoById(int id);
 

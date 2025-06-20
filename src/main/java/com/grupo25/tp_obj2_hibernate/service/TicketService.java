@@ -18,166 +18,182 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TicketService {
 
-    private final TicketRepository ticketRepository;
-    private final UsuarioRepository usuarioRepository;
-    private final CategoriaService categoriaService;
-    private final EtiquetaService etiquetaService;
+	private final TicketRepository ticketRepository;
+	private final UsuarioRepository usuarioRepository;
+	private final CategoriaService categoriaService;
+	private final EtiquetaService etiquetaService;
 
-    public Ticket crearTicket(String titulo, String descripcion, String estado, String prioridad, String nombreUsuario,
-            Integer categoriaId) {
-        Usuario creador = usuarioRepository.findByNombreUsuario(nombreUsuario)
-                .orElseThrow(() -> new TicketException("Usuario creador no encontrado", "USER_NOT_FOUND"));
-        Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
+	public Ticket crearTicket(String titulo, String descripcion, String estado, String prioridad, String nombreUsuario,
+			Integer categoriaId) {
+		Usuario creador = usuarioRepository.findByNombreUsuario(nombreUsuario)
+				.orElseThrow(() -> new TicketException("Usuario creador no encontrado", "USER_NOT_FOUND"));
+		Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
 
-        Ticket ticket = new Ticket();
-        ticket.setTitulo(titulo);
-        ticket.setDescripcion(descripcion);
-        ticket.setEstado(estado);
-        ticket.setPrioridad(prioridad);
-        ticket.setFechaCreacion(LocalDateTime.now());
-        ticket.setCreador(creador);
-        ticket.setCategoria(categoria);
-        return ticketRepository.save(ticket);
-    }
+		Ticket ticket = new Ticket();
+		ticket.setTitulo(titulo);
+		ticket.setDescripcion(descripcion);
+		ticket.setEstado(estado);
+		ticket.setPrioridad(prioridad);
+		ticket.setFechaCreacion(LocalDateTime.now());
+		ticket.setCreador(creador);
+		ticket.setCategoria(categoria);
+		return ticketRepository.save(ticket);
+	}
 
-    public Ticket modificarTicket(int id, String titulo, String descripcion, String estado, String prioridad,
-            Integer categoriaId) {
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
+	public Ticket modificarTicket(int id, String titulo, String descripcion, String estado, String prioridad,
+			Integer categoriaId) {
+		Ticket ticket = ticketRepository.findById(id)
+				.orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
 
-        ticket.setTitulo(titulo);
-        ticket.setDescripcion(descripcion);
-        ticket.setEstado(estado);
-        ticket.setPrioridad(prioridad);
+		ticket.setTitulo(titulo);
+		ticket.setDescripcion(descripcion);
+		ticket.setEstado(estado);
+		ticket.setPrioridad(prioridad);
 
-        if (categoriaId != null) {
-            Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
-            ticket.setCategoria(categoria);
-        }
+		if (categoriaId != null) {
+			Categoria categoria = categoriaService.obtenerCategoria(categoriaId);
+			ticket.setCategoria(categoria);
+		}
 
-        return ticketRepository.save(ticket);
-    }
+		return ticketRepository.save(ticket);
+	}
 
-    public Ticket obtenerTicket(int id) {
-        return ticketRepository.findById(id)
-                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
-    }
+	public Ticket obtenerTicket(int id) {
+		return ticketRepository.findById(id)
+				.orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
+	}
 
-    public List<Ticket> obtenerTodosLosTickets() {
-        return ticketRepository.findAll();
-    }
+	public List<Ticket> obtenerTodosLosTickets() {
+		return ticketRepository.findAll();
+	}
 
-    public String obtenerEstadoTicket(int id) {
-        return ticketRepository.findEstadoById(id);
-    }
+	public String obtenerEstadoTicket(int id) {
+		return ticketRepository.findEstadoById(id);
+	}
 
-    public List<Ticket> obtenerTodosLosTicketsPorUsuarioCreador(int usuarioId) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new TicketException("Usuario no encontrado con ID: " + usuarioId, "USER_NOT_FOUND"));
+	public List<Ticket> obtenerTicketsPorPrioridad(String prioridad) {
+	    return ticketRepository.findByPrioridadIgnoreCase(prioridad);
+	}
 
-        return ticketRepository.findByCreador(usuario);
-    }
+	public List<Ticket> obtenerTicketsPorPrioridadYCreador(String prioridad, int creadorId) {
+	    return ticketRepository.findByPrioridadIgnoreCaseAndCreadorId(prioridad, (long) creadorId);
+	}
 
-    public Ticket asignarTicketATecnico(int id, int idTecnico) {
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
-        Usuario tecnico = usuarioRepository.findById(idTecnico)
-                .orElseThrow(() -> new TicketException("Tecnico no encontrado con ID: " + idTecnico,
-                        "TECHNICIAN_NOT_FOUND"));
-        ticket.setAsignado(tecnico);
-        return ticketRepository.save(ticket);
-    }
 
-    public Ticket tomarTicket(int id, String nombreUsuario) {
-        Usuario tecnico = usuarioRepository.findByNombreUsuario(nombreUsuario)
-                .orElseThrow(() -> new TicketException("Usuario no encontrado", "USER_NOT_FOUND"));
-        return asignarTicketATecnico(id, tecnico.getId());
-    }
+	public List<Ticket> obtenerEstadoTicketIgnoreCase(String estado) {
+		return ticketRepository.findByEstadoIgnoreCase(estado);
+	}
 
-    public Ticket cambiarPrioridadTicket(int id, String prioridad) {
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
-        ticket.setPrioridad(prioridad);
-        return ticketRepository.save(ticket);
-    }
+	public List<Ticket> obtenerEstadoTicketPorUsuario(String estado, int creadorId) {
+		return ticketRepository.findByEstadoIgnoreCaseAndCreadorId(estado, creadorId);
+	}
 
-    public long contarTicketsPorEstado(String estado) {
-        return ticketRepository.countByEstado(estado);
-    }
+	public List<Ticket> obtenerTodosLosTicketsPorUsuarioCreador(int usuarioId) {
+		Usuario usuario = usuarioRepository.findById(usuarioId)
+				.orElseThrow(() -> new TicketException("Usuario no encontrado con ID: " + usuarioId, "USER_NOT_FOUND"));
 
-    public long contarTicketsPorEstadoYCreador(String estado, int creadorId) {
-        return ticketRepository.countByEstadoAndCreadorId(estado, creadorId);
-    }
+		return ticketRepository.findByCreador(usuario);
+	}
 
-    public long contarTicketsPorPrioridad(String prioridad) {
-        return ticketRepository.countByPrioridad(prioridad);
-    }
+	public Ticket asignarTicketATecnico(int id, int idTecnico) {
+		Ticket ticket = ticketRepository.findById(id)
+				.orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
+		Usuario tecnico = usuarioRepository.findById(idTecnico).orElseThrow(
+				() -> new TicketException("Tecnico no encontrado con ID: " + idTecnico, "TECHNICIAN_NOT_FOUND"));
+		ticket.setAsignado(tecnico);
+		return ticketRepository.save(ticket);
+	}
 
-    public long contarTicketsPorPrioridadYCreador(String prioridad, int creadorId) {
-        return ticketRepository.countByPrioridadAndCreadorId(prioridad, creadorId);
-    }
+	public Ticket tomarTicket(int id, String nombreUsuario) {
+		Usuario tecnico = usuarioRepository.findByNombreUsuario(nombreUsuario)
+				.orElseThrow(() -> new TicketException("Usuario no encontrado", "USER_NOT_FOUND"));
+		return asignarTicketATecnico(id, tecnico.getId());
+	}
 
-    public List<Ticket> obtenerTodosLosTicketsPorUsuarioAsignado(int usuarioId) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new TicketException("Usuario no encontrado con ID: " + usuarioId, "USER_NOT_FOUND"));
+	public Ticket cambiarPrioridadTicket(int id, String prioridad) {
+		Ticket ticket = ticketRepository.findById(id)
+				.orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
+		ticket.setPrioridad(prioridad);
+		return ticketRepository.save(ticket);
+	}
 
-        return ticketRepository.findByAsignado(usuario);
-    }
+	public long contarTicketsPorEstado(String estado) {
+		return ticketRepository.countByEstado(estado);
+	}
 
-    public Ticket cambiarEstadoTicket(int id, String estado) {
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
-        ticket.setEstado(estado);
-        if ("RESUELTO".equals(estado)) {
-            ticket.setFechaResolucion(LocalDateTime.now());
-        }
-        return ticketRepository.save(ticket);
-    }
+	public long contarTicketsPorEstadoYCreador(String estado, int creadorId) {
+		return ticketRepository.countByEstadoAndCreadorId(estado, creadorId);
+	}
 
-    public Ticket agregarEtiquetaATicket(int ticketId, int etiquetaId) {
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + ticketId, "TICKET_NOT_FOUND"));
-        Etiqueta etiqueta = etiquetaService.obtenerEtiqueta(etiquetaId);
-        if (!ticket.getEtiquetas().contains(etiqueta)) {
-            ticket.getEtiquetas().add(etiqueta);
-        }
-        return ticketRepository.save(ticket);
-    }
+	public long contarTicketsPorPrioridad(String prioridad) {
+		return ticketRepository.countByPrioridad(prioridad);
+	}
 
-    public Ticket quitarEtiquetaDeTicket(int ticketId, int etiquetaId) {
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + ticketId, "TICKET_NOT_FOUND"));
-        Etiqueta etiqueta = etiquetaService.obtenerEtiqueta(etiquetaId);
-        ticket.getEtiquetas().remove(etiqueta);
-        return ticketRepository.save(ticket);
-    }
+	public long contarTicketsPorPrioridadYCreador(String prioridad, int creadorId) {
+		return ticketRepository.countByPrioridadAndCreadorId(prioridad, creadorId);
+	}
 
-    /**
-     * Filtra los tickets basados en varios criterios.
-     *
-     * @param fechaDesde  La fecha de inicio del rango de creación.
-     * @param fechaHasta  La fecha de fin del rango de creación.
-     * @param categoriaId El ID de la categoría del ticket.
-     * @param estado      El estado del ticket.
-     * @param tecnicoIds  La lista de IDs de los técnicos asignados.
-     * @param sinAsignar  Si es true, busca tickets sin asignar. Si es false, busca
-     *                    tickets asignados. Se ignora si se provee tecnicoIds.
-     * @param prioridad   La prioridad del ticket.
-     * @return Una lista de tickets que coinciden con los criterios de búsqueda.
-     */
-    public List<Ticket> filtrarTickets(LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer categoriaId,
-            String estado, List<Integer> tecnicoIds, Boolean sinAsignar, String prioridad) {
-        Categoria categoria = null;
-        if (categoriaId != null) {
-            categoria = categoriaService.obtenerCategoria(categoriaId);
-        }
+	public List<Ticket> obtenerTodosLosTicketsPorUsuarioAsignado(int usuarioId) {
+		Usuario usuario = usuarioRepository.findById(usuarioId)
+				.orElseThrow(() -> new TicketException("Usuario no encontrado con ID: " + usuarioId, "USER_NOT_FOUND"));
 
-        List<Usuario> tecnicos = null;
-        if (tecnicoIds != null && !tecnicoIds.isEmpty()) {
-            tecnicos = usuarioRepository.findAllById(tecnicoIds);
-        }
+		return ticketRepository.findByAsignado(usuario);
+	}
 
-        return ticketRepository.findWithFilters(fechaDesde, fechaHasta, categoria, estado, tecnicos, sinAsignar,
-                prioridad);
-    }
+	public Ticket cambiarEstadoTicket(int id, String estado) {
+		Ticket ticket = ticketRepository.findById(id)
+				.orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + id, "TICKET_NOT_FOUND"));
+		ticket.setEstado(estado);
+		if ("RESUELTO".equals(estado)) {
+			ticket.setFechaResolucion(LocalDateTime.now());
+		}
+		return ticketRepository.save(ticket);
+	}
+
+	public Ticket agregarEtiquetaATicket(int ticketId, int etiquetaId) {
+		Ticket ticket = ticketRepository.findById(ticketId)
+				.orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + ticketId, "TICKET_NOT_FOUND"));
+		Etiqueta etiqueta = etiquetaService.obtenerEtiqueta(etiquetaId);
+		if (!ticket.getEtiquetas().contains(etiqueta)) {
+			ticket.getEtiquetas().add(etiqueta);
+		}
+		return ticketRepository.save(ticket);
+	}
+
+	public Ticket quitarEtiquetaDeTicket(int ticketId, int etiquetaId) {
+		Ticket ticket = ticketRepository.findById(ticketId)
+				.orElseThrow(() -> new TicketException("Ticket no encontrado con ID: " + ticketId, "TICKET_NOT_FOUND"));
+		Etiqueta etiqueta = etiquetaService.obtenerEtiqueta(etiquetaId);
+		ticket.getEtiquetas().remove(etiqueta);
+		return ticketRepository.save(ticket);
+	}
+
+	/**
+	 * Filtra los tickets basados en varios criterios.
+	 *
+	 * @param fechaDesde  La fecha de inicio del rango de creación.
+	 * @param fechaHasta  La fecha de fin del rango de creación.
+	 * @param categoriaId El ID de la categoría del ticket.
+	 * @param estado      El estado del ticket.
+	 * @param tecnicoIds  La lista de IDs de los técnicos asignados.
+	 * @param sinAsignar  Si es true, busca tickets sin asignar. Si es false, busca
+	 *                    tickets asignados. Se ignora si se provee tecnicoIds.
+	 * @param prioridad   La prioridad del ticket.
+	 * @return Una lista de tickets que coinciden con los criterios de búsqueda.
+	 */
+	public List<Ticket> filtrarTickets(LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer categoriaId,
+			String estado, List<Integer> tecnicoIds, Boolean sinAsignar, String prioridad) {
+		Categoria categoria = null;
+		if (categoriaId != null) {
+			categoria = categoriaService.obtenerCategoria(categoriaId);
+		}
+
+		List<Usuario> tecnicos = null;
+		if (tecnicoIds != null && !tecnicoIds.isEmpty()) {
+			tecnicos = usuarioRepository.findAllById(tecnicoIds);
+		}
+
+		return ticketRepository.findWithFilters(fechaDesde, fechaHasta, categoria, estado, tecnicos, sinAsignar,
+				prioridad);
+	}
 }
