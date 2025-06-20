@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tickets")
@@ -20,7 +21,7 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @NotBlank(message = "El título no puede estar vacío")
     @Size(min = 5, max = 100, message = "El título debe tener entre 5 y 100 caracteres")
     @Column(nullable = false)
@@ -35,42 +36,40 @@ public class Ticket {
 
     @NotBlank(message = "La prioridad no puede estar vacía")
     private String prioridad;
-    
+
     @NotNull(message = "La fecha de creación es requerida")
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
-    
+
     @Column(name = "fecha_resolucion")
     private LocalDateTime fechaResolucion;
-    
+
     @NotNull(message = "El creador es requerido")
     @ManyToOne
     @JoinColumn(name = "creador_id", nullable = false)
     private Usuario creador;
-    
+
     @ManyToOne
     @JoinColumn(name = "asignado_id")
     private Usuario asignado;
-    
+
     @NotNull(message = "La categoría es requerida")
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-    
+
     @ManyToMany
-    @JoinTable(
-        name = "ticket_etiqueta",
-        joinColumns = @JoinColumn(name = "ticket_id"),
-        inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
-    )
+    @JoinTable(name = "ticket_etiqueta", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "etiqueta_id"))
     private List<Etiqueta> etiquetas;
-    
+
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comentario> comentarios;
-    
+
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Revision> revisiones;
-    
+
     @Column(name = "create_at_ticket")
     @CreationTimestamp
     private Timestamp createAt;
@@ -78,4 +77,12 @@ public class Ticket {
     @Column(name = "update_at_ticket")
     @UpdateTimestamp
     private Timestamp updateAt;
+
+    public int getCantidadComentarios() {
+        return comentarios != null ? comentarios.size() : 0;
+    }
+
+    public int getCantidadRevisiones() {
+        return revisiones != null ? revisiones.size() : 0;
+    }
 }

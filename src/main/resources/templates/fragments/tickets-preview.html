@@ -16,15 +16,30 @@
                     <div class="row text-muted small">
                         <div class="col-12 mb-2">
                             <i class="fas fa-user"></i>
-                            <strong>Creador:</strong> <span th:text="${ticket.creador.nombre}">Usuario</span>
+                            <strong>Creador:</strong> <span
+                                th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin creador'}">Usuario</span>
                         </div>
-                        <div class="col-12 mb-2" th:if="${ticket.asignado != null}">
+                        <div class="col-12 mb-2">
                             <i class="fas fa-user-cog"></i>
-                            <strong>Asignado:</strong> <span th:text="${ticket.asignado.nombre}">Técnico</span>
+                            <strong>Asignado:</strong>
+                            <span
+                                th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}">Técnico</span>
                         </div>
-                        <div class="col-12 mb-2" th:if="${ticket.categoria != null}">
+                        <div class="col-12 mb-2">
                             <i class="fas fa-tag"></i>
-                            <strong>Categoría:</strong> <span th:text="${ticket.categoria.nombre}">Categoría</span>
+                            <strong>Categoría:</strong>
+                            <span
+                                th:text="${ticket.categoria != null ? ticket.categoria.nombre : 'Sin categoría'}">Categoría</span>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <i class="fas fa-tags"></i>
+                            <strong>Etiquetas:</strong>
+                            <span th:if="${ticket.etiquetas != null and !ticket.etiquetas.empty}">
+                                <span th:each="etiqueta, iterStat : ${ticket.etiquetas}">
+                                    <span class="badge bg-secondary me-1" th:text="${etiqueta.nombre}">Etiqueta</span>
+                                </span>
+                            </span>
+                            <span th:if="${ticket.etiquetas == null or ticket.etiquetas.empty}">Sin etiquetas</span>
                         </div>
                         <div class="col-12 mb-2">
                             <i class="fas fa-exclamation-circle"></i>
@@ -33,10 +48,15 @@
                                                  ticket.prioridad == 'MEDIA' ? 'bg-warning' : 'bg-info'}"
                                 th:text="${ticket.prioridad}">Prioridad</span>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-2">
                             <i class="fas fa-calendar"></i>
                             <strong>Creado:</strong> <span
-                                th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+                                th:text="${ticket.fechaCreacion != null ? #temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}">Fecha</span>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <i class="fas fa-calendar-check"></i>
+                            <strong>Resuelto:</strong> <span
+                                th:text="${ticket.fechaResolucion != null ? #temporals.format(ticket.fechaResolucion, 'dd/MM/yyyy HH:mm') : 'No resuelto'}">Fecha</span>
                         </div>
                     </div>
                 </div>
@@ -48,9 +68,27 @@
                             </small>
                         </div>
                         <div class="col-6 text-end">
-                            <a th:href="${#authorization.expression('hasRole(''ROLE_TECNICO'')') ? '/tecnico/tickets/' + ticket.id : '/cliente/tickets/' + ticket.id}"
-							 class="btn btn-sm btn-outline-primary">
+
+                            <!-- <a th:href="${#authorization.expression('hasRole(''ROLE_TECNICO'')') ? '/tecnico/tickets/' + ticket.id : '/cliente/tickets/' + ticket.id}"
+							 class="btn btn-sm btn-outline-primary">-->
+
+                            <!-- Mostrar el enlace correcto según el rol -->
+                            <a th:if="${#authorization.expression('hasRole(''ROLE_CLIENTE'') and !hasRole(''ROLE_ADMIN'') and !hasRole(''ROLE_TECNICO'')')}"
+                                th:href="@{'/cliente/tickets/' + ${ticket.id}}"
+                                class="btn btn-sm btn-outline-primary me-1">
+
                                 <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <a th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'') or hasRole(''ROLE_ADMIN'')')}"
+                                th:href="@{'/tecnico/tickets/' + ${ticket.id}}"
+                                class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <!-- Botón Editar solo para técnicos -->
+                            <a th:if="${#authorization.expression('hasRole(''ROLE_TECNICO'')')}"
+                                th:href="@{'/tecnico/tickets/editar/' + ${ticket.id}}"
+                                class="btn btn-sm btn-outline-warning">
+                                <i class="fas fa-edit"></i> Editar
                             </a>
                         </div>
                     </div>
@@ -58,7 +96,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Mensaje cuando no hay tickets -->
     <div class="row" th:if="${tickets == null or tickets.empty}">
         <div class="col-12">

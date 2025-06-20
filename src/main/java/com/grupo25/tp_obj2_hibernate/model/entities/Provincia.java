@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "provincias")
@@ -18,15 +19,16 @@ public class Provincia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @NotBlank(message = "El nombre no puede estar vacío")
     @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
     @Column(nullable = false)
     private String nombre;
-    
+
     @OneToMany(mappedBy = "provincia")
+    @JsonManagedReference
     private List<Localidad> localidades;
-    
+
     @Column(name = "create_at_provincia")
     @CreationTimestamp
     private Timestamp createAt;
