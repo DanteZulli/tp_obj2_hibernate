@@ -14,7 +14,7 @@
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed" th:data-current-user="${#authentication.name}">
   <nav th:replace="~{fragments/navbar.html}"></nav>
   <div id="layoutSidenav">
     <div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
@@ -52,6 +52,12 @@
             <div class="card-header">
               <i class="fas fa-table me-1"></i>
               Listado de Tickets
+              <div class="float-end" sec:authorize="hasRole('ROLE_TECNICO')">
+                <button id="searchMyTicketsBtn" class="btn btn-sm btn-outline-primary"
+                  title="Buscar tickets asignados a mí">
+                  <i class="fas fa-search"></i> Asignados a mí
+                </button>
+              </div>
             </div>
             <div class="card-body">
               <table id="datatablesSimple" class="table table-striped">
@@ -85,7 +91,9 @@
                       </span>
                     </td>
                     <td th:text="${ticket.creador != null ? ticket.creador.nombre : 'Sin asignar'}"></td>
-                    <td th:text="${ticket.asignado != null ? ticket.asignado.nombre : 'Sin asignar'}"></td>
+                    <td
+                      th:text="${ticket.asignado != null ? ticket.asignado.nombre + ' (' + ticket.asignado.nombreUsuario + ')' : 'Sin asignar'}">
+                    </td>
                     <td th:text="${#temporals.format(ticket.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
                     <td>
                       <div class="btn-group" role="group">
@@ -117,11 +125,18 @@
   <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
     crossorigin="anonymous"></script>
   <script>
-    // Inicializar DataTables
     window.addEventListener('DOMContentLoaded', event => {
       const datatablesSimple = document.getElementById('datatablesSimple');
       if (datatablesSimple) {
-        new simpleDatatables.DataTable(datatablesSimple);
+        const dataTable = new simpleDatatables.DataTable(datatablesSimple);
+        const searchMyTicketsBtn = document.getElementById('searchMyTicketsBtn');
+        const currentUser = document.body.dataset.currentUser;
+
+        if (searchMyTicketsBtn && currentUser) {
+          searchMyTicketsBtn.addEventListener('click', () => {
+            dataTable.search(currentUser);
+          });
+        }
       }
     });
   </script>
