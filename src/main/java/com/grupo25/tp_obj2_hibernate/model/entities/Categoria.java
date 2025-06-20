@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "categorias")
@@ -29,7 +30,7 @@ public class Categoria {
     private String descripcion;
 
     @OneToMany(mappedBy = "categoria")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Ticket> tickets;
 
     @Column(name = "create_at_categoria")

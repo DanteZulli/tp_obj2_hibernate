@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" th:href="@{/assets/img/favicon.ico}" type="image/x-icon" />
+    <title>Consulta de Tickets - Ticketera Grupo 25</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+    <nav th:replace="~{fragments/navbar.html}"></nav>
+    <div id="layoutSidenav">
+        <div th:replace="~{fragments/sidebar.html :: sidebar-unified}"></div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Consulta de Tickets</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Menú</a></li>
+                        <li class="breadcrumb-item active">Consulta de Tickets</li>
+                    </ol>
+
+                    <div class="card card-body mb-4">
+                        <div id="filter-panel">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="fechaDesde" class="form-label">Desde</label>
+                                    <input type="date" class="form-control" id="fechaDesde" name="fechaDesde">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="fechaHasta" class="form-label">Hasta</label>
+                                    <input type="date" class="form-control" id="fechaHasta" name="fechaHasta">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="categoriaId" class="form-label">Categoría</label>
+                                    <select class="form-select" id="categoriaId" name="categoriaId">
+                                        <option value="">Todas</option>
+                                        <option th:each="cat : ${categorias}" th:value="${cat.id}"
+                                            th:text="${cat.nombre}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="estado" class="form-label">Estado</label>
+                                    <select class="form-select" id="estado" name="estado">
+                                        <option value="">Todos</option>
+                                        <option value="ABIERTO">Abierto</option>
+                                        <option value="EN_PROGRESO">En Progreso</option>
+                                        <option value="RESUELTO">Resuelto</option>
+                                        <option value="CERRADO">Cerrado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="tecnicoIds" class="form-label">Técnicos Asignados</label>
+                                    <select class="form-select" id="tecnicoIds" name="tecnicoIds" multiple>
+                                        <option th:each="tec : ${tecnicos}" th:value="${tec.id}"
+                                            th:text="${tec.nombre}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="sinAsignar" class="form-label">Asignación</label>
+                                    <select class="form-select" id="sinAsignar" name="sinAsignar">
+                                        <option value="">Todos</option>
+                                        <option value="true">Sin Asignar</option>
+                                        <option value="false">Asignados</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="prioridad" class="form-label">Prioridad</label>
+                                    <select class="form-select" id="prioridad" name="prioridad">
+                                        <option value="">Todas</option>
+                                        <option value="ALTA">Alta</option>
+                                        <option value="MEDIA">Media</option>
+                                        <option value="BAJA">Baja</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="button" id="limpiar-btn" class="btn btn-secondary me-2">Limpiar</button>
+                                <button type="button" id="buscar-btn" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tickets-container">
+                        <!-- Mensaje inicial -->
+                        <div class="row" id="initial-message">
+                            <div class="col-12">
+                                <div class="alert alert-info text-center">
+                                    <i class="fas fa-info-circle"></i>
+                                    Utilice los filtros para realizar una consulta de tickets.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Mensaje cuando no hay tickets -->
+                        <div class="row d-none" id="no-results-message">
+                            <div class="col-12">
+                                <div class="alert alert-warning text-center">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    No se encontraron tickets con los filtros especificados.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Container for ticket cards -->
+                        <div class="row" id="tickets-row">
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer th:replace="~{fragments/footer.html}"></footer>
+        </div>
+    </div>
+
+    <script th:src="@{/js/sidebar.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const userRoles = /*[[${userRoles}]]*/[];
+        const contextPath = /*[[@{/}]]*/ '';
+        /*]]>*/
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buscarBtn = document.getElementById('buscar-btn');
+            const limpiarBtn = document.getElementById('limpiar-btn');
+            const ticketsRow = document.getElementById('tickets-row');
+            const initialMessage = document.getElementById('initial-message');
+            const noResultsMessage = document.getElementById('no-results-message');
+
+            limpiarBtn.addEventListener('click', function () {
+                document.getElementById('fechaDesde').value = '';
+                document.getElementById('fechaHasta').value = '';
+                document.getElementById('categoriaId').value = '';
+                document.getElementById('estado').value = '';
+                const tecSelect = document.getElementById('tecnicoIds');
+                for (let i = 0; i < tecSelect.options.length; i++) {
+                    tecSelect.options[i].selected = false;
+                }
+                document.getElementById('sinAsignar').value = '';
+                document.getElementById('prioridad').value = '';
+                ticketsRow.innerHTML = '';
+                initialMessage.classList.remove('d-none');
+                noResultsMessage.classList.add('d-none');
+            });
+
+            buscarBtn.addEventListener('click', function () {
+                const fechaDesde = document.getElementById('fechaDesde').value;
+                const fechaHasta = document.getElementById('fechaHasta').value;
+                const categoriaId = document.getElementById('categoriaId').value;
+                const estado = document.getElementById('estado').value;
+                const tecnicoIdsSelect = document.getElementById('tecnicoIds');
+                const tecnicoIds = [...tecnicoIdsSelect.options]
+                    .filter(option => option.selected)
+                    .map(option => option.value);
+                const sinAsignar = document.getElementById('sinAsignar').value;
+                const prioridad = document.getElementById('prioridad').value;
+
+                const params = new URLSearchParams();
+                if (fechaDesde) params.append('fechaDesde', new Date(fechaDesde).toISOString());
+                if (fechaHasta) params.append('fechaHasta', new Date(fechaHasta).toISOString());
+                if (categoriaId) params.append('categoriaId', categoriaId);
+                if (estado) params.append('estado', estado);
+                if (tecnicoIds.length > 0) {
+                    tecnicoIds.forEach(id => params.append('tecnicoIds', id));
+                }
+                if (sinAsignar) params.append('sinAsignar', sinAsignar);
+                if (prioridad) params.append('prioridad', prioridad);
+
+                const url = `${contextPath}api/tickets/filtrar?${params.toString()}`;
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json();
+                    })
+                    .then(tickets => {
+                        initialMessage.classList.add('d-none');
+                        ticketsRow.innerHTML = '';
+
+                        if (tickets.length === 0) {
+                            noResultsMessage.classList.remove('d-none');
+                        } else {
+                            noResultsMessage.classList.add('d-none');
+                            tickets.forEach(ticket => {
+                                const ticketCard = createTicketCard(ticket);
+                                ticketsRow.insertAdjacentHTML('beforeend', ticketCard);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al buscar tickets:', error);
+                        ticketsRow.innerHTML = `<div class="col-12"><div class="alert alert-danger">Error al cargar los tickets. Por favor, intente de nuevo.</div></div>`;
+                        initialMessage.classList.add('d-none');
+                        noResultsMessage.classList.add('d-none');
+                    });
+            });
+
+            function createTicketCard(ticket) {
+                const getStatusBadgeClass = (status) => {
+                    switch (status) {
+                        case 'ABIERTO': return 'bg-primary';
+                        case 'EN_PROGRESO': return 'bg-warning';
+                        case 'RESUELTO': return 'bg-success';
+                        default: return 'bg-secondary';
+                    }
+                };
+                const getPriorityBadgeClass = (priority) => {
+                    switch (priority) {
+                        case 'ALTA': return 'bg-danger';
+                        case 'MEDIA': return 'bg-warning';
+                        default: return 'bg-info';
+                    }
+                };
+                const formatDate = (dateString) => {
+                    if (!dateString) return 'No resuelto';
+                    const date = new Date(dateString);
+                    return date.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                };
+                const hasRole = (role) => userRoles.includes(role);
+                const description = ticket.descripcion ? (ticket.descripcion.length > 100 ? ticket.descripcion.substring(0, 100) + '...' : ticket.descripcion) : '';
+                let actionButtons = '';
+                if (hasRole('ROLE_CLIENTE') && !hasRole('ROLE_ADMIN') && !hasRole('ROLE_TECNICO')) {
+                    actionButtons += `<a href="${contextPath}cliente/tickets/${ticket.id}" class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-eye"></i> Ver</a>`;
+                }
+                if (hasRole('ROLE_TECNICO') || hasRole('ROLE_ADMIN')) {
+                    actionButtons += `<a href="${contextPath}tecnico/tickets/${ticket.id}" class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-eye"></i> Ver</a>`;
+                }
+                if (hasRole('ROLE_TECNICO')) {
+                    actionButtons += `<a href="${contextPath}tecnico/tickets/editar/${ticket.id}" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i> Editar</a>`;
+                }
+                const etiquetasHtml = ticket.etiquetas && ticket.etiquetas.length > 0
+                    ? ticket.etiquetas.map(etiqueta => `<span class="badge bg-secondary me-1">${etiqueta.nombre}</span>`).join('')
+                    : 'Sin etiquetas';
+
+                return `
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-start">
+                            <h6 class="card-title mb-0">${ticket.titulo || 'Sin título'}</h6>
+                            <span class="badge ${getStatusBadgeClass(ticket.estado)}">${ticket.estado || 'Sin estado'}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-muted small">
+                                <div class="col-12 mb-2"><i class="fas fa-user"></i> <strong>Creador:</strong> <span>${ticket.creador ? ticket.creador.nombre : 'Sin creador'}</span></div>
+                                <div class="col-12 mb-2"><i class="fas fa-user-cog"></i> <strong>Asignado:</strong> <span>${ticket.asignado ? ticket.asignado.nombre : 'Sin asignar'}</span></div>
+                                <div class="col-12 mb-2"><i class="fas fa-tag"></i> <strong>Categoría:</strong> <span>${ticket.categoria ? ticket.categoria.nombre : 'Sin categoría'}</span></div>
+                                <div class="col-12 mb-2"><i class="fas fa-tags"></i> <strong>Etiquetas:</strong> ${etiquetasHtml}</div>
+                                <div class="col-12 mb-2"><i class="fas fa-exclamation-circle"></i> <strong>Prioridad:</strong> <span class="badge ${getPriorityBadgeClass(ticket.prioridad)}">${ticket.prioridad || 'Sin prioridad'}</span></div>
+                                <div class="col-6 mb-2"><i class="fas fa-comment"></i> <strong>Comentarios:</strong> ${ticket.cantidadComentarios}</div>
+                                <div class="col-6 mb-2"><i class="fas fa-history"></i> <strong>Revisiones:</strong> ${ticket.cantidadRevisiones}</div>
+                                <div class="col-12 mb-2"><i class="fas fa-calendar"></i> <strong>Creado:</strong> <span>${formatDate(ticket.fechaCreacion)}</span></div>
+                                <div class="col-12 mb-2"><i class="fas fa-calendar-check"></i> <strong>Resuelto:</strong> <span>${formatDate(ticket.fechaResolucion)}</span></div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="row">
+                                <div class="col-6"><small class="text-muted">ID: #<span>${ticket.id}</span></small></div>
+                                <div class="col-6 text-end">${actionButtons}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

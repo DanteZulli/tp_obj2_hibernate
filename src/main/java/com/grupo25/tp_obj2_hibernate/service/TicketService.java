@@ -151,4 +151,33 @@ public class TicketService {
         ticket.getEtiquetas().remove(etiqueta);
         return ticketRepository.save(ticket);
     }
+
+    /**
+     * Filtra los tickets basados en varios criterios.
+     *
+     * @param fechaDesde  La fecha de inicio del rango de creación.
+     * @param fechaHasta  La fecha de fin del rango de creación.
+     * @param categoriaId El ID de la categoría del ticket.
+     * @param estado      El estado del ticket.
+     * @param tecnicoIds  La lista de IDs de los técnicos asignados.
+     * @param sinAsignar  Si es true, busca tickets sin asignar. Si es false, busca
+     *                    tickets asignados. Se ignora si se provee tecnicoIds.
+     * @param prioridad   La prioridad del ticket.
+     * @return Una lista de tickets que coinciden con los criterios de búsqueda.
+     */
+    public List<Ticket> filtrarTickets(LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer categoriaId,
+            String estado, List<Integer> tecnicoIds, Boolean sinAsignar, String prioridad) {
+        Categoria categoria = null;
+        if (categoriaId != null) {
+            categoria = categoriaService.obtenerCategoria(categoriaId);
+        }
+
+        List<Usuario> tecnicos = null;
+        if (tecnicoIds != null && !tecnicoIds.isEmpty()) {
+            tecnicos = usuarioRepository.findAllById(tecnicoIds);
+        }
+
+        return ticketRepository.findWithFilters(fechaDesde, fechaHasta, categoria, estado, tecnicos, sinAsignar,
+                prioridad);
+    }
 }

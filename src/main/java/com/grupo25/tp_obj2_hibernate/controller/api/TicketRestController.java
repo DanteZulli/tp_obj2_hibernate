@@ -1,7 +1,9 @@
 package com.grupo25.tp_obj2_hibernate.controller.api;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -171,6 +173,28 @@ public class TicketRestController {
         } catch (TicketException e) {
             log.error("Error al quitar la etiqueta con ID: {} del ticket con ID: {}: {}", etiquetaId, ticketId,
                     e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<Ticket>> filtrarTickets(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaDesde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaHasta,
+            @RequestParam(required = false) Integer categoriaId,
+            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) List<Integer> tecnicoIds,
+            @RequestParam(required = false) Boolean sinAsignar,
+            @RequestParam(required = false) String prioridad) {
+        log.debug(
+                "Filtrando tickets con los siguientes criterios: fechaDesde={}, fechaHasta={}, categoriaId={}, estado={}, tecnicoIds={}, sinAsignar={}, prioridad={}",
+                fechaDesde, fechaHasta, categoriaId, estado, tecnicoIds, sinAsignar, prioridad);
+        try {
+            List<Ticket> tickets = ticketService.filtrarTickets(fechaDesde, fechaHasta, categoriaId, estado, tecnicoIds,
+                    sinAsignar, prioridad);
+            return ResponseEntity.ok(tickets);
+        } catch (TicketException e) {
+            log.error("Error al filtrar tickets: {}", e.getMessage(), e);
             throw e;
         }
     }

@@ -58,20 +58,18 @@ public class Ticket {
     @NotNull(message = "La categoría es requerida")
     @ManyToOne
     @JoinColumn(name = "categoria_id")
-    @JsonBackReference
     private Categoria categoria;
 
     @ManyToMany
     @JoinTable(name = "ticket_etiqueta", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "etiqueta_id"))
-    @JsonIgnore
     private List<Etiqueta> etiquetas;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Comentario> comentarios;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Revision> revisiones;
 
     @Column(name = "create_at_ticket")
@@ -81,4 +79,12 @@ public class Ticket {
     @Column(name = "update_at_ticket")
     @UpdateTimestamp
     private Timestamp updateAt;
+
+    public int getCantidadComentarios() {
+        return comentarios != null ? comentarios.size() : 0;
+    }
+
+    public int getCantidadRevisiones() {
+        return revisiones != null ? revisiones.size() : 0;
+    }
 }
