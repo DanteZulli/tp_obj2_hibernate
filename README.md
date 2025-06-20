@@ -57,6 +57,28 @@ El script de inicialización crea los siguientes usuarios:
 
 > 🔑 **Importante:** La contraseña para todos los usuarios es `1234`
 
+## 📫 Configuración de Correo Electrónico
+
+El sistema envía notificaciones por correo electrónico para operaciones clave, como la creación y modificación de tickets. Esta funcionalidad es gestionada por `EmailService.java` y se dispara desde `TicketRestController.java`.
+
+### 🧪 Pruebas de Envío para Profesores
+
+Dado que los usuarios por defecto (cargados desde `data.sql`) utilizan dominios ficticios como `example.com`, se implementó un mecanismo para facilitar las pruebas:
+
+1.  **Configurar destinatarios de prueba:**
+    En el archivo `src/main/resources/application.properties`, podés especificar una lista de correos reales para recibir todas las notificaciones:
+    ```properties
+    email.default.recipients=profesor1@unla.com,tester@gmail.com
+    ```
+    El sistema se encargará de enviar los correos a estas direcciones, en adición a los destinatarios originales.
+
+2.  **Alternativa:**
+    También es posible modificar directamente los correos electrónicos de los usuarios en la base de datos una vez que ha sido inicializada.
+
+### ⚠️ Advertencia sobre dominios no válidos
+
+- **Notificaciones de error:** Si se intenta enviar un correo a una dirección no válida (ej. `clopez@example.com`) y no se ha configurado la lista `email.default.recipients`, el subsistema de correo de tu proveedor (ej. Gmail) enviará un correo de error a la cuenta que figura en `spring.mail.username`, informando que no se pudo realizar la entrega.
+
 ## 🚀 Ejecución del Proyecto
 
 1. Cloná el repositorio:
