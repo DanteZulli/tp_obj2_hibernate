@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.grupo25.tp_obj2_hibernate.model.entities.Ticket;
 import com.grupo25.tp_obj2_hibernate.service.TicketService;
+import com.grupo25.tp_obj2_hibernate.service.EmailService;
 import com.grupo25.tp_obj2_hibernate.exception.TicketException;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class TicketRestController {
 
     private final TicketService ticketService;
+    private final EmailService emailService;
 
     @PostMapping("/crear")
     public ResponseEntity<Ticket> crearTicket(
@@ -39,6 +41,17 @@ public class TicketRestController {
         try {
             Ticket ticket = ticketService.crearTicket(titulo, descripcion, estado, prioridad, userDetails.getUsername(),
                     categoriaId);
+
+            String subject = "Ticket #" + ticket.getId() + " creado exitosamente";
+            String text = "Hola " + ticket.getCreador().getNombre() + ",\n\n" +
+                    "Tu ticket ha sido creado exitosamente con la siguiente información:\n" +
+                    "ID: " + ticket.getId() + "\n" +
+                    "Título: " + ticket.getTitulo() + "\n" +
+                    "Prioridad: " + ticket.getPrioridad() + "\n" +
+                    "Estado: " + ticket.getEstado() + "\n\n" +
+                    "Gracias,\nEl equipo de soporte.";
+            emailService.sendSimpleMessage(ticket.getCreador().getEmail(), subject, text);
+
             return ResponseEntity.ok(ticket);
         } catch (TicketException e) {
             log.error("Error al crear el ticket: {}", e.getMessage(), e);
@@ -59,6 +72,22 @@ public class TicketRestController {
         log.debug("Modificando ticket con ID: {}", id);
         try {
             Ticket ticket = ticketService.modificarTicket(id, titulo, descripcion, estado, prioridad, categoriaId);
+
+            String subject = "Ticket #" + ticket.getId() + " ha sido modificado";
+            String text = "Hola,\n\n" +
+                    "El ticket #" + ticket.getId() + " ha sido modificado. La nueva información es:\n" +
+                    "Título: " + ticket.getTitulo() + "\n" +
+                    "Descripción: " + ticket.getDescripcion() + "\n" +
+                    "Prioridad: " + ticket.getPrioridad() + "\n" +
+                    "Estado: " + ticket.getEstado() + "\n\n" +
+                    "Gracias,\nEl equipo de soporte.";
+
+            emailService.sendSimpleMessage(ticket.getCreador().getEmail(), subject, text);
+
+            if (ticket.getAsignado() != null) {
+                emailService.sendSimpleMessage(ticket.getAsignado().getEmail(), subject, text);
+            }
+
             return ResponseEntity.ok(ticket);
         } catch (TicketException e) {
             log.error("Error al actualizar el ticket con ID: {}: {}", id, e.getMessage(), e);

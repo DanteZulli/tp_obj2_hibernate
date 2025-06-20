@@ -11,8 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
