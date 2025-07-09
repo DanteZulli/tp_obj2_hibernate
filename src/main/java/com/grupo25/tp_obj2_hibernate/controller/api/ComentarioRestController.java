@@ -26,7 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RestController
 @RequestMapping("/api/comentarios")
 @RequiredArgsConstructor
-@Tag(name = "Gestión de Comentarios", description = "API para gestionar comentarios en tickets del sistema de soporte técnico")
+@Tag(name = "Legacy - Gestión de Comentarios", description = "Endpoints existentes para gestión de comentarios (antes de la implementación de Swagger)")
 public class ComentarioRestController {
 
 	private final ComentarioService comentarioService;

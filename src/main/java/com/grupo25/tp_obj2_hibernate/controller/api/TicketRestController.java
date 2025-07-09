@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @PreAuthorize("hasAnyRole('ROLE_TECNICO', 'ROLE_ADMIN')")
 @RequestMapping("/api/tickets")
 @RequiredArgsConstructor
-@Tag(name = "Gestión de Tickets", description = "API para gestionar tickets del sistema de soporte técnico. Requiere rol de TÉCNICO o ADMIN")
+@Tag(name = "Legacy - Gestión de Tickets", description = "Endpoints existentes para gestión de tickets (antes de la implementación de Swagger). Requiere rol de TÉCNICO o ADMIN")
 public class TicketRestController {
 
     private final TicketService ticketService;

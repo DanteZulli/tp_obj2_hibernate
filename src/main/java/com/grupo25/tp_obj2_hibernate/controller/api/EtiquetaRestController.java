@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/etiquetas")
 @RequiredArgsConstructor
-@Tag(name = "Gestión de Etiquetas", description = "API para gestionar etiquetas de tickets del sistema de soporte técnico")
+@Tag(name = "Legacy - Gestión de Etiquetas", description = "Endpoints existentes para gestión de etiquetas (antes de la implementación de Swagger)")
 public class EtiquetaRestController {
 
     private final EtiquetaService etiquetaService;

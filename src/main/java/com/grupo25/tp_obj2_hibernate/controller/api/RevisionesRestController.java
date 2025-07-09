@@ -24,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RestController
 @RequestMapping("/api/revisiones")
 @RequiredArgsConstructor
-@Tag(name = "Gestión de Revisiones", description = "API para gestionar el historial de revisiones y cambios en tickets del sistema de soporte técnico")
+@Tag(name = "Legacy - Gestión de Revisiones", description = "Endpoints existentes para gestión de revisiones (antes de la implementación de Swagger)")
 public class RevisionesRestController {
     private final RevisionesService revisionesService;
 

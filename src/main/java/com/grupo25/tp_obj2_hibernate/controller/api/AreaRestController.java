@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/areas")
 @RequiredArgsConstructor
-@Tag(name = "Gestión de Áreas", description = "API para gestionar áreas y departamentos del sistema de tickets de soporte técnico")
+@Tag(name = "Legacy - Gestión de Áreas", description = "Endpoints existentes para gestión de áreas (antes de la implementación de Swagger)")
 public class AreaRestController {
 
     private final AreaService areaService;

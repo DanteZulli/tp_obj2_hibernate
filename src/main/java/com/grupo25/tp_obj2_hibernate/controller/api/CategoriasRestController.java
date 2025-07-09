@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/categorias")
 @RequiredArgsConstructor
-@Tag(name = "Gestión de Categorías", description = "API para gestionar categorías de tickets del sistema de soporte técnico")
+@Tag(name = "Legacy - Gestión de Categorías", description = "Endpoints existentes para gestión de categorías (antes de la implementación de Swagger)")
 public class CategoriasRestController {
 
     private final CategoriaService categoriaService;

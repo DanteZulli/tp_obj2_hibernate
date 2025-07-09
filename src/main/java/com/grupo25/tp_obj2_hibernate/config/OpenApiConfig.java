@@ -48,6 +48,26 @@ public class OpenApiConfig {
                                 .description("Autenticación por sesión de Spring Security\n\n" +
                                         "**Nota:** Esta API utiliza autenticación basada en sesiones. " +
                                         "Para probar endpoints protegidos, primero debes autenticarte " +
-                                        "a través del formulario de login en `/login`")));
+                                        "a través del formulario de login en `/login`")))
+                .tags(List.of(
+                        new io.swagger.v3.oas.models.tags.Tag()
+                                .name("Legacy - Gestión de Tickets")
+                                .description("Endpoints existentes para gestión de tickets (antes de la implementación de Swagger)"),
+                        new io.swagger.v3.oas.models.tags.Tag()
+                                .name("Legacy - Gestión de Categorías")
+                                .description("Endpoints existentes para gestión de categorías (antes de la implementación de Swagger)"),
+                        new io.swagger.v3.oas.models.tags.Tag()
+                                .name("Legacy - Gestión de Áreas")
+                                .description("Endpoints existentes para gestión de áreas (antes de la implementación de Swagger)"),
+                        new io.swagger.v3.oas.models.tags.Tag()
+                                .name("Legacy - Gestión de Etiquetas")
+                                .description("Endpoints existentes para gestión de etiquetas (antes de la implementación de Swagger)"),
+                        new io.swagger.v3.oas.models.tags.Tag()
+                                .name("Legacy - Gestión de Comentarios")
+                                .description("Endpoints existentes para gestión de comentarios (antes de la implementación de Swagger)"),
+                        new io.swagger.v3.oas.models.tags.Tag()
+                                .name("Legacy - Gestión de Revisiones")
+                                .description("Endpoints existentes para gestión de revisiones (antes de la implementación de Swagger)")
+                ));
     }
 }
