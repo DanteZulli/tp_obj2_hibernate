@@ -143,3 +143,31 @@ Este directorio contiene:
 - **Base de datos (MySQL)**: Puerto `3307` 
 
 > 🗂️ Para consultar todas las dependencias y versiones utilizadas, podés revisar el archivo pom.xml ubicado en la raíz del proyecto.
+
+## 📚 Documentación API con Swagger
+
+La aplicación incluye documentación completa de la API REST usando Swagger/OpenAPI.
+
+### 🌐 Acceso a Swagger UI
+- **URL**: `http://localhost:8080/swagger-ui/index.html`
+- **Documentación OpenAPI**: `http://localhost:8080/v3/api-docs`
+
+### 🔐 Autenticación REST
+- **Login**: `POST /api/swagger/auth/login`
+- **Logout**: `POST /api/swagger/auth/logout`
+
+### 📋 Endpoints Disponibles
+
+#### **Endpoints con Record Classes DTOs (Hechos para la segunda entrega)**
+- **Gestión de Áreas**: `GET/POST /api/swagger/areas`
+- **Gestión de Categorías**: `GET/POST /api/swagger/categorias`
+- **Gestión de Etiquetas**: `GET/POST /api/swagger/etiquetas`
+- **Gestión de Tickets**: `GET/POST /api/swagger/tickets`
+
+#### **Endpoints Legacy (Sin DTOs)**
+- **Gestión de Áreas**: `GET/POST/PUT/DELETE /api/areas`
+- **Gestión de Categorías**: `GET/POST/PUT/DELETE /api/categorias`
+- **Gestión de Comentarios**: `GET/POST/PUT/DELETE /api/comentarios`
+- **Gestión de Etiquetas**: `GET/POST/PUT/DELETE /api/etiquetas`
+- **Gestión de Revisiones**: `GET/POST/PUT/DELETE /api/revisiones`
+- **Gestión de Tickets**: `GET/POST/PUT/DELETE /api/tickets`
