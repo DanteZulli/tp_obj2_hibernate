@@ -2,12 +2,13 @@ package com.grupo25.tp_obj2_hibernate.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.tags.Tag;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -50,22 +51,34 @@ public class OpenApiConfig {
                                         "Para probar endpoints protegidos, primero debes autenticarte " +
                                         "a través del formulario de login en `/login`")))
                 .tags(List.of(
-                        new io.swagger.v3.oas.models.tags.Tag()
+                        new Tag()
+                                .name("Gestión de Tickets")
+                                .description("API para gestión de tickets usando DTOs con Record Class"),
+                        new Tag()
+                                .name("Gestión de Categorías")
+                                .description("API para gestión de categorías usando DTOs con Record Class"),
+                        new Tag()
+                                .name("Gestión de Áreas")
+                                .description("API para gestión de áreas usando DTOs con Record Class"),
+                        new Tag()
+                                .name("Gestión de Etiquetas")
+                                .description("API para gestión de etiquetas usando DTOs con Record Class"),
+                        new Tag()
                                 .name("Legacy - Gestión de Tickets")
                                 .description("Endpoints existentes para gestión de tickets (antes de la implementación de Swagger)"),
-                        new io.swagger.v3.oas.models.tags.Tag()
+                        new Tag()
                                 .name("Legacy - Gestión de Categorías")
                                 .description("Endpoints existentes para gestión de categorías (antes de la implementación de Swagger)"),
-                        new io.swagger.v3.oas.models.tags.Tag()
+                        new Tag()
                                 .name("Legacy - Gestión de Áreas")
                                 .description("Endpoints existentes para gestión de áreas (antes de la implementación de Swagger)"),
-                        new io.swagger.v3.oas.models.tags.Tag()
+                        new Tag()
                                 .name("Legacy - Gestión de Etiquetas")
                                 .description("Endpoints existentes para gestión de etiquetas (antes de la implementación de Swagger)"),
-                        new io.swagger.v3.oas.models.tags.Tag()
+                        new Tag()
                                 .name("Legacy - Gestión de Comentarios")
                                 .description("Endpoints existentes para gestión de comentarios (antes de la implementación de Swagger)"),
-                        new io.swagger.v3.oas.models.tags.Tag()
+                        new Tag()
                                 .name("Legacy - Gestión de Revisiones")
                                 .description("Endpoints existentes para gestión de revisiones (antes de la implementación de Swagger)")
                 ));
