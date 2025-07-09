@@ -52,6 +52,9 @@ public class OpenApiConfig {
                                         "a través del formulario de login en `/login`")))
                 .tags(List.of(
                         new Tag()
+                                .name("Autenticación")
+                                .description("API para autenticación de usuarios usando DTOs con Record Class"),
+                        new Tag()
                                 .name("Gestión de Tickets")
                                 .description("API para gestión de tickets usando DTOs con Record Class"),
                         new Tag()
