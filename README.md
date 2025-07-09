@@ -1,4 +1,4 @@
-# 🛠️ Sistema de Gestión de Tickets - Grupo 25 (OBJ2) - Proyecto Spring Nivel 1
+# 🛠️ Sistema de Gestión de Tickets - Grupo 25 (OBJ2) - Spring Boot Nivel 2
 
 # 📋 Requisitos Previos
 - Java JDK 21
