@@ -7,6 +7,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.grupo25.tp_obj2_hibernate.model.dto.LoginDTO;
 import com.grupo25.tp_obj2_hibernate.model.dto.LoginResponseDTO;
@@ -45,7 +49,9 @@ public class AuthSwaggerController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     public ResponseEntity<LoginResponseDTO> login(
-            @Parameter(description = "DTO con las credenciales de login", required = true) @RequestBody LoginDTO loginDTO) {
+            @Parameter(description = "DTO con las credenciales de login", required = true) @RequestBody LoginDTO loginDTO,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         log.debug("Intentando login para usuario: {}", loginDTO.username());
         
         try {
@@ -57,7 +63,11 @@ public class AuthSwaggerController {
             
             // Intentar autenticar
             Authentication authentication = authenticationManager.authenticate(authToken);
+            
+            // Establecer la autenticación en el contexto de seguridad y en la sesión
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+            securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
             
             // Obtener información del usuario
             Usuario usuario = usuarioRepository.findByNombreUsuario(loginDTO.username())
@@ -73,7 +83,7 @@ public class AuthSwaggerController {
                 rol = "TECNICO";
             }
             
-            LoginResponseDTO response = new LoginResponseDTO(
+            LoginResponseDTO loginResponse = new LoginResponseDTO(
                     usuario.getNombreUsuario(),
                     usuario.getNombre(),
                     usuario.getEmail(),
@@ -83,7 +93,7 @@ public class AuthSwaggerController {
             );
             
             log.info("Login exitoso para usuario: {}", loginDTO.username());
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(loginResponse);
             
         } catch (AuthenticationException e) {
             log.warn("Login fallido para usuario: {}", loginDTO.username());
@@ -105,6 +115,46 @@ public class AuthSwaggerController {
                     false,
                     null,
                     "Error interno del servidor"
+            );
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Cerrar sesión", description = "Cierra la sesión del usuario autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Logout exitoso"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    public ResponseEntity<LoginResponseDTO> logout(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // Invalidar la sesión
+            request.getSession().invalidate();
+            
+            // Limpiar el contexto de seguridad
+            SecurityContextHolder.clearContext();
+            
+            LoginResponseDTO logoutResponse = new LoginResponseDTO(
+                    null,
+                    null,
+                    null,
+                    false,
+                    null,
+                    "Sesión cerrada exitosamente"
+            );
+            
+            log.info("Logout exitoso");
+            return ResponseEntity.ok(logoutResponse);
+            
+        } catch (Exception e) {
+            log.error("Error durante el logout", e);
+            LoginResponseDTO errorResponse = new LoginResponseDTO(
+                    null,
+                    null,
+                    null,
+                    false,
+                    null,
+                    "Error al cerrar sesión"
             );
             return ResponseEntity.status(500).body(errorResponse);
         }
