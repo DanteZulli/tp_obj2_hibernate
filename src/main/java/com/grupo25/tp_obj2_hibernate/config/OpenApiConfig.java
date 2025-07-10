@@ -67,6 +67,12 @@ public class OpenApiConfig {
                                 .name("Gestión de Etiquetas")
                                 .description("API para gestión de etiquetas usando DTOs con Record Class"),
                         new Tag()
+                                .name("Gestión de Comentarios")
+                                .description("API para gestión de comentarios usando DTOs con Record Class"),
+                        new Tag()
+                                .name("Gestión de Revisiones")
+                                .description("API para gestión de revisiones usando DTOs con Record Class"),
+                        new Tag()
                                 .name("Legacy - Gestión de Tickets")
                                 .description("Endpoints existentes para gestión de tickets (antes de la implementación de Swagger)"),
                         new Tag()
