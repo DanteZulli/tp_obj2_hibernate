@@ -161,7 +161,9 @@ La aplicación incluye documentación completa de la API REST usando Swagger/Ope
 #### **Endpoints con Record Classes DTOs (Hechos para la segunda entrega)**
 - **Gestión de Áreas**: `GET/POST /api/swagger/areas`
 - **Gestión de Categorías**: `GET/POST /api/swagger/categorias`
+- **Gestión de Comentarios**: `GET/POST /api/swagger/categorias`
 - **Gestión de Etiquetas**: `GET/POST /api/swagger/etiquetas`
+- **Gestión de Revisiones**: `GET/POST /api/swagger/revisiones`
 - **Gestión de Tickets**: `GET/POST /api/swagger/tickets`
 
 #### **Endpoints Legacy (Sin DTOs)**
